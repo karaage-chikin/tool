@@ -27,8 +27,7 @@ jobs:
     timeout-minutes: 120
     env:
       MAX_MCPEDL_PAGES: "1000"
-      MAX_NEW_PACKS: "10000"
-      TARGET_TOTAL_PACKS: "10000"
+      MAX_NEW_PACKS: "3000"
       MAX_ADDITIONAL_PAGES: "1000"
       STALE_PAGE_LIMIT: "1000"
     steps:
