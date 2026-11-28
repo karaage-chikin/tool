@@ -202,6 +202,7 @@ async function init(){
  });
  window.addEventListener("hashchange",()=>{currentPage=pageFromHash();renderPage();});
  currentPage=pageFromHash();renderPage();
+ setInterval(()=>{if(currentPage==="overview"&&document.visibilityState==="visible")renderPage();},60000);
 }
 init();
 
