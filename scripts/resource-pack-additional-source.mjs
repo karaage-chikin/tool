@@ -87,7 +87,8 @@ async function fetchText(url,accept="text/html,application/xhtml+xml"){
  let last;
  for(let attempt=0;attempt<4;attempt++){
   try{
-   const requestHeaders={...headers,Accept:accept};try{if(new URL(url).hostname==="api.github.com"&&process.env.GITHUB_TOKEN)requestHeaders.Authorization="Bearer "+process.env.GITHUB_TOKEN;}catch{}\n   const response=await fetch(url,{headers:requestHeaders,signal:AbortSignal.timeout(25000),redirect:"follow"});
+   const requestHeaders={...headers,Accept:accept};try{if(new URL(url).hostname==="api.github.com"&&process.env.GITHUB_TOKEN)requestHeaders.Authorization="Bearer "+process.env.GITHUB_TOKEN;}catch{}
+   const response=await fetch(url,{headers:requestHeaders,signal:AbortSignal.timeout(25000),redirect:"follow"});
    if(response.ok){liveLog("page_loaded","",{url:response.url||url,status:response.status});return await response.text();}
    last=new Error("HTTP "+response.status+" at "+url);
    if(response.status!==429&&response.status<500)break;
