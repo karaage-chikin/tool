@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-28T14:28:56.786Z",
+  "updatedAt": "2026-11-28T14:33:34.006Z",
   "status": "running",
   "runStartedAt": "2026-11-28T14:28:56.786Z",
   "runFinishedAt": null,
   "baselineCount": 4671,
-  "currentCount": 4671,
-  "stage": "開始",
+  "currentCount": 4672,
+  "stage": "MCPEDL収集完了・追加サイト収集中",
   "history": [
     {
       "startedAt": "2026-11-28T11:37:41.791Z",
