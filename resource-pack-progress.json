@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-11-28T11:37:41.791Z",
+  "status": "running",
+  "runStartedAt": "2026-11-28T11:37:41.791Z",
+  "runFinishedAt": null,
+  "baselineCount": 4671,
+  "currentCount": 4671,
+  "stage": "開始",
+  "history": []
+}
