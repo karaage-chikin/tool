@@ -44,7 +44,42 @@ async function api(path){
   throw new ApiError("通信に失敗しました。ネットワークを確認してください。");
  }finally{clearTimeout(timer);}
 }
-function formatElapsed(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return h>0?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
+
+let liveScanLastId=0;
+function liveEventLabel(x){
+ const map={page_request:"ページ取得開始",page_loaded:"ページ取得完了",listing_scan:"一覧ページ巡回",listing_result:"一覧解析完了",candidate_found:"候補を発見",candidate_skipped:"候補を除外",candidate_added:"図鑑に追加",collector_error:"収集エラー"};
+ return map[x.event_type]||x.event_type;
+}
+function liveScanRows(logs){
+ return (logs||[]).map(x=>{
+  let detail={};try{detail=JSON.parse(x.detail||"{}");}catch{}
+  const when=formatDate(Date.parse(x.at));
+  const title=x.title?'<strong>'+esc(x.title)+'</strong>':"";
+  const url=x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.url)+'</a>':"";
+  const extra=detail.reason||detail.status||detail.page&&("ページ "+detail.page)||"";
+  const tone=x.event_type==="candidate_added"?"good":x.event_type==="candidate_skipped"?"muted":x.event_type==="collector_error"?"error":"";
+  return '<article class="live-scan-row '+tone+'"><div class="live-scan-meta"><span>'+esc(when)+'</span><b>'+esc(x.provider||"")+'</b><span>'+esc(liveEventLabel(x))+'</span></div>'+title+(extra?'<div class="muted">'+esc(extra)+'</div>':"")+(url?'<div class="live-scan-url">'+url+'</div>':"")+'</article>';
+ }).join("");
+}
+async function liveScanPanel(){
+ try{
+  const d=await api("/api/admin/monitor/live-scan?after=0");
+  liveScanLastId=Math.max(liveScanLastId,number(d.latestId));
+  return '<section class="panel live-scan-panel"><div class="live-scan-heading"><h2>リアルタイム収集モニター</h2><span class="live-scan-indicator"><i></i>ログ受信</span></div><p class="muted">収集プログラムが実際に取得・判定したページと候補を表示します。新しいログは約3秒ごとに追加されます。</p><div id="liveScanRows" class="live-scan-rows">'+(d.logs?.length?liveScanRows(d.logs):'<div class="empty">まだ収集ログはありません。収集ジョブ開始後にここへ表示されます。</div>')+'</div></section>';
+ }catch(e){return '<section class="panel"><h2>リアルタイム収集モニター</h2><p class="notice error">ログを取得できません：'+esc(e.message)+'</p></section>';}
+}
+async function refreshLiveScan(){
+ const host=$("liveScanRows");if(!host||document.visibilityState!=="visible")return;
+ try{
+  const d=await api("/api/admin/monitor/live-scan?after="+liveScanLastId);
+  const logs=d.logs||[];if(!logs.length)return;
+  liveScanLastId=Math.max(liveScanLastId,...logs.map(x=>number(x.id)));
+  const empty=host.querySelector(".empty");if(empty)host.innerHTML="";
+  host.insertAdjacentHTML("afterbegin",liveScanRows(logs));
+  while(host.children.length>100)host.lastElementChild.remove();
+ }catch{}
+}
+\nfunction formatElapsed(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return h>0?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
 function updateElapsedClocks(){document.querySelectorAll("[data-elapsed-start]").forEach(el=>{const start=Number(el.dataset.elapsedStart);if(Number.isFinite(start)&&start>0)el.textContent=formatElapsed(Date.now()-start);});}
 function status(message,kind=""){
  const el=$("pageStatus");if(!el)return;
@@ -127,7 +162,7 @@ async function loadOverview(seq){
  results.forEach((r,i)=>{if(r.status==="fulfilled")data[specs[i][0]]=r.value;else errors.push(specs[i][0]+": "+r.reason.message);});
  const d=data.overview||{},p=d.packs||{},c=d.candidates||{},ac=d.access||{};
  let html=cards([{label:"リソースパック（D1登録分）",value:number(p.count)},{label:"未承認候補",value:number(c.count)},{label:"累計アクセス",value:number(ac.count)},{label:"監査ログ",value:number(d.logs?.count)},{label:"パック情報の概算容量",value:formatBytes(p.approx_bytes)}]);
- html+=await expansionPanel();
+ html+=await expansionPanel();\n html+=await liveScanPanel();
  html+='<div class="overview-grid">';
  html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
  html+='<section class="panel overview-panel"><h2>Debug・エラー</h2>'+(data.debug?rows((data.debug.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("debug"))||"取得失敗"}))+'</section>';
@@ -221,7 +256,7 @@ async function init(){
  });
  window.addEventListener("hashchange",()=>{currentPage=pageFromHash();renderPage();});
  currentPage=pageFromHash();renderPage();
- setInterval(updateElapsedClocks,1000);
+ setInterval(updateElapsedClocks,1000);\n setInterval(()=>{if(currentPage==="overview"||currentPage==="storage")refreshLiveScan();},3000);
  setInterval(()=>{if(currentPage==="overview"&&document.visibilityState==="visible")renderPage();},60000);
 }
 init();
