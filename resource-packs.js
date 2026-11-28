@@ -16,7 +16,7 @@ const JAPANESE_RE = /[ぁ-んァ-ヶ一-龯]/;
 const initialSearchParams=new URLSearchParams(location.search);
 if(initialSearchParams.has("q"))$("search").value=initialSearchParams.get("q")||"";
 if(categories.includes(initialSearchParams.get("category")))activeCategory=initialSearchParams.get("category");
-if(initialSearchParams.get("sort")&&["new","az","fav","updated","author"].includes(initialSearchParams.get("sort")))$("sort").value=initialSearchParams.get("sort");
+if(initialSearchParams.get("sort")&&["new","az","fav","updated","downloads","author"].includes(initialSearchParams.get("sort")))$("sort").value=initialSearchParams.get("sort");
 favoritesOnly=initialSearchParams.get("fav")==="1";currentPage=Math.max(1,Number.parseInt(initialSearchParams.get("page")||"1",10)||1);
 $("favoritesOnly").classList.toggle("primary",favoritesOnly);
 function syncSearchUrl(){
@@ -107,6 +107,7 @@ function filtered(){
  if(sort==="az")list=[...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
  if(sort==="fav")list=[...list].sort((a,b)=>(Number(fav.has(b.id))-Number(fav.has(a.id)))||a.title.localeCompare(b.title,"ja"));
  if(sort==="updated")list=[...list].sort((a,b)=>String(b.sourceUpdatedAt||b.updatedAt||b.createdAt||"").localeCompare(String(a.sourceUpdatedAt||a.updatedAt||a.createdAt||"")));
+ if(sort==="downloads")list=[...list].sort((a,b)=>Number(String(b.downloads||0).replace(/[^0-9.]/g,""))-Number(String(a.downloads||0).replace(/[^0-9.]/g,"")));
  if(sort==="author")list=[...list].sort((a,b)=>String(a.author||"").localeCompare(String(b.author||""),"ja")||a.title.localeCompare(b.title,"ja"));
  return list;
 }
@@ -308,7 +309,7 @@ $("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=
  if((e.key==="ArrowDown"||e.key==="ArrowUp")&&!box.classList.contains("hidden")&&options.length){e.preventDefault();const step=e.key==="ArrowDown"?1:-1;suggestionActiveIndex=(suggestionActiveIndex+step+options.length)%options.length;options.forEach((option,i)=>option.setAttribute("aria-selected",String(i===suggestionActiveIndex)));$("search").setAttribute("aria-activedescendant","search-option-"+suggestionActiveIndex);return;}
  if(e.key==="Enter"&&suggestionActiveIndex>=0&&options[suggestionActiveIndex]){e.preventDefault();$("search").value=options[suggestionActiveIndex].dataset.suggest;box.classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;currentPage=1;render();}
 });$("searchSuggestions").addEventListener("click",e=>{const b=e.target.closest("[data-suggest]");if(!b)return;$("search").value=b.dataset.suggest;$("searchSuggestions").classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;currentPage=1;render();$("search").focus();});$("searchSuggestions").addEventListener("click",e=>{if(e.target.closest("[data-translate-search]"))translateSearch();});document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("searchSuggestions").classList.add("hidden");});$("sort").addEventListener("change",()=>{currentPage=1;render();});
- window.addEventListener("popstate",()=>{const p=new URLSearchParams(location.search);$("search").value=p.get("q")||"";activeCategory=categories.includes(p.get("category"))?p.get("category"):"すべて";$("sort").value=["new","az","fav","updated","author"].includes(p.get("sort"))?p.get("sort"):"new";favoritesOnly=p.get("fav")==="1";currentPage=Math.max(1,Number.parseInt(p.get("page")||"1",10)||1);$("favoritesOnly").classList.toggle("primary",favoritesOnly);categoryNav();render();});
+ window.addEventListener("popstate",()=>{const p=new URLSearchParams(location.search);$("search").value=p.get("q")||"";activeCategory=categories.includes(p.get("category"))?p.get("category"):"すべて";$("sort").value=["new","az","fav","updated","downloads","author"].includes(p.get("sort"))?p.get("sort"):"new";favoritesOnly=p.get("fav")==="1";currentPage=Math.max(1,Number.parseInt(p.get("page")||"1",10)||1);$("favoritesOnly").classList.toggle("primary",favoritesOnly);categoryNav();render();});
 $("loadMorePacks").addEventListener("click",()=>{currentPage++;render();});if($("prevPacks"))$("prevPacks").addEventListener("click",()=>{currentPage=Math.max(1,currentPage-1);render();});
 $("favoritesOnly").addEventListener("click",()=>{favoritesOnly=!favoritesOnly;currentPage=1;$("favoritesOnly").classList.toggle("primary",favoritesOnly);render();});
 $("adminToggle").addEventListener("click",()=>{const panel=$("adminPanel"),opening=panel.classList.contains("hidden");panel.classList.toggle("hidden");$("adminToggle").setAttribute("aria-expanded",String(opening));});
