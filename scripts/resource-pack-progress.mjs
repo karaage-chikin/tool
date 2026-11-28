@@ -24,5 +24,5 @@ if (action === "start") {
 } else {
   throw new Error("Usage: start | stage <name> | finish");
 }
-fs.writeFileSync(file, JSON.stringify(state, null, 2) + "\\n");
+fs.writeFileSync(file, JSON.stringify(state, null, 2) + "\n");
 console.log(JSON.stringify({ action, stage: state.stage, count, status: state.status, updatedAt: now }));
