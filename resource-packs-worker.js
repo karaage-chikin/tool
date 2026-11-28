@@ -1,5 +1,5 @@
 const ORIGIN = "https://karaage-chikin.github.io";
-const SESSION_MS = 8 * 60 * 60 * 1000;
+const SESSION_MS = 30 * 24 * 60 * 60 * 1000;
 const encoder = new TextEncoder();
 
 function cors(origin) {
