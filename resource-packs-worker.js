@@ -234,7 +234,7 @@ async function discoverMcpedl(env, posts=null) {
   posts=posts||await fetchMcpedlPosts();let added=0,skipped=0;
   for(const p of posts){
     const link=String(p.link||"");let valid=false;try{valid=new URL(link).hostname==="mcpedl.com";}catch{}
-    const clean=s=>String(s||"").replace(/<[^>]*>/g," ").replace(/&amp;/g,"&").replace(/&#8217;|&#8216;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
+    const clean=s=>decodeHtml(String(s||"").replace(/<[^>]*>/g," ")).replace(/\s+/g," ").trim();
     const title=clean(p.title?.rendered),description=clean(p.excerpt?.rendered).slice(0,1000),author=String(p._embedded?.author?.[0]?.name||"").slice(0,120),images=extractPostImages(p);
     if(!valid||!title||!description){skipped++;continue;}
     const published=await env.DB.prepare("SELECT id FROM resource_packs WHERE source_url=? LIMIT 1").bind(link).first();
