@@ -11,7 +11,7 @@ form.addEventListener("submit",async event=>{
   if(!response.ok)throw new Error(data.error||"ログインできませんでした。");
   if(typeof data.token!=="string"||!/^[A-Za-z0-9_.-]{20,2048}$/.test(data.token))throw new Error("認証応答が不正です。");
   sessionStorage.setItem("resourcePackAdminToken",data.token);if(data.expiresIn)sessionStorage.setItem("resourcePackAdminTokenExpiresAt",String(Date.now()+Number(data.expiresIn)));location.href="admin.html";
- }catch(error){status.className="login-status error";status.textContent=error.name==="AbortError"?"通信がタイムアウトしました。":"ログインできませんでした："+error.message;}
+ }catch(error){status.className="login-status error";status.textContent=error.name==="AbortError"?"通信がタイムアウトしました。":"ログインできませんでした："+error.message;const hint=document.getElementById("homeAdminSetupHint");if(hint&&/設定されていません|シークレット/.test(error.message))hint.hidden=false;}
  finally{clearTimeout(timer);button.disabled=false;}
 });
 })();
