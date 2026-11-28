@@ -67,40 +67,38 @@ async function expansionPanel(){
  }catch(e){catalogueError=e?.message||"図鑑件数を取得できません";}
  try{
   const monitor=await api("/api/admin/monitor/storage");
-  run=monitor.expansion||null;
-  measurement=monitor.expansionProgress||null;
+  run=monitor.expansion||null;measurement=monitor.expansionProgress||null;
   if(run?.available===false)monitorError=run.error||"GitHub Actionsの実行状況を取得できません";
-  if(run?.error){monitorError=run.error.includes("HTTP 403")?"GitHub Actions APIがHTTP 403を返しました（認証・API利用制限の可能性）。":run.error;}
+  if(run?.error)monitorError=run.error.includes("HTTP 403")?"GitHub Actions APIがHTTP 403を返しました（認証・API利用制限の可能性）。":run.error;
  }catch(e){monitorError=e?.message||"実行状況を取得できません";}
- const pct=count===null?0:Math.min(100,count/10000*100);
- const remaining=count===null?null:Math.max(0,10000-count);
- let state="状態不明",stateClass="muted";
+ const milestone=10000,pct=count===null?0:Math.min(100,count/milestone*100),remaining=count===null?null:Math.max(0,milestone-count);
  const activeRuns=Array.isArray(run?.activeRuns)?run.activeRuns:[];
  const runningCount=activeRuns.filter(x=>x.status==="in_progress").length;
  const waitingCount=activeRuns.filter(x=>x.status==="pending"||x.status==="queued").length;
- if(runningCount&&waitingCount){state="実行中 "+runningCount+"件・実行待ち "+waitingCount+"件";stateClass="running";}
- else if(runningCount){state="実行中 "+runningCount+"件";stateClass="running";}
- else if(waitingCount){state="実行待ち "+waitingCount+"件";stateClass="waiting";}
- else if(run?.status==="completed"&&run?.conclusion==="success"){state="完了";stateClass="done";}
- else if(run?.status==="completed"){state="処理終了："+(run.conclusion||"結果不明");stateClass="error";}
- else if(run?.status==="not_started"){state="未実行";stateClass="muted";}
- const countText=count===null?"件数取得不可":count>=10000?"10,000件突破・現在 "+count.toLocaleString("ja-JP")+" 件":count.toLocaleString("ja-JP")+" / 10,000件（最初の目標）";
- const progressText=count===null?catalogueError:count>=10000?"最初の目標を達成・以後も収集継続":"最初の目標まで "+pct.toFixed(1)+"%";
- const history=Array.isArray(measurement?.history)?measurement.history.slice(-5):[];
+ let state="状態を取得できません",stateClass="muted";
+ if(runningCount){state="収集中："+runningCount+"件";stateClass="running";}
+ else if(waitingCount){state="開始待ち："+waitingCount+"件";stateClass="waiting";}
+ else if(run?.status==="completed"&&run?.conclusion==="success"){state="待機中（前回の巡回は成功）";stateClass="done";}
+ else if(run?.status==="completed"){state="前回の巡回は失敗："+(run.conclusion||"結果不明");stateClass="error";}
+ else if(run?.status==="not_started"){state="まだ実行履歴がありません";stateClass="muted";}
+ const countText=count===null?"件数取得不可":count.toLocaleString("ja-JP")+" 件";
+ const progressText=count===null?catalogueError:count>=milestone?"10,000件の通過目標を達成（以後も収集継続）":"10,000件の通過目標まで "+pct.toFixed(1)+"%";
+ const history=Array.isArray(measurement?.history)?measurement.history.slice(-5).reverse():[];
+ const last=measurement?.lastRun||history[0]||null;
  const completedRuns=history.filter(x=>Number(x.added)>0&&Number(x.durationMs)>0);
  const avgAddedPerRun=completedRuns.length?completedRuns.reduce((sum,x)=>sum+Number(x.added),0)/completedRuns.length:0;
- const cycleHours=1;
- const hoursRemaining=avgAddedPerRun>0&&remaining!==null?remaining/avgAddedPerRun*cycleHours:null;
+ const hoursRemaining=avgAddedPerRun>0&&remaining!==null?remaining/avgAddedPerRun:null;
  const etaDate=hoursRemaining===null?null:new Date(Date.now()+hoursRemaining*3600000);
- const durationLabel=hours=>hours<1?Math.max(1,Math.round(hours*60))+"分":hours<48?hours.toFixed(1)+"時間":(hours/24).toFixed(1)+"日";
- const etaText=count!==null&&count>=10000?"10,000件は通過目標です。到達後も新規収集を継続します":hoursRemaining!==null?"10,000件到達までの予想："+durationLabel(hoursRemaining)+"（直近"+completedRuns.length+"回の実績・定期起動間隔を含む概算）":"10,000件到達予想：実績データを収集中（完了した拡張処理が"+(history.length<2?"まだ不足しています":"有効な追加件数を取得できていません")+"）";
- const currentDelta=measurement?.status==="running"?Math.max(0,Number(measurement.currentCount||0)-Number(measurement.baselineCount||0)):0;
- const currentElapsed=measurement?.runStartedAt?Math.max(0,(Date.now()-Date.parse(measurement.runStartedAt))/60000):0;
- const stageText=measurement?.stage?"現在の工程："+measurement.stage:"工程情報：未取得";
- const updatedText=measurement?.updatedAt?"進捗更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗更新：未計測";
- const etaDateText=etaDate&&!Number.isNaN(etaDate.getTime())?"予想到達日時："+formatDate(etaDate.getTime()):"";
- const speedText=avgAddedPerRun>0?"平均追加："+avgAddedPerRun.toFixed(1)+"件 / 実行（定期起動）":(currentDelta>0&&currentElapsed>0?"今回の追加："+currentDelta+"件 / "+currentElapsed.toFixed(0)+"分":"追加速度：計測中");
- return '<section class="panel expansion-panel"><h2>図鑑の拡張処理</h2><div class="progress-head"><strong>'+countText+'</strong><span class="job-state '+stateClass+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="図鑑の拡張進捗" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:count)+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">図鑑JSONの登録件数とGitHub Actionsの実行状態は別々に取得します。一方が失敗しても、もう一方の表示は維持します。D1の管理者登録分とは重複する場合があるため別集計です。</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(speedText)+'</p><p class="notice">'+esc(stageText)+'</p><p class="notice">'+esc(updatedText)+'</p>'+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">拡張処理の実行ログを開く ↗</a>':"")+'</section>';
+ const durationLabel=ms=>{const m=Math.max(0,Math.round(Number(ms||0)/60000));return m<60?m+"分":Math.floor(m/60)+"時間"+(m%60)+"分";};
+ const etaText=count!==null&&count>=milestone?"10,000件は通過目標です。達成後も新規パックを追加します":hoursRemaining!==null?"参考予測："+durationLabel(hoursRemaining*3600000)+"（追加があった回の平均。保証値ではありません）":"到達予測：追加実績が集まるまで算出できません";
+ const stageMap={"開始":"収集ジョブを開始","MCPEDL収集完了・追加サイト収集中":"MCPEDL収集完了 → 他サイトを巡回中","追加サイト収集完了・説明情報取得中":"他サイト巡回完了 → 説明情報を取得中","説明・メタデータ取得完了・画像情報取得中":"説明情報完了 → 画像情報を取得中","画像情報取得完了・図鑑更新中":"画像情報完了 → 図鑑データを保存中","完了":"今回の巡回サイクル終了"};
+ const rawStage=measurement?.stage||"工程情報なし";
+ const stageText=measurement?.status==="completed"?"今回の巡回："+(stageMap[rawStage]||"終了") : "現在の工程："+(stageMap[rawStage]||rawStage);
+ const elapsed=measurement?.runStartedAt&&measurement?.status==="running"?durationLabel(Date.now()-Date.parse(measurement.runStartedAt)):"";
+ const lastRunText=last?"前回の巡回："+durationLabel(last.durationMs)+" ／ 新規追加 "+Number(last.added||0).toLocaleString("ja-JP")+"件 ／ "+Number(last.finalCount||last.currentCount||0).toLocaleString("ja-JP")+"件":"前回の巡回結果：まだありません";
+ const etaDateText=etaDate&&!Number.isNaN(etaDate.getTime())?"予測到達日時："+formatDate(etaDate.getTime()):"";
+ const historyRows=history.map(x=>'<tr><td>'+esc(formatDate(Date.parse(x.finishedAt||x.startedAt)))+'</td><td>'+esc(durationLabel(x.durationMs))+'</td><td>'+esc(Number(x.added||0).toLocaleString("ja-JP"))+'件</td><td>'+esc(Number(x.finalCount||0).toLocaleString("ja-JP"))+'件</td></tr>').join("");
+ return '<section class="panel expansion-panel"><h2>リソースパック図鑑の収集状況</h2><div class="progress-head"><strong>'+esc(countText)+'</strong><span class="job-state '+(stateClass)+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="10,000件の通過目標" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:Math.min(count,10000))+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"目安まで残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">重要：10,000件は最初の通過目標で、上限でも処理完了条件でもありません。達成後も新しいBedrock向けパックを探して追加します。</p><div class="notice">'+esc(stageText)+(elapsed?" ／ 経過 "+esc(elapsed):"")+'</div><p class="notice">'+esc(lastRunText)+'</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(measurement?.updatedAt?"進捗最終更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗最終更新：未取得")+'</p>'+(historyRows?'<h3>直近5回の巡回履歴</h3><table><thead><tr><th>終了日時</th><th>所要時間</th><th>新規追加</th><th>終了時の登録数</th></tr></thead><tbody>'+historyRows+'</tbody></table>':"")+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">今回の巡回ログを開く ↗</a>':"")+'</section>';
 }
 function storageMeter(label,used,limit,detail,unlimited=false){
  const u=number(used),l=number(limit),pct=unlimited||!l?null:Math.min(100,u/l*100);
