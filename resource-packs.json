@@ -76727,8 +76727,8 @@
     "fullDescription": "A texture pack who adds new textures for minigames like bedwars",
     "detailsFiltered": false,
     "publishedAt": "2026-09-08",
-    "updatedAt": "2026-09-08",
-    "detailsFetchedAt": "2026-11-27"
+    "updatedAt": "2026-11-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-outline-glowing-ores-lite-30abdb154597",
@@ -135127,7 +135127,12 @@
     "createdAt": "2026-11-28",
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "A suffocating, pale-gray fog descends without warning, swallowing every biome from sun-drenched deserts to dense dark forests in a claustrophobic veil that c…",
+    "detailsFiltered": false,
+    "publishedAt": "2024-11-20",
+    "updatedAt": "2026-11-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-bsl-zenxveda-shaders-5e8479e0eb8d",
@@ -135142,7 +135147,12 @@
     "createdAt": "2026-11-25",
     "sourceUpdatedAt": "2026-11-25",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "A highly optimized, performance-friendly Deferred Renderer pack with radiant glowing ores, crystal-clear water, and vibrant lighting.",
+    "detailsFiltered": false,
+    "publishedAt": "2026-08-14",
+    "updatedAt": "2026-11-25",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-barely-drops-5924f419aa2b",
@@ -135157,7 +135167,12 @@
     "createdAt": "2026-11-24",
     "sourceUpdatedAt": "2026-11-24",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "A pack that adds Tiny Takeover, Chaos Cubed, Wilderness Bound and Deep Freeze to Bare Bones for Bedrock! All of 26.X!!",
+    "detailsFiltered": false,
+    "publishedAt": "2026-08-17",
+    "updatedAt": "2026-11-24",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-entity-culling-95eeda92925c",
@@ -135172,7 +135187,12 @@
     "createdAt": "2026-11-20",
     "sourceUpdatedAt": "2026-11-20",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-11-20",
+    "updatedAt": "2026-11-20",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-hera-potion-labels-9878cd212a20",
@@ -135187,7 +135207,12 @@
     "createdAt": "2026-11-19",
     "sourceUpdatedAt": "2026-11-19",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-11-19",
+    "updatedAt": "2026-11-19",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-midnight-pvp-texture-packs-a10e0e82e1e5",
@@ -135202,7 +135227,12 @@
     "createdAt": "2026-11-14",
     "sourceUpdatedAt": "2026-11-14",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-07-01",
+    "updatedAt": "2026-11-14",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-better-classic-tools-10f2fbfaa60f",
@@ -135217,7 +135247,12 @@
     "createdAt": "2026-11-09",
     "sourceUpdatedAt": "2026-11-09",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "It’s a texture pack that makes all tools look a little bit better.",
+    "detailsFiltered": false,
+    "publishedAt": "2026-05-10",
+    "updatedAt": "2026-11-09",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-item-counter-f30993bdfc5c",
@@ -135232,7 +135267,12 @@
     "createdAt": "2026-11-06",
     "sourceUpdatedAt": "2026-11-06",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-04-13",
+    "updatedAt": "2026-11-06",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-bluelock-ui-0bef256be8dc",
@@ -135247,7 +135287,12 @@
     "createdAt": "2026-10-28",
     "sourceUpdatedAt": "2026-10-28",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-10-21",
+    "updatedAt": "2026-10-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-longarrowpath-02cb67c408ae",
@@ -135262,7 +135307,12 @@
     "createdAt": "2026-10-20",
     "sourceUpdatedAt": "2026-10-20",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-10-20",
+    "updatedAt": "2026-10-20",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-suviles-directional-hoppers-19a99981757a",
@@ -135277,7 +135327,12 @@
     "createdAt": "2026-09-28",
     "sourceUpdatedAt": "2026-09-28",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2025-05-18",
+    "updatedAt": "2026-09-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-charge-indicator-6837d90d6378",
@@ -135292,7 +135347,12 @@
     "createdAt": "2026-10-06",
     "sourceUpdatedAt": "2026-10-06",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-06-18",
+    "updatedAt": "2026-10-06",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-vanilla-tridents-resource-pack-273cce2a6448",
@@ -135307,7 +135367,12 @@
     "createdAt": "2026-11-04",
     "sourceUpdatedAt": "2026-11-04",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-08-15",
+    "updatedAt": "2026-11-04",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-the-simple-things-4769b35fa1f5",
@@ -135322,7 +135387,12 @@
     "createdAt": "2026-03-09",
     "sourceUpdatedAt": "2026-03-09",
     "thumbnailUrl": "",
-    "galleryImages": []
+    "galleryImages": [],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "publishedAt": "2026-03-09",
+    "updatedAt": "2026-03-09",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "github-Faithful-32x-Bedrock-c744372bc131",
@@ -135339,7 +135409,10 @@
     "thumbnailUrl": "https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-32x-Bedrock/bedrock-latest/pack_icon.png",
     "galleryImages": [
       "https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-32x-Bedrock/bedrock-latest/pack_icon.png"
-    ]
+    ],
+    "fullDescription": "BranchesTagsOpen more actions menuLatest commit History2,736 Commits2,736 CommitsFolders and filesNameNameLast commit messageLast commit date.github/workflows.github/workflows fontfont models/entitymodels/entity render_controllersrender_controllers shadowsshadows texturestextures uiui waterwater .gitignore.gitignore LICENSE.txtLICENSE.txt README.mdREADME.md blocks.jsonblocks.json manifest.jsonmanifest.json pack_icon.pngpack_icon.png Repository files navigation Faithful 32x The go-to 32x resource pack for Minecraft. Official Bedrock Edition repository How to download: The latest release versions can be downloaded on our website and the latest unreleased versions on our database. AboutThe official repository for the Bedrock version of Faithful 32xfaithfulpack.netTopics32x32x32bedrockfaithfulminecraftminecraft-bedrock-editionresource-packtexture-packResourcesReadmeLicenseActivityCustom propertiesStarsWatchersForks9 forksReport repositoryReleasesContributors",
+    "detailsFiltered": false,
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-7180-pandamines-vibrant-visuals-unlock-a1e97fd33449",
@@ -135356,7 +135429,10 @@
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp",
     "galleryImages": [
       "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp"
-    ]
+    ],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-7339-anime-girl-animated-ui-html-0625c351ae0a",
@@ -135373,7 +135449,10 @@
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp",
     "galleryImages": [
       "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp"
-    ]
+    ],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-6991-craftedge-client-html-8996a94cd3f6",
@@ -135390,6 +135469,9 @@
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp",
     "galleryImages": [
       "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp"
-    ]
+    ],
+    "fullDescription": "",
+    "detailsFiltered": true,
+    "detailsFetchedAt": "2026-11-28"
   }
 ]
