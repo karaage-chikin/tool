@@ -148,7 +148,19 @@ function renderGallery(index=0){
 function openDetail(id){
  const p=packs.find(x=>x.id===id);if(!p)return;modalReturnFocus=document.activeElement;currentModalId=id;
  $("modalCategory").textContent=p.category;$("modalTitle").textContent=p.title;
- const meta=[["作者",p.author||"不明"],["対応バージョン",p.compatibility||p.versions||"不明"],["配布元",p.source||"不明"],["公開日",p.publishedAt||p.createdAt],["最終更新日",p.sourceUpdatedAt||p.updatedAt],["ダウンロード数",p.downloads],["ファイルサイズ",p.fileSize],["ライセンス",p.license],["必要条件",p.requirements],["対応言語",Array.isArray(p.languages)?p.languages.join("、"):p.languages],["タグ",(p.tags||[]).join("、")]].filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="");const sections=[["説明",p.fullDescription||p.description],["主な特徴",p.features],["導入方法",p.installationSteps],["更新履歴",p.changelog],["注意事項",p.notes]].filter(x=>x[1]);$("modalBody").innerHTML='<div class="detail-meta">'+meta.map(x=>'<div><b>'+esc(x[0])+'</b><span>'+esc(Array.isArray(x[1])?x[1].join("、"):x[1])+'</span></div>').join("")+'</div>'+sections.map(x=>'<section class="detail-section"><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></section>').join("")+(p.sourceUrl?'<section class="detail-section"><h3>掲載情報について</h3><p>この図鑑に取得できた情報を掲載しています。未取得・未公表の項目は表示していません。内容の確認日：'+esc(p.detailsFetchedAt||"未記録")+'</p></section>':"");
+ const meta=[
+  ["作者",p.author||"不明"],
+  ["対応バージョン",p.compatibility||p.versions||"不明"],
+  ["配布元",p.source||"不明"],
+  ["公開日",p.publishedAt||(p.createdAt?formatDateJst(p.createdAt):"不明")],
+  ["最終更新日",p.sourceUpdatedAt||p.updatedAt||(p.createdAt?formatDateJst(p.createdAt):"不明")],
+  ["ダウンロード数",p.downloads??"不明"],
+  ["ファイルサイズ",p.fileSize||"不明"],
+  ["ライセンス",p.license||"不明"],
+  ["必要条件",p.requirements||"不明"],
+  ["対応言語",Array.isArray(p.languages)?(p.languages.join("、")||"不明"):(p.languages||"不明")],
+  ["タグ",Array.isArray(p.tags)?(p.tags.join("、")||"不明"):(p.tags||"不明")]
+];const sections=[["説明",p.fullDescription||p.description],["主な特徴",p.features],["導入方法",p.installationSteps],["更新履歴",p.changelog],["注意事項",p.notes]].filter(x=>x[1]);$("modalBody").innerHTML='<div class="detail-meta">'+meta.map(x=>'<div><b>'+esc(x[0])+'</b><span>'+esc(Array.isArray(x[1])?x[1].join("、"):x[1])+'</span></div>').join("")+'</div>'+sections.map(x=>'<section class="detail-section"><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></section>').join("")+(p.sourceUrl?'<section class="detail-section"><h3>掲載情報について</h3><p>この図鑑に取得できた情報を掲載しています。未取得・未公表の項目は表示していません。内容の確認日：'+esc(p.detailsFetchedAt||"未記録")+'</p></section>':"");
  currentGalleryImages=[...new Set([p.thumbnailUrl,...(Array.isArray(p.galleryImages)?p.galleryImages:[])].map(safeImageUrl).filter(Boolean))].slice(0,20);
  renderGallery(0);
  $("sourceLink").href=safeImageUrl(p.sourceUrl)||"#";$("sourceLink").classList.toggle("hidden",!safeImageUrl(p.sourceUrl));
@@ -176,7 +188,7 @@ function toggleFav(id){
   if(button){const active=f.has(id);button.classList.toggle("on",active);button.setAttribute("aria-pressed",String(active));button.textContent=active?"★":"☆";}
  }
  if(currentModalId===id)$("modalFav").textContent=f.has(id)?"★ お気に入り済み":"☆ お気に入り";
- if(!favoriteStorageAvailable)catalogueNotice("このブラウザではお気に入りを保存できません。ページを閉じると消える場合があります。","warning");
+ if(!favoriteStorageAvailable)catalogueNotice("このブラウザではお気に入りを保存できません。ページを閉じると消える場合があります。","warning",false);
 }
 function clearEditor(){
  ["editTitle","editAuthor","editVersion","editUrl","editThumbnail","editGallery","editDownloadUrl","editDescription","editPermissionUrl","editPermissionNote","editImagePermissionUrl"].forEach(id=>$(id).value="");
@@ -263,11 +275,11 @@ function mergeLivePacks(live){
  }
  return [...byUrl.values()];
 }
-function catalogueNotice(message,kind="warning"){
+function catalogueNotice(message,kind="warning",retry=true){
  let el=$("catalogueNotice");
  if(!el){el=document.createElement("div");el.id="catalogueNotice";el.className="catalogue-notice";$("grid").before(el);}
  el.replaceChildren(document.createTextNode(message));
- if(message){const button=document.createElement("button");button.type="button";button.className="btn small";button.textContent="再試行";button.addEventListener("click",()=>load());el.append(document.createTextNode(" "),button);}
+ if(message&&retry){const button=document.createElement("button");button.type="button";button.className="btn small";button.textContent="再試行";button.addEventListener("click",()=>load());el.append(document.createTextNode(" "),button);}
  el.dataset.kind=kind;el.hidden=!message;
 }
 async function load(){
