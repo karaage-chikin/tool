@@ -7,10 +7,10 @@ function cors(origin) {
   return {
     "Access-Control-Allow-Origin": ORIGIN,
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, If-None-Match",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin",
-    "Access-Control-Expose-Headers": "Content-Disposition",
+    "Access-Control-Expose-Headers": "Content-Disposition, ETag",
     "X-Content-Type-Options": "nosniff"
   };
 }
@@ -76,12 +76,14 @@ function validatePack(input) {
   const isHttps=value=>{try{const u=new URL(value);return u.protocol==="https:"&&!!u.hostname.includes(".");}catch{return false;}};
   if(!isHttps(url))return "配布元URLはhttps://から始まるURLにしてください。";
   if(String(input.author||"").length>120||String(input.category||"").length>60||String(input.compatibility||"").length>120)return "入力が長すぎます。";
+  if(!PACK_CATEGORIES.includes(String(input.category||"その他").trim()))return "ジャンルを一覧から選択してください。";
+  if(!isSafePublicDownloadUrl(url))return "配布元URLのホスト名が安全ではありません。";
   const thumb=String(input.thumbnailUrl||"").trim();
-  if(thumb&&!isHttps(thumb))return "サムネイル画像URLはhttps://から始まるURLにしてください。";
+  if(thumb&&!isSafePublicDownloadUrl(thumb))return "サムネイル画像URLが安全ではありません。";
   const gallery=Array.isArray(input.galleryImages)?input.galleryImages:[];
-  if(gallery.length>20||gallery.some(x=>typeof x!=="string"||x.length>2000||!isHttps(x.trim())))return "ギャラリー画像はhttps://のURLを20件以内で入力してください。";
+  if(gallery.length>20||gallery.some(x=>typeof x!=="string"||x.length>2000||!isSafePublicDownloadUrl(x.trim())))return "ギャラリー画像は安全なHTTPS URLを20件以内で入力してください。";
   const download=String(input.directDownloadUrl||"").trim();
-  if(download&&!isHttps(download))return "直接ダウンロードURLはhttps://から始まるURLにしてください。";
+  if(download&&!isSafePublicDownloadUrl(download))return "直接ダウンロードURLのホスト名が安全ではありません。";
   if(input.directDownloadAllowed===true&&!download)return "直接ダウンロードを許可する場合はファイルURLを入力してください。";
   const permission=String(input.permissionUrl||"").trim();
   if(input.directDownloadAllowed===true&&!isHttps(permission))return "再配布許可の根拠URLを入力してください。";
@@ -191,6 +193,7 @@ function extractPageImages(html) {
     catch{return "";}
   }).filter(Boolean))].slice(0,20);
 }
+const IMAGE_SOURCE_HOSTS=["mcpedl.com","curseforge.com","planetminecraft.com","modbay.org","github.com"];
 async function enrichMcpedlImages(env, offset=0, limit=20) {
   const rows=await env.DB.prepare("SELECT id,source_url FROM resource_packs WHERE thumbnail_url='' OR thumbnail_url IS NULL OR gallery_json='[]' OR gallery_json IS NULL ORDER BY id LIMIT ? OFFSET ?").bind(limit,offset).all();
   const targets=rows.results||[];let updated=0,failed=0,found=0;
@@ -199,7 +202,8 @@ async function enrichMcpedlImages(env, offset=0, limit=20) {
     const results=await Promise.all(batch.map(async row=>{
       try{
         const u=new URL(row.source_url);
-        if(u.protocol!=="https:"||u.hostname!=="mcpedl.com")return {id:row.id,images:[]};
+        const host=u.hostname.toLowerCase();
+        if(u.protocol!=="https:"||!IMAGE_SOURCE_HOSTS.some(base=>host===base||host.endsWith("."+base)))return {id:row.id,images:[]};
         const response=await fetch(u.href,{headers:{"User-Agent":"Mozilla/5.0 (compatible; ResourcePackImageIndexer/1.0)","Accept":"text/html,application/xhtml+xml"},signal:AbortSignal.timeout(12000)});
         if(!response.ok)return {id:row.id,images:[]};
         const html=await response.text();
@@ -207,16 +211,18 @@ async function enrichMcpedlImages(env, offset=0, limit=20) {
         return {id:row.id,images:extractPageImages(html)};
       }catch{return {id:row.id,images:[]};}
     }));
+    const writes=[];
     for(const item of results){
       if(!item.images.length){failed++;continue;}
       const prior=await env.DB.prepare("SELECT thumbnail_url,gallery_json FROM resource_packs WHERE id=?").bind(item.id).first();
       let existing=[];try{existing=JSON.parse(prior?.gallery_json||"[]");}catch{}
       const images=[...new Set([...(existing||[]),...item.images])].slice(0,20);
       const thumb=prior?.thumbnail_url||images[0];
-      await env.DB.prepare("UPDATE resource_packs SET thumbnail_url=?,gallery_json=?,updated_at=? WHERE id=?")
-        .bind(thumb,JSON.stringify(images),Date.now(),item.id).run();
+      writes.push(env.DB.prepare("UPDATE resource_packs SET thumbnail_url=?,gallery_json=?,updated_at=? WHERE id=?")
+        .bind(thumb,JSON.stringify(images),Date.now(),item.id));
       updated++;found+=images.length;
     }
+    if(writes.length)await env.DB.batch(writes);
   }
   return {offset,scanned:targets.length,updated,imagesFound:found,withoutImages:failed};
 }
@@ -470,10 +476,13 @@ export default {
     }
     if (request.method === "GET" && url.pathname === "/api/packs") {
       try {
+        const meta=await env.DB.prepare("SELECT COUNT(*) AS count,COALESCE(MAX(updated_at),0) AS updated FROM resource_packs").first();
+        const etag='"packs-'+Number(meta?.count||0)+'-'+Number(meta?.updated||0)+'"';
+        if(request.headers.get("If-None-Match")===etag)return new Response(null,{status:304,headers:{...cors(origin),ETag:etag,"Cache-Control":"no-store"}});
         const result = await env.DB.prepare(
           "SELECT id,title,author,category,description,source_url,compatibility,source,created_at,thumbnail_url,gallery_json,direct_download_url,direct_download_allowed FROM resource_packs ORDER BY created_at DESC, title COLLATE NOCASE"
         ).all();
-        return reply({ packs: (result.results || []).map(normalize) }, 200, origin);
+        return reply({ packs: (result.results || []).map(normalize) }, 200, origin, {ETag:etag});
       } catch (error) {
         console.error("Pack listing failed", error);
         return reply({ error: "一覧を読み込めませんでした。" }, 503, origin);
@@ -541,7 +550,7 @@ export default {
       if (request.method === "GET" && url.pathname === "/api/admin/session") return reply({ ok: true }, 200, origin);
       if (request.method === "GET" && url.pathname === "/api/admin/monitor/overview") {
         await ensureAdminLogTables(env);
-        const packs=await env.DB.prepare("SELECT COUNT(*) AS count, COALESCE(SUM(LENGTH(title)+LENGTH(author)+LENGTH(description)+LENGTH(source_url)+LENGTH(thumbnail_url)+LENGTH(gallery_json)),0) AS approx_bytes FROM resource_packs").first();
+        const packs=await env.DB.prepare("SELECT COUNT(*) AS count, COALESCE(SUM(COALESCE(LENGTH(title),0)+COALESCE(LENGTH(author),0)+COALESCE(LENGTH(description),0)+COALESCE(LENGTH(source_url),0)+COALESCE(LENGTH(thumbnail_url),0)+COALESCE(LENGTH(gallery_json),0)),0) AS approx_bytes FROM resource_packs").first();
         const candidates=await env.DB.prepare("SELECT COUNT(*) AS count FROM resource_pack_candidates").first();
         const logs=await env.DB.prepare("SELECT COUNT(*) AS count FROM resource_pack_admin_logs").first();
         const access=await env.DB.prepare("SELECT COALESCE(SUM(count),0) AS count FROM resource_pack_daily_access").first();
