@@ -163,7 +163,7 @@ async function loadOverview(seq){
  results.forEach((r,i)=>{if(r.status==="fulfilled")data[specs[i][0]]=r.value;else errors.push(specs[i][0]+": "+r.reason.message);});
  const d=data.overview||{},p=d.packs||{},c=d.candidates||{},ac=d.access||{};
  let html=cards([{label:"リソースパック（D1登録分）",value:number(p.count)},{label:"未承認候補",value:number(c.count)},{label:"累計アクセス",value:number(ac.count)},{label:"監査ログ",value:number(d.logs?.count)},{label:"パック情報の概算容量",value:formatBytes(p.approx_bytes)}]);
- html+=await expansionPanel();
+ html+='<section class="panel expansion-panel" id="expansionMount"><h2>図鑑拡張の進捗</h2><p class="muted">進捗情報を取得しています…（他の管理情報は先に表示します）</p></section>';
  html+='<section class="panel" id="liveScanMount"><h2>リアルタイム収集モニター</h2><p class="muted">収集ログを取得しています…</p></section>';
  html+='<div class="overview-grid">';
  html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
@@ -172,6 +172,7 @@ async function loadOverview(seq){
  html+='<section class="panel overview-panel"><h2>更新・画像処理の状態</h2>'+rows([{title:d.imageJob?.status||"未実行",body:d.imageJob?.result_json||"処理結果はまだありません。",meta:"開始: "+formatDate(d.imageJob?.started_at)+" / 完了: "+formatDate(d.imageJob?.finished_at)}])+'</section></div>';
  if(errors.length)html+='<p class="notice">一部のAPIに接続できませんでした。各欄の再読み込みを試してください。<br>'+esc(errors.join(" / "))+'</p>';
  $("pageContent").innerHTML=html;
+ expansionPanel().then(panel=>{const mount=$("expansionMount");if(mount)mount.outerHTML=panel;});
  liveScanPanel().then(panel=>{const mount=$("liveScanMount");if(mount)mount.outerHTML=panel;});
  status("最終確認: "+formatDate(Date.now()),errors.length?"error":"good");
 }
