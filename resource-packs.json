@@ -2612,9 +2612,9 @@
     "sourceUpdatedAt": "2026-11-28",
     "fullDescription": "Mysteriel Fantasy Visuals, the texture pack that transforms Minecraft Bedrock into a dark, mysterious fantasy world with cinematic lighting and enhanced real…",
     "detailsFiltered": false,
-    "publishedAt": "2025-11-25 08:39:31Z",
-    "updatedAt": "2026-11-01 12:02:00Z",
-    "detailsFetchedAt": "2026-11-27"
+    "publishedAt": "2025-11-25",
+    "updatedAt": "2026-11-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "seed-102",
@@ -9261,7 +9261,7 @@
   {
     "id": "mcpedl-newb-x-manyzz",
     "title": "Newb X Manyzz",
-    "author": "",
+    "author": "Naresh",
     "category": "その他",
     "description": "Minecraft Bedrock向けリソースパック。詳しい説明・対応バージョンは取得できた情報を掲載します。",
     "sourceUrl": "https://mcpedl.com/newb-x-manyzz/",
@@ -9282,11 +9282,11 @@
       "https://cdn.mcpedl.com/web/ow_logo.png"
     ],
     "imagesFetchedAt": "2026-11-27",
-    "fullDescription": "Newb X Manyzz [Remake] v9 Changelog Now supports Minecraft v26.60 and newer. Now Newb X Manyzz doesn't have separated pack *only multiplatform pack (Android, IOS, Windows) More vivid colors. Sunrise and sunset skies now glow in rich purple and pink instead of the old pale mint and orange. Smoother sunrise and sunset. The sky now changes color more gently as the day starts and ends. Rainbows now appear properly again, including when you&rsquo;re underwater.",
+    "fullDescription": "Upgrade Minecraft visuals: vibrant colors, realistic lighting, immersive effects",
     "detailsFiltered": false,
-    "publishedAt": "2026-03-04 10:41:10Z",
-    "updatedAt": "2026-11-22 12:59:24Z",
-    "detailsFetchedAt": "2026-11-27"
+    "publishedAt": "2026-03-04",
+    "updatedAt": "2026-11-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-baku-x-rtx-shader",
@@ -91248,8 +91248,8 @@
     "fullDescription": "This texture pack help you to loot the chest and drop items and manage inventory",
     "detailsFiltered": false,
     "publishedAt": "2026-03-23",
-    "updatedAt": "2026-08-01",
-    "detailsFetchedAt": "2026-11-27"
+    "updatedAt": "2026-11-28",
+    "detailsFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-megaman-4d-skin-80788355a8ff",
@@ -136215,6 +136215,9 @@
     "thumbnailUrl": "https://modbay.org/uploads/posts/2025-11/ef2c2fef25_foot-prints-ressource-pack-achievement-friendly-cover.webp",
     "galleryImages": [
       "https://modbay.org/uploads/posts/2025-11/ef2c2fef25_foot-prints-ressource-pack-achievement-friendly-cover.webp"
-    ]
+    ],
+    "fullDescription": "ShadowGem100k 28 Nov 2025 upd: 10 Dec 2025 Textures Copy link Foot Prints ressource pack \"Achievement Friendly\" Go to files Add immersion to your world without changing game mechanics.Foot Printer is a lightweight Resource Pack that adds realistic footprint particles to your Minecraft experience. Because this is strictly a Resource Pack, it is purely visual, client-side, and does not require any Behavior Packs or complex installation.Perfect for players who want to enhance their game's atmosphere while keeping their survival achievements enabled or playing on servers.Features Visual Only: Adds footprint particles as you walk, run, or sneak. Achievement Friendly: Since this is a resource pack, you can use it in your survival worlds without disabling achievements. High Performance: Uses optimized particles that disappear quickly to ensure no FPS drop. Global Compatibility: Works on servers and Realms (visuals only appear for you if applied as a Global Resource). No Experiments Needed: No need to turn on \"Holiday Creator Features\" or \"Beta APIs.\" Just plug and play! Screenshots See where you've been. How It WorksThis pack modifies the player entity client-side to emit custom particles at the feet when moving. Because it uses particle emitters rather than spawning physical entities, it is incredibly smooth and doesn't clutter the world save file.Installation Download the .mcpack file below. Open the file to import it into Minecraft. Go to Settings > Global Resources and activate Foot Printer. (Optional) You can also apply it to specific worlds in the \"Resource Packs\" tab of the world settings. No Experimental Toggles Required! Terms of Use You MAY: Use this pack in your videos or streams (please link back to this page!). You MAY: Edit the textures for personal use. You MAY NOT: Distribute this pack on other websites without my permission. Credits Creator: [Your Username/ShadowGamer12k] Website: https://shadowgamer12k.github.io/ Updated on December 10, 2025 Updated to work with Minecraft 1.21.130 Download links Download HereMore add-ons Here Supported versions 1.21.100 1.21.90 1.21.80 1.21.70 1.21.60 1.21.50 1.21.40 1.21.30 1.21.20 1.21.10 1.21.0 1.20.80 Tags Shaders 3 401",
+    "detailsFiltered": false,
+    "detailsFetchedAt": "2026-11-28"
   }
 ]

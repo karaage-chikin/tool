@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-28T13:07:34.150Z",
+  "updatedAt": "2026-11-28T13:08:01.845Z",
   "status": "running",
   "runStartedAt": "2026-11-28T12:57:04.969Z",
   "runFinishedAt": null,
   "baselineCount": 4671,
   "currentCount": 4671,
-  "stage": "追加サイト収集完了・説明情報取得中",
+  "stage": "説明・メタデータ取得完了・画像情報取得中",
   "history": [
     {
       "startedAt": "2026-11-28T11:37:41.791Z",
