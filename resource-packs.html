@@ -42,8 +42,8 @@ footer{text-align:center;padding:22px;color:#6c7086;font-size:.75rem;border-top:
 <div id="editorArea" class="hidden">
 <div class="admin" style="margin:14px 0;background:#191927">
 <h2>自動発見した追加候補</h2>
-<p class="note">MCPEDLの「Texture Packs」カテゴリから新着を収集します。公開前に配布元ページを開き、Bedrock対応・内容・安全性を確認してください。</p>
-<div class="admin-actions"><button id="discoverNow" class="btn">今すぐ候補を探す</button><button id="refreshCandidates" class="btn">候補を再読み込み</button><span id="candidateStatus" class="status"></span></div>
+<p class="note">このボタンはMCPEDLの新着候補を即時検索します。定期拡張処理ではMCPEDL REST API・CurseForge Bedrock・ModBay・Planet Minecraftも巡回し、配布元ページでBedrock対応と更新日を確認してから候補化します。</p>
+<div class="admin-actions"><button id="discoverNow" class="btn">今すぐMCPEDL候補を探す</button><button id="refreshCandidates" class="btn">候補を再読み込み</button><span id="candidateStatus" class="status"></span></div>
 <div id="candidateList" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:12px"></div>
 </div>
 <p class="status ok">管理者としてログイン中</p>
@@ -75,5 +75,5 @@ footer{text-align:center;padding:22px;color:#6c7086;font-size:.75rem;border-top:
 </main>
 <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalBody"><div class="modal-card" tabindex="-1"><div class="modal-head"><div><span id="modalCategory" class="category"></span><h2 id="modalTitle"></h2></div><button id="modalClose" class="close" aria-label="閉じる">×</button></div><div id="modalGallery"></div><div id="modalBody"></div><div class="modal-actions"><a id="downloadLink" class="btn primary hidden" href="#" rel="noopener noreferrer">サイト内からダウンロード ↓</a><a id="sourceLink" class="btn" href="#" target="_blank" rel="noopener noreferrer">配布元でダウンロード ↗</a><a id="translateDescription" class="btn" href="#" target="_blank" rel="noopener noreferrer">説明を翻訳 ↗</a><button id="modalFav" class="btn">☆ お気に入り</button></div></div></div>
 <footer>Minecraft制作ツール · Bedrock resource pack directory</footer>
-<script src="resource-packs.js?v=3.6.0" defer></script>
+<script src="resource-packs.js?v=3.7.0" defer></script>
 </body></html>
