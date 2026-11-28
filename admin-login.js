@@ -10,7 +10,7 @@ form.addEventListener("submit",async event=>{
   let data;try{data=await response.json();}catch{throw new Error("サーバーから正しい応答がありません。");}
   if(!response.ok)throw new Error(data.error||"ログインできませんでした。");
   if(typeof data.token!=="string"||!/^[A-Za-z0-9_.-]{20,2048}$/.test(data.token))throw new Error("認証応答が不正です。");
-  localStorage.setItem("resourcePackAdminToken",data.token);if(data.expiresIn)localStorage.setItem("resourcePackAdminTokenExpiresAt",String(Date.now()+Number(data.expiresIn)));location.href="admin.html";
+  sessionStorage.setItem("resourcePackAdminToken",data.token);if(data.expiresIn)sessionStorage.setItem("resourcePackAdminTokenExpiresAt",String(Date.now()+Number(data.expiresIn)));location.href="admin.html";
  }catch(error){status.className="login-status error";status.textContent=error.name==="AbortError"?"通信がタイムアウトしました。":"ログインできませんでした："+error.message;}
  finally{clearTimeout(timer);button.disabled=false;}
 });
