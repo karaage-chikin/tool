@@ -1,11 +1,22 @@
 (()=>{"use strict";
 const API=document.querySelector('meta[name="resource-packs-api"]')?.content;
 if(!API)throw new Error("API endpoint is not configured");
-const TOKEN_KEY="resourcePackAdminToken";
-const storedToken=sessionStorage.getItem(TOKEN_KEY)||"";
-const storedExpiry=Number(sessionStorage.getItem("resourcePackAdminTokenExpiresAt")||0);
-const token=(!storedExpiry||storedExpiry>Date.now())&&/^[A-Za-z0-9_.-]{20,2048}$/.test(storedToken)?storedToken:"";
-if(!token){sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");}
+const TOKEN_KEY="resourcePackAdminToken",TOKEN_EXPIRY_KEY="resourcePackAdminTokenExpiresAt";
+function clearSavedAdminToken(){
+ try{localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+ try{sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+}
+function getSavedAdminToken(){
+ try{
+  const value=localStorage.getItem(TOKEN_KEY)||sessionStorage.getItem(TOKEN_KEY)||"";
+  let expiry=Number(localStorage.getItem(TOKEN_EXPIRY_KEY)||sessionStorage.getItem(TOKEN_EXPIRY_KEY)||0);
+  if(!/^[A-Za-z0-9_.-]{20,2048}$/.test(value)||(expiry&&expiry<=Date.now())){clearSavedAdminToken();return "";}
+  if(!expiry)expiry=Date.now()+30*24*60*60*1000;
+  try{localStorage.setItem(TOKEN_KEY,value);localStorage.setItem(TOKEN_EXPIRY_KEY,String(expiry));sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+  return value;
+ }catch{return sessionStorage.getItem(TOKEN_KEY)||"";}
+}
+const token=getSavedAdminToken();
 const $=id=>document.getElementById(id);
 const PAGE_SIZE=50,MAX_DATE=8640000000000000;
 const ESC_MAP={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};
@@ -180,10 +191,10 @@ async function init(){
  if(!token){location.href="index.html";return;}
  try{await api("/api/admin/session");}
  catch(error){
-  if(error.status===401){sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");location.href="index.html";return;}
+  if(error.status===401){clearSavedAdminToken();location.href="index.html";return;}
   status(error.message,"error");$("pageContent").innerHTML=failurePanel(error);return;
  }
- $("logoutBtn")?.addEventListener("click",()=>{sessionStorage.removeItem(TOKEN_KEY);location.href="index.html";});
+ $("logoutBtn")?.addEventListener("click",()=>{clearSavedAdminToken();location.href="index.html";});
  $("refreshBtn")?.addEventListener("click",()=>renderPage());
  document.querySelectorAll("[data-nav]").forEach(a=>a.addEventListener("click",e=>{
   e.preventDefault();const next=a.dataset.nav;
