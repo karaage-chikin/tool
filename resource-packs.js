@@ -147,7 +147,7 @@ function openDetail(id){
  $("downloadLink").href=API+"/api/download/"+encodeURIComponent(p.id);
  $("downloadLink").classList.toggle("hidden",!(p.directDownloadAllowed&&p.directDownloadUrl));
  $("downloadLink").textContent="サイト内からダウンロード ↓";
- const isFav=favorites().has(id);$("modalFav").textContent=isFav?"★ お気に入り済み":"☆ お気に入り";
+ const isFav=favorites().has(id);$("modalFav").setAttribute("aria-pressed",String(isFav));$("modalFav").textContent=isFav?"★ お気に入り済み":"☆ お気に入り";
  const description=p.fullDescription||p.description||"";
  const isJapanese=JAPANESE_RE.test(description),shortDescription=description.length<=1500;
  $("translateDescription").href="https://translate.google.com/?sl=auto&tl="+(isJapanese?"en":"ja")+(shortDescription?"&text="+encodeURIComponent(description):"")+"&op=translate";
@@ -308,7 +308,7 @@ $("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=
  if(e.key==="Escape"){box.classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;return;}
  if((e.key==="ArrowDown"||e.key==="ArrowUp")&&!box.classList.contains("hidden")&&options.length){e.preventDefault();const step=e.key==="ArrowDown"?1:-1;suggestionActiveIndex=(suggestionActiveIndex+step+options.length)%options.length;options.forEach((option,i)=>option.setAttribute("aria-selected",String(i===suggestionActiveIndex)));$("search").setAttribute("aria-activedescendant","search-option-"+suggestionActiveIndex);return;}
  if(e.key==="Enter"&&suggestionActiveIndex>=0&&options[suggestionActiveIndex]){e.preventDefault();$("search").value=options[suggestionActiveIndex].dataset.suggest;box.classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;currentPage=1;render();}
-});$("searchSuggestions").addEventListener("click",e=>{const b=e.target.closest("[data-suggest]");if(!b)return;$("search").value=b.dataset.suggest;$("searchSuggestions").classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;currentPage=1;render();$("search").focus();});$("searchSuggestions").addEventListener("click",e=>{if(e.target.closest("[data-translate-search]"))translateSearch();});document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("searchSuggestions").classList.add("hidden");});$("sort").addEventListener("change",()=>{currentPage=1;render();});
+});$("searchSuggestions").addEventListener("click",e=>{const b=e.target.closest("[data-suggest]");if(!b)return;$("search").value=b.dataset.suggest;$("searchSuggestions").classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;currentPage=1;render();$("search").focus();});$("searchSuggestions").addEventListener("click",e=>{if(e.target.closest("[data-translate-search]"))translateSearch();});document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap")){$("searchSuggestions").classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;}});$("sort").addEventListener("change",()=>{currentPage=1;render();});
  window.addEventListener("popstate",()=>{const p=new URLSearchParams(location.search);$("search").value=p.get("q")||"";activeCategory=categories.includes(p.get("category"))?p.get("category"):"すべて";$("sort").value=["new","az","fav","updated","downloads","author"].includes(p.get("sort"))?p.get("sort"):"new";favoritesOnly=p.get("fav")==="1";currentPage=Math.max(1,Number.parseInt(p.get("page")||"1",10)||1);$("favoritesOnly").classList.toggle("primary",favoritesOnly);categoryNav();render();});
 $("loadMorePacks").addEventListener("click",()=>{currentPage++;render();});if($("prevPacks"))$("prevPacks").addEventListener("click",()=>{currentPage=Math.max(1,currentPage-1);render();});
 $("favoritesOnly").addEventListener("click",()=>{favoritesOnly=!favoritesOnly;currentPage=1;$("favoritesOnly").classList.toggle("primary",favoritesOnly);render();});
@@ -397,9 +397,10 @@ document.addEventListener("keydown",e=>{
   const focusable=[...modal.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el=>!el.closest(".hidden")&&el.getClientRects().length);
   if(!focusable.length)return;
   const first=focusable[0],last=focusable[focusable.length-1];
-  if(e.shiftKey&&(document.activeElement===first||!modal.contains(document.activeElement))){e.preventDefault();last.focus();}
+  if(!modal.contains(document.activeElement)){e.preventDefault();(e.shiftKey?last:first).focus();}
+  else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
  }
 });
-load();
+load().catch(error=>{console.error("Catalogue initialization failed",error);$("grid").removeAttribute("aria-busy");$("countStat").textContent="件数取得不可";$("resultCount").textContent="図鑑を読み込めませんでした";catalogueNotice("図鑑の初期化に失敗しました。ページを再読み込みしてください。","error");});
 })();
