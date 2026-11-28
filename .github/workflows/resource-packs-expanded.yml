@@ -54,13 +54,18 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          node scripts/resource-pack-progress.mjs start
-          git add resource-packs.json resource-pack-progress.json resource-pack-primary-stats.json resource-pack-collector-stats.json
-          git commit -m "Record resource pack expansion start"
           for attempt in 1 2 3; do
+            node scripts/resource-pack-progress.mjs start
+            git add resource-packs.json resource-pack-progress.json resource-pack-primary-stats.json resource-pack-collector-stats.json
+            git commit -m "Record resource pack expansion start"
             git fetch origin main
-            git rebase origin/main
-            if git push; then exit 0; fi
+            if git rebase origin/main; then
+              if git push; then exit 0; fi
+            else
+              echo "Progress file changed during startup; restarting from latest main."
+              git rebase --abort || true
+              git reset --hard origin/main
+            fi
             sleep $((attempt * 2))
           done
           echo "Could not push progress after rebasing onto latest main."
