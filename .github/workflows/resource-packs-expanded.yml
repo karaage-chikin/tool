@@ -51,7 +51,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           node scripts/resource-pack-progress.mjs start
-          git add resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json
           git commit -m "Record resource pack expansion start"
           for attempt in 1 2 3; do
             git fetch origin main
@@ -65,7 +65,7 @@ jobs:
         run: |
           node scripts/resource-pack-sync.mjs
           node scripts/resource-pack-progress.mjs stage "MCPEDL収集完了・追加サイト収集中"
-          git add resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json
           git commit -m "Update resource pack expansion progress"
           for attempt in 1 2 3; do
             git fetch origin main
@@ -79,7 +79,7 @@ jobs:
         run: |
           node scripts/resource-pack-additional-source.mjs
           node scripts/resource-pack-progress.mjs stage "追加サイト収集完了・説明情報取得中"
-          git add resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json
           git commit -m "Update resource pack expansion progress"
           for attempt in 1 2 3; do
             git fetch origin main
@@ -93,7 +93,7 @@ jobs:
         run: |
           node scripts/resource-pack-detail-enrichment.mjs
           node scripts/resource-pack-progress.mjs stage "説明・メタデータ取得完了・画像情報取得中"
-          git add resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json
           git commit -m "Update resource pack expansion progress"
           for attempt in 1 2 3; do
             git fetch origin main
@@ -107,7 +107,7 @@ jobs:
         run: |
           node scripts/resource-pack-image-enrichment.mjs
           node scripts/resource-pack-progress.mjs stage "画像情報取得完了・図鑑更新中"
-          git add resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json
           git commit -m "Update resource pack expansion progress"
           for attempt in 1 2 3; do
             git fetch origin main
