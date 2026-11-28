@@ -52,7 +52,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           node scripts/resource-pack-progress.mjs start
-          git add resource-packs.json resource-pack-progress.json
+          git add resource-packs.json resource-pack-progress.json resource-pack-primary-stats.json resource-pack-collector-stats.json
           git commit -m "Record resource pack expansion start"
           for attempt in 1 2 3; do
             git fetch origin main
