@@ -111,7 +111,7 @@ function makeRecord(provider,canonical,title,author,description,date,image){
 async function addExternal(provider,href,title,card$,card,base){
  const st=stats[provider];st.scanned++;
  let u;try{u=new URL(href,base);}catch{st.errors++;return false;}
- if(u.protocol!=="https:"||u.hostname.toLowerCase().replace(/^www\\./,"")!==new URL(base).hostname.toLowerCase().replace(/^www\\./,""))return false;
+ if(u.protocol!=="https:"||u.hostname.toLowerCase().replace(/^www\./,"")!==new URL(base).hostname.toLowerCase().replace(/^www\./,""))return false;
  const canonical=normalizeSourceUrl(u.href);if(!canonical)return false;
  if(knownUrls.has(canonical)){st.duplicates++;return false;}
  const tk=titleKey(title);if(!tk||knownTitles.has(tk)||isRestricted(title,canonical)){st.duplicates++;return false;}
