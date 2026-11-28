@@ -48,7 +48,8 @@ function cardDate($,card){
    const card=a.closest("article, li, .post, .entry, .card, .type-post").first();
    const title=clean(a.text()||a.attr("title")||a.find("img").attr("alt"));
    if(!title||title.length<4||title.length>160||/^\d+(?:\.\d+)?$/.test(title)||/^image$/i.test(title)||isRestricted(title,key))continue;
-   liveLog("candidate_found","MCPEDL",{title,sourceUrl:key});\n   const modified=card.length?cardDate($,card):null;
+   liveLog("candidate_found","MCPEDL",{title,sourceUrl:key});
+   const modified=card.length?cardDate($,card):null;
    if(modified&&modified<cutoff){reachedOld=true;break;}
    const existing=known.get(key);
    if(existing){
@@ -91,5 +92,6 @@ function cardDate($,card){
  fs.writeFileSync(path,JSON.stringify(retained,null,2)+"\n");
  const summary={total:retained.length,added,updated,removed,scanned,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit,directDownloadable:retained.filter(p=>p.directDownloadAllowed&&p.directDownloadUrl).length};
  fs.writeFileSync("resource-pack-primary-stats.json",JSON.stringify(summary,null,2)+"\n");
- await liveQueue;\n console.log(JSON.stringify(summary,null,2));
+ await liveQueue;
+ console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
