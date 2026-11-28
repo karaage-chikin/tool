@@ -73,22 +73,22 @@ async function expansionPanel(){
  else if(run?.status==="completed"&&run?.conclusion==="success"){state="完了";stateClass="done";}
  else if(run?.status==="completed"){state="処理終了："+(run.conclusion||"結果不明");stateClass="error";}
  else if(run?.status==="not_started"){state="未実行";stateClass="muted";}
- const countText=count===null?"件数取得不可":count.toLocaleString("ja-JP")+" / 10,000件";
- const progressText=count===null?catalogueError:"達成率 "+pct.toFixed(1)+"%";
+ const countText=count===null?"件数取得不可":count>=10000?"10,000件突破・現在 "+count.toLocaleString("ja-JP")+" 件":count.toLocaleString("ja-JP")+" / 10,000件（最初の目標）";
+ const progressText=count===null?catalogueError:count>=10000?"最初の目標を達成・以後も収集継続":"最初の目標まで "+pct.toFixed(1)+"%";
  const history=Array.isArray(measurement?.history)?measurement.history.slice(-5):[];
  const completedRuns=history.filter(x=>Number(x.added)>0&&Number(x.durationMs)>0);
  const avgAddedPerRun=completedRuns.length?completedRuns.reduce((sum,x)=>sum+Number(x.added),0)/completedRuns.length:0;
- const cycleHours=6;
+ const cycleHours=1;
  const hoursRemaining=avgAddedPerRun>0&&remaining!==null?remaining/avgAddedPerRun*cycleHours:null;
  const etaDate=hoursRemaining===null?null:new Date(Date.now()+hoursRemaining*3600000);
  const durationLabel=hours=>hours<1?Math.max(1,Math.round(hours*60))+"分":hours<48?hours.toFixed(1)+"時間":(hours/24).toFixed(1)+"日";
- const etaText=count!==null&&count>=10000?"目標10,000件に到達しています":hoursRemaining!==null?"予想残り時間："+durationLabel(hoursRemaining)+"（直近"+completedRuns.length+"回の実績・6時間間隔を含む）":"予想残り時間：実績データを収集中（完了した拡張処理が"+(history.length<2?"まだ不足しています":"有効な追加件数を取得できていません")+"）";
+ const etaText=count!==null&&count>=10000?"10,000件は通過目標です。到達後も新規収集を継続します":hoursRemaining!==null?"10,000件到達までの予想："+durationLabel(hoursRemaining)+"（直近"+completedRuns.length+"回の実績・定期起動間隔を含む概算）":"10,000件到達予想：実績データを収集中（完了した拡張処理が"+(history.length<2?"まだ不足しています":"有効な追加件数を取得できていません")+"）";
  const currentDelta=measurement?.status==="running"?Math.max(0,Number(measurement.currentCount||0)-Number(measurement.baselineCount||0)):0;
  const currentElapsed=measurement?.runStartedAt?Math.max(0,(Date.now()-Date.parse(measurement.runStartedAt))/60000):0;
  const stageText=measurement?.stage?"現在の工程："+measurement.stage:"工程情報：未取得";
  const updatedText=measurement?.updatedAt?"進捗更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗更新：未計測";
  const etaDateText=etaDate&&!Number.isNaN(etaDate.getTime())?"予想到達日時："+formatDate(etaDate.getTime()):"";
- const speedText=avgAddedPerRun>0?"平均追加："+avgAddedPerRun.toFixed(1)+"件 / 実行（6時間ごと）":(currentDelta>0&&currentElapsed>0?"今回の追加："+currentDelta+"件 / "+currentElapsed.toFixed(0)+"分":"追加速度：計測中");
+ const speedText=avgAddedPerRun>0?"平均追加："+avgAddedPerRun.toFixed(1)+"件 / 実行（定期起動）":(currentDelta>0&&currentElapsed>0?"今回の追加："+currentDelta+"件 / "+currentElapsed.toFixed(0)+"分":"追加速度：計測中");
  return '<section class="panel expansion-panel"><h2>図鑑の拡張処理</h2><div class="progress-head"><strong>'+countText+'</strong><span class="job-state '+stateClass+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="図鑑の拡張進捗" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:count)+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">図鑑JSONの登録件数とGitHub Actionsの実行状態は別々に取得します。一方が失敗しても、もう一方の表示は維持します。D1の管理者登録分とは重複する場合があるため別集計です。</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(speedText)+'</p><p class="notice">'+esc(stageText)+'</p><p class="notice">'+esc(updatedText)+'</p>'+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">拡張処理の実行ログを開く ↗</a>':"")+'</section>';
 }
 function storageMeter(label,used,limit,detail,unlimited=false){
