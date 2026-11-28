@@ -8,11 +8,10 @@ function clearSavedAdminToken(){
 }
 function getSavedAdminToken(){
  try{
-  const value=localStorage.getItem(TOKEN_KEY)||sessionStorage.getItem(TOKEN_KEY)||"";
-  let expiry=Number(localStorage.getItem(TOKEN_EXPIRY_KEY)||sessionStorage.getItem(TOKEN_EXPIRY_KEY)||0);
+  const value=sessionStorage.getItem(TOKEN_KEY)||"";
+  const expiry=Number(sessionStorage.getItem(TOKEN_EXPIRY_KEY)||0);
   if(!/^[A-Za-z0-9_.-]{20,2048}$/.test(value)||(expiry&&expiry<=Date.now())){clearSavedAdminToken();return "";}
-  if(!expiry)expiry=Date.now()+30*24*60*60*1000;
-  try{localStorage.setItem(TOKEN_KEY,value);localStorage.setItem(TOKEN_EXPIRY_KEY,String(expiry));sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+  if(!expiry||expiry<=Date.now()){clearSavedAdminToken();return "";}
   return value;
  }catch{return sessionStorage.getItem(TOKEN_KEY)||"";}
 }
