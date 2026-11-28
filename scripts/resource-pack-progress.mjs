@@ -13,7 +13,7 @@ let collectorStats={};
 try{collectorStats=JSON.parse(fs.readFileSync(statsFile,"utf8"));}catch{}
 const history=Array.isArray(state.history)?state.history:[];
 const stages=Array.isArray(state.stageHistory)?state.stageHistory:[];
-function write(){state.updatedAt=now;state.currentCount=count;fs.writeFileSync(file,JSON.stringify(state,null,2)+"\\n");console.log(JSON.stringify({action,stage:state.stage,count,status:state.status,updatedAt:now}));}
+function write(){state.updatedAt=now;state.currentCount=count;fs.writeFileSync(file,JSON.stringify(state,null,2)+"\n");console.log(JSON.stringify({action,stage:state.stage,count,status:state.status,updatedAt:now}));}
 
 if(action==="start"){
  state={schema:2,updatedAt:now,status:"running",runStartedAt:now,runFinishedAt:null,baselineCount:count,currentCount:count,stage:"収集ジョブを開始",stageHistory:[{at:now,stage:"収集ジョブを開始",count}],history};
