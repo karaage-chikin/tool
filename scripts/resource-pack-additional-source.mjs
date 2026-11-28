@@ -9,13 +9,13 @@ const cutoff=subtractCalendarYear();
 const knownUrls=new Set(packs.map(p=>normalizeSourceUrl(p.sourceUrl)).filter(Boolean));
 const knownTitles=new Set(packs.map(p=>titleKey(p.title)).filter(Boolean));
 const knownIds=new Set(packs.map(p=>p.id));
-const headers={"User-Agent":"Mozilla/5.0 (compatible; KaraageChikinBedrockPackDirectory/4.0; +https://karaage-chikin.github.io/tool/)","Accept":"text/html,application/xhtml+xml,application/json"};
+const headers={"User-Agent":"Mozilla/5.0 (compatible; KaraageChikinBedrockPackDirectory/4.1; +https://karaage-chikin.github.io/tool/)","Accept":"text/html,application/xhtml+xml,application/json"};
 const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000));
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||1000));
 const staleLimit=Math.max(10,Math.min(200,Number(process.env.ADDITIONAL_STALE_PAGE_LIMIT)||60));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
 function liveLog(type,provider,detail={}){const event={at:new Date().toISOString(),type,provider,...detail};console.log("[LIVE_SCAN] "+JSON.stringify(event));globalThis.__liveLogQueue=(globalThis.__liveLogQueue||Promise.resolve()).then(async()=>{const endpoint=process.env.RESOURCE_PACK_LIVE_LOG_URL,token=process.env.ACTIONS_ID_TOKEN;if(!endpoint||!token)return;try{await fetch(endpoint,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(event),signal:AbortSignal.timeout(8000)});}catch(error){console.warn("Live log delivery failed:",error?.message||error);}});}
-const stats={"MCPEDL REST API":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
+const stats={"MCPEDL REST API":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},GitHub:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function parseDate(value){
  if(!value)return null;
@@ -87,7 +87,7 @@ async function fetchText(url,accept="text/html,application/xhtml+xml"){
  let last;
  for(let attempt=0;attempt<4;attempt++){
   try{
-   const response=await fetch(url,{headers:{...headers,Accept:accept},signal:AbortSignal.timeout(25000),redirect:"follow"});
+   const requestHeaders={...headers,Accept:accept};try{if(new URL(url).hostname==="api.github.com"&&process.env.GITHUB_TOKEN)requestHeaders.Authorization="Bearer "+process.env.GITHUB_TOKEN;}catch{}\n   const response=await fetch(url,{headers:requestHeaders,signal:AbortSignal.timeout(25000),redirect:"follow"});
    if(response.ok){liveLog("page_loaded","",{url:response.url||url,status:response.status});return await response.text();}
    last=new Error("HTTP "+response.status+" at "+url);
    if(response.status!==429&&response.status<500)break;
@@ -192,6 +192,71 @@ async function scanMcpedlRest(){
  }
  return added;
 }
+
+async function scanGithubRepos(){
+ const provider="GitHub",st=stats[provider];let added=0;
+ const queries=["topic:minecraft-bedrock topic:resource-pack","topic:bedrock topic:texture-pack"];
+ const seenRepos=new Set();
+ for(const query of queries){
+  for(let pageNo=1;pageNo<=5&&added<maxNew;pageNo++){
+   const api="https://api.github.com/search/repositories?q="+encodeURIComponent(query)+"&sort=updated&order=desc&per_page=100&page="+pageNo;
+   liveLog("listing_scan",provider,{query,page:pageNo,url:api});
+   let data;
+   try{data=JSON.parse(await fetchText(api,"application/vnd.github+json"));}catch(error){st.errors++;console.warn("GitHub repository search failed:",error?.message||error);break;}
+   const repos=Array.isArray(data.items)?data.items:[];
+   if(!repos.length)break;
+   for(const repo of repos){
+    st.scanned++;
+    const full=String(repo.full_name||"").toLowerCase();
+    if(!full||seenRepos.has(full))continue;seenRepos.add(full);
+    const updated=parseDate(repo.pushed_at||repo.updated_at);
+    if(!updated){st.noDate++;continue;}
+    if(updated<cutoff){st.tooOld++;continue;}
+    const title=clean(repo.name||"").replace(/[-_]+/g," ").slice(0,160);
+    const summary=clean(repo.description||"").slice(0,1200);
+    const topics=Array.isArray(repo.topics)?repo.topics.join(" "):"";
+    if(!title||isRestricted(title,summary,topics,repo.html_url)){st.notBedrock++;continue;}
+    const evidence=(topics+" "+summary).toLowerCase();
+    if(!/(bedrock|mcpe|pocket edition)/.test(evidence)||!/(resource.?pack|texture.?pack|mcpack)/.test(evidence)){st.notBedrock++;continue;}
+    const repoUrl=String(repo.html_url||"");
+    if(normalizeSourceUrl(repoUrl)===""||knownUrls.has(normalizeSourceUrl(repoUrl))){st.duplicates++;continue;}
+    try{
+     const rootUrl="https://api.github.com/repos/"+repo.full_name+"/contents?ref="+encodeURIComponent(repo.default_branch||"main");
+     const root=JSON.parse(await fetchText(rootUrl,"application/vnd.github+json"));
+     if(!Array.isArray(root)){st.notBedrock++;continue;}
+     const manifestFile=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="manifest.json");
+     if(!manifestFile){st.notBedrock++;continue;}
+     const rawBase="https://raw.githubusercontent.com/"+repo.full_name+"/"+encodeURIComponent(repo.default_branch||"main")+"/";
+     const manifest=JSON.parse(await fetchText(rawBase+"manifest.json","application/json"));
+     const resourceModule=Array.isArray(manifest.modules)&&manifest.modules.some(m=>m?.type==="resources");
+     const headerName=clean(manifest.header?.name);
+     const headerDescription=clean(manifest.header?.description);
+     const finalTitle=(headerName||title).slice(0,160);
+     const description=(headerDescription||summary).slice(0,1200);
+     if(!resourceModule||isRestricted(finalTitle,description,topics,repoUrl)){st.notBedrock++;continue;}
+     const key=titleKey(finalTitle);
+     if(!key||knownTitles.has(key)){st.duplicates++;continue;}
+     const icon=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="pack_icon.png");
+     const image=icon?safeImage(rawBase+"pack_icon.png",repoUrl):"";
+     const record=makeRecord(provider,repoUrl,finalTitle,repo.owner?.login||"",description,updated,image);
+     if(knownIds.has(record.id)){st.duplicates++;continue;}
+     packs.push(record);knownUrls.add(normalizeSourceUrl(repoUrl));knownTitles.add(key);knownIds.add(record.id);
+     st.added++;added++;
+     liveLog("candidate_added",provider,{title:finalTitle,sourceUrl:repoUrl,hasImage:Boolean(image),updatedAt:updated.toISOString().slice(0,10)});
+     if(added>=maxNew)break;
+    }catch(error){
+     st.errors++;liveLog("candidate_skipped",provider,{title,reason:"GitHub manifest/metadata verification failed"});
+     console.log("GitHub repository skipped:",repo.full_name,error?.message||error);
+    }
+   }
+   liveLog("listing_result",provider,{query,page:pageNo,results:repos.length,totalAdded:added});
+   if(repos.length<100)break;
+   await wait(300);
+  }
+ }
+ return added;
+}
+
 async function scanHtmlSource(provider){
  let added=0,stale=0;
  for(let pageNo=1;pageNo<=maxPages&&added<maxNew;pageNo++){
@@ -228,7 +293,7 @@ async function scanHtmlSource(provider){
 function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\n");}
 (async()=>{
  const results={};
- for(const [name,scan] of [["MCPEDL REST API",scanMcpedlRest],["CurseForge",()=>scanHtmlSource("CurseForge")],["ModBay",()=>scanHtmlSource("ModBay")],["Planet Minecraft",()=>scanHtmlSource("Planet Minecraft")]]){
+ for(const [name,scan] of [["MCPEDL REST API",scanMcpedlRest],["GitHub",scanGithubRepos],["CurseForge",()=>scanHtmlSource("CurseForge")],["ModBay",()=>scanHtmlSource("ModBay")],["Planet Minecraft",()=>scanHtmlSource("Planet Minecraft")]]){
   try{results[name]=await scan();save();}
   catch(error){console.warn(name+" scan failed; keeping already collected records:",error?.message||error);stats[name].errors++;results[name]=0;save();}
  }
