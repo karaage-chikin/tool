@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-28T11:44:48.176Z",
+  "updatedAt": "2026-11-28T11:44:50.284Z",
   "status": "running",
   "runStartedAt": "2026-11-28T11:37:41.791Z",
   "runFinishedAt": null,
   "baselineCount": 4671,
   "currentCount": 4671,
-  "stage": "説明・メタデータ取得完了・画像情報取得中",
+  "stage": "画像情報取得完了・図鑑更新中",
   "history": []
 }
