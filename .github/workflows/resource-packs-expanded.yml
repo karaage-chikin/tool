@@ -145,7 +145,7 @@ jobs:
         if: failure()
         run: |
           node scripts/resource-pack-progress.mjs fail
-          git add resource-packs.json resource-pack-progress.json resource-pack-primary-stats.json resource-pack-collector-stats.json
+          git add -A
           if git diff --cached --quiet; then
             echo "No partial catalogue changes to save."
           else
