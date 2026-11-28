@@ -29,7 +29,7 @@ footer{text-align:center;padding:22px;color:#6c7086;font-size:.75rem;border-top:
 <header><div class="top"><a class="brand" href="index.html"><span class="brand-icon">📦</span><span>Minecraft制作ツール</span></a><a class="home" href="index.html">← ホームへ戻る</a></div></header>
 <main>
 <section class="hero"><div class="eyebrow">BEDROCK EDITION ONLY</div><h1>統合版リソースパック図鑑</h1><p>統合版向けのリソースパックを、ジャンルやキーワードから探そう。日本語・英語のキーワードから探せます。説明や対応情報は図鑑内で確認できます。</p><div class="stats"><span class="stat" id="countStat">掲載準備中…</span><span class="stat">Bedrock専用・日本語検索対応</span><span class="stat">Java版専用は対象外</span></div></section>
-<section class="toolbar" aria-label="検索と並び替え"><div class="search-wrap"><input id="search" class="field" type="search" placeholder="日本語・英語で検索（例：空、water、UI）…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchSuggestions"><div id="searchSuggestions" class="suggestions hidden" role="listbox"></div></div><select id="sort" class="field" aria-label="並び替え"><option value="new">登録順</option><option value="az">名前順</option><option value="fav">お気に入り優先</option><option value="updated">更新日順</option><option value="author">作者名順</option></select><button id="favoritesOnly" class="btn">★ お気に入りのみ</button></section>
+<section class="toolbar" aria-label="検索と並び替え"><div class="search-wrap"><input id="search" class="field" type="search" placeholder="日本語・英語で検索（例：空、water、UI）…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchSuggestions"><div id="searchSuggestions" class="suggestions hidden" role="listbox"></div></div><select id="sort" class="field" aria-label="並び替え"><option value="new">登録順</option><option value="az">名前順</option><option value="fav">お気に入り優先</option><option value="updated">更新日順</option><option value="downloads">ダウンロード数順</option><option value="author">作者名順</option></select><button id="favoritesOnly" class="btn">★ お気に入りのみ</button></section>
 <nav id="filters" class="filters" aria-label="ジャンル"></nav>
 <div class="resultline"><span id="resultCount" aria-live="polite">読み込み中…</span><span>カードを押すと詳細を表示</span></div>
 <section id="grid" class="grid"></section>
@@ -50,7 +50,7 @@ footer{text-align:center;padding:22px;color:#6c7086;font-size:.75rem;border-top:
 <div class="admin-grid">
 <input id="editTitle" class="field" placeholder="パック名">
 <input id="editAuthor" class="field" placeholder="作者名">
-<select id="editCategory" class="field"><option>シェーダー</option><option>軽量化</option><option>ブロック・アイテム</option><option>UI・シンプル</option><option>UI・テーマ</option><option>UI・操作</option><option>UI・メニュー</option><option>自然・植物</option><option>ブロック・建築</option><option>サウンド</option><option>空・天候</option><option>水・環境</option><option>モブ・モデル</option><option>アニメーション</option><option>言語・フォント</option><option>便利・農業</option><option>便利・操作</option><option>季節・テーマ</option><option>テーマ・世界観</option><option>その他</option></select>
+<select id="editCategory" class="field" aria-label="ジャンル"></select>
 <input id="editVersion" class="field" placeholder="対応バージョン・注意点">
 <input id="editUrl" class="field" type="url" placeholder="公式配布ページURL（https://...）" maxlength="2000">
 <input id="editThumbnail" class="field" type="url" placeholder="一覧サムネイル画像URL（https://...）" maxlength="2000">
@@ -75,5 +75,5 @@ footer{text-align:center;padding:22px;color:#6c7086;font-size:.75rem;border-top:
 </main>
 <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalBody"><div class="modal-card" tabindex="-1"><div class="modal-head"><div><span id="modalCategory" class="category"></span><h2 id="modalTitle"></h2></div><button id="modalClose" class="close" aria-label="閉じる">×</button></div><div id="modalGallery"></div><div id="modalBody"></div><div class="modal-actions"><a id="downloadLink" class="btn primary hidden" href="#" rel="noopener noreferrer">サイト内からダウンロード ↓</a><a id="sourceLink" class="btn" href="#" target="_blank" rel="noopener noreferrer">配布元でダウンロード ↗</a><a id="translateDescription" class="btn" href="#" target="_blank" rel="noopener noreferrer">説明を翻訳 ↗</a><button id="modalFav" class="btn">☆ お気に入り</button></div></div></div>
 <footer>Minecraft制作ツール · Bedrock resource pack directory</footer>
-<script src="resource-packs.js?v=3.2.0" defer></script>
+<script src="resource-packs.js?v=3.3.0" defer></script>
 </body></html>
