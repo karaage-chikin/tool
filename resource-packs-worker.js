@@ -386,6 +386,7 @@ async function uploadPackToSupabase(env, request, origin) {
       if(removed){await env.DB.prepare("UPDATE resource_pack_storage_usage SET used_bytes=MAX(0,used_bytes-?),updated_at=? WHERE id=1").bind(fileSize,Date.now()).run().catch(()=>{});reserved=false;uploaded=false;}
       throw metadataError;
     }
+    await auditEvent(env,request,"update","pack_file_uploaded",JSON.stringify({fileName:safeName,size:fileSize,permissionUrl:permissionUrl.slice(0,300)}));
     const usage = await env.DB.prepare("SELECT used_bytes FROM resource_pack_storage_usage WHERE id=1").first();
     return reply({ ok: true, fileName: safeName, size: fileSize, publicUrl, usedBytes: Number(usage?.used_bytes || 0), limitBytes: PACK_STORAGE_LIMIT }, 200, origin);
   } catch (error) {
