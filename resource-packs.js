@@ -21,7 +21,7 @@ function getSavedAdminToken(){
  }catch{return sessionStorage.getItem(TOKEN_KEY)||"";}
 }
 
-let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = getSavedAdminToken(), currentModalId = null, currentGalleryImages = [], favoriteStorageAvailable = true;
+let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = getSavedAdminToken(), currentModalId = null, currentGalleryImages = [], favoriteStorageAvailable = true, galleryPollEtag = "";
 const volatileFavorites = new Set();
 const BASE_CATEGORIES = ["シェーダー","軽量化","UI・テーマ","UI・操作","UI・メニュー","自然・植物","ブロック・建築","ブロック・アイテム","UI・シンプル","サウンド","空・天候","水・環境","モブ・モデル","アニメーション","言語・フォント","便利・農業","便利・操作","季節・テーマ","テーマ・世界観","その他"];
 let categories = ["すべて", ...BASE_CATEGORIES];
@@ -246,7 +246,12 @@ function pollGalleryImages(attempt=0){
  if(attempt>=MAX_ATTEMPTS)return;
  setTimeout(async()=>{
   try{
-   const live=await api("/api/packs"),next=Array.isArray(live.packs)?live.packs:[];
+   const headers={Accept:"application/json"};if(galleryPollEtag)headers["If-None-Match"]=galleryPollEtag;
+   const response=await fetch(API+"/api/packs",{headers,cache:"no-store"});
+   if(response.status===304){if(packs.some(p=>!p.thumbnailUrl&&!(p.galleryImages||[]).length)&&attempt+1<MAX_ATTEMPTS)pollGalleryImages(attempt+1);return;}
+   if(!response.ok)throw new Error("API HTTP "+response.status);
+   galleryPollEtag=response.headers.get("ETag")||galleryPollEtag;
+   const live=await response.json(),next=Array.isArray(live.packs)?live.packs:[];
    const merged=mergeLivePacks(next),oldById=new Map(packs.map(p=>[p.id,p]));
    const changed=merged.some(p=>{const old=oldById.get(p.id);return !old||p.thumbnailUrl!==old.thumbnailUrl||JSON.stringify(p.galleryImages||[])!==JSON.stringify(old.galleryImages||[]);});
    if(changed){packs=merged;render();}
