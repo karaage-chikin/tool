@@ -45,6 +45,7 @@ jobs:
           node --check scripts/resource-pack-image-enrichment.mjs
           node --check scripts/resource-pack-detail-enrichment.mjs
           node --check scripts/resource-pack-utils.mjs
+          node --check scripts/resource-pack-progress.mjs
           node --test scripts/resource-pack-utils.test.mjs
       - name: Start progress measurement
         run: |
