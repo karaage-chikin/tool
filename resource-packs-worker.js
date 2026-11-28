@@ -398,6 +398,28 @@ async function uploadPackToSupabase(env, request, origin) {
   }
 }
 
+
+async function verifyCollectorOidc(request) {
+  const token=(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");
+  if(!token) return false;
+  try {
+    const parts=token.split(".");
+    if(parts.length!==3) return false;
+    const decode=s=>JSON.parse(atob(s.replace(/-/g,"+").replace(/_/g,"/")));
+    const header=decode(parts[0]),claims=decode(parts[1]);
+    if(header.alg!=="RS256"||claims.iss!=="https://token.actions.githubusercontent.com"||
+       claims.aud!=="resource-pack-live-monitor"||claims.repository!=="karaage-chikin/tool"||
+       claims.ref!=="refs/heads/main"||Date.now()/1000>Number(claims.exp||0)) return false;
+    const keys=await fetch("https://token.actions.githubusercontent.com/.well-known/jwks").then(r=>r.json());
+    const jwk=keys.keys.find(k=>k.kid===header.kid);
+    if(!jwk) return false;
+    const key=await crypto.subtle.importKey("jwk",jwk,{name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"},false,["verify"]);
+    const data=new TextEncoder().encode(parts[0]+"."+parts[1]);
+    const sig=Uint8Array.from(atob(parts[2].replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0));
+    return await crypto.subtle.verify("RSASSA-PKCS1-v1_5",key,sig,data);
+  } catch { return false; }
+}
+
 export default {
   async scheduled(controller, env, ctx) { ctx.waitUntil((async()=>{await ensureAdminLogTables(env);await auditEvent(env,{headers:new Headers()},"update","scheduled_started","定期更新を開始");try{const images=await enrichMcpedlImages(env,0,20);const posts=await fetchMcpedlPosts();const discovery=await discoverMcpedl(env,posts);await auditEvent(env,{headers:new Headers()},"update","scheduled_completed",JSON.stringify({images,discovery}).slice(0,450));}catch(e){await auditEvent(env,{headers:new Headers()},"debug","scheduled_failed",String(e?.message||e));console.error("Scheduled discovery/image refresh failed",e);}})()); },
   async fetch(request, env, ctx) {
@@ -465,6 +487,20 @@ export default {
         return new Response(stream,{status:200,headers:{"Content-Type":"application/octet-stream","Content-Disposition":"attachment; filename*=UTF-8''"+encodeURIComponent(filename),"Cache-Control":"no-store",...cors(origin)}});
       }catch(error){console.error("Pack download failed",error);return reply({error:"ダウンロードに失敗しました。配布元ページから取得してください。"},502,origin);}
     }
+
+    if (request.method === "POST" && url.pathname === "/api/collector/live-log") {
+      if (!(await verifyCollectorOidc(request))) return reply({error:"収集ジョブの認証に失敗しました。"},401,origin);
+      const body=await readJson(request);
+      const allowed=["page_request","page_loaded","listing_scan","listing_result","candidate_found","candidate_skipped","candidate_added","collector_error"];
+      const type=String(body.type||"").slice(0,40),provider=String(body.provider||"").slice(0,80);
+      if(!allowed.includes(type)) return reply({error:"ログ種別が不正です。"},400,origin);
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_live_scan_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, provider TEXT NOT NULL, event_type TEXT NOT NULL, title TEXT NOT NULL DEFAULT '', url TEXT NOT NULL DEFAULT '', detail TEXT NOT NULL DEFAULT '')").run();
+      await env.DB.prepare("INSERT INTO resource_pack_live_scan_logs (at,provider,event_type,title,url,detail) VALUES (?,?,?,?,?,?)")
+        .bind(String(body.at||new Date().toISOString()).slice(0,40),provider,type,String(body.title||"").slice(0,200),String(body.url||body.sourceUrl||"").slice(0,1000),JSON.stringify(body).slice(0,3000)).run();
+      await env.DB.prepare("DELETE FROM resource_pack_live_scan_logs WHERE id NOT IN (SELECT id FROM resource_pack_live_scan_logs ORDER BY id DESC LIMIT 1200)").run();
+      return reply({ok:true},200,origin);
+    }
+
     if (request.method === "POST" && url.pathname === "/api/admin/login") {
       if (!env.ADMIN_PASSWORD || !env.SESSION_SECRET) return reply({ error: "管理者認証がまだ設定されていません。管理者用シークレットを設定してください。" }, 503, origin);
       try {
@@ -591,6 +627,15 @@ export default {
           checkedAt:Date.now()
         },200,origin);
       }
+
+      if (request.method === "GET" && url.pathname === "/api/admin/monitor/live-scan") {
+        await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_live_scan_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, provider TEXT NOT NULL, event_type TEXT NOT NULL, title TEXT NOT NULL DEFAULT '', url TEXT NOT NULL DEFAULT '', detail TEXT NOT NULL DEFAULT '')").run();
+        const after=Math.max(0,Number(url.searchParams.get("after")||0));
+        const rows=await env.DB.prepare("SELECT id,at,provider,event_type,title,url,detail FROM resource_pack_live_scan_logs WHERE id>? ORDER BY id DESC LIMIT 100").bind(after).all();
+        const latest=await env.DB.prepare("SELECT COALESCE(MAX(id),0) AS latest FROM resource_pack_live_scan_logs").first();
+        return reply({logs:rows.results||[],latestId:Number(latest?.latest||0),checkedAt:Date.now()},200,origin);
+      }
+
       if (request.method === "GET" && url.pathname === "/api/admin/monitor/logs") {
         await ensureAdminLogTables(env);
         const type=String(url.searchParams.get("type")||"all");
