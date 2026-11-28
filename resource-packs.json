@@ -136199,5 +136199,22 @@
     "updatedAt": "2026-11-28",
     "detailsFetchedAt": "2026-11-28",
     "imagesFetchedAt": "2026-11-28"
+  },
+  {
+    "id": "modbay-5872-foot-prints-achievement-friendly--4503244083ca",
+    "title": "Foot Prints ressource pack \"Achievement Friendly\"",
+    "author": "",
+    "category": "その他",
+    "description": "Perfect for players who want to enhance their game's atmosphere while keeping their survival achievements enabled or playing on servers.",
+    "sourceUrl": "https://modbay.org/textures/5872-foot-prints-achievement-friendly.html/",
+    "compatibility": "Bedrock向け（配布元でバージョン確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2025-11-28",
+    "sourceUpdatedAt": "2025-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2025-11/ef2c2fef25_foot-prints-ressource-pack-achievement-friendly-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2025-11/ef2c2fef25_foot-prints-ressource-pack-achievement-friendly-cover.webp"
+    ]
   }
 ]
