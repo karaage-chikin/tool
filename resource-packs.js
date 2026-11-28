@@ -5,10 +5,24 @@ if (!API) throw new Error("API endpoint is not configured");
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const favKey = "bedrock-resource-pack-favorites-v1";
-let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = sessionStorage.getItem("resourcePackAdminToken") || "", currentModalId = null, currentGalleryImages = [], favoriteStorageAvailable = true;
+const TOKEN_KEY="resourcePackAdminToken",TOKEN_EXPIRY_KEY="resourcePackAdminTokenExpiresAt";
+function clearSavedAdminToken(){
+ try{localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+ try{sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+}
+function getSavedAdminToken(){
+ try{
+  const value=localStorage.getItem(TOKEN_KEY)||sessionStorage.getItem(TOKEN_KEY)||"";
+  let expiry=Number(localStorage.getItem(TOKEN_EXPIRY_KEY)||sessionStorage.getItem(TOKEN_EXPIRY_KEY)||0);
+  if(!/^[A-Za-z0-9_.-]{20,2048}$/.test(value)||(expiry&&expiry<=Date.now())){clearSavedAdminToken();return "";}
+  if(!expiry)expiry=Date.now()+30*24*60*60*1000;
+  try{localStorage.setItem(TOKEN_KEY,value);localStorage.setItem(TOKEN_EXPIRY_KEY,String(expiry));sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_EXPIRY_KEY);}catch{}
+  return value;
+ }catch{return sessionStorage.getItem(TOKEN_KEY)||"";}
+}
+
+let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = getSavedAdminToken(), currentModalId = null, currentGalleryImages = [], favoriteStorageAvailable = true;
 const volatileFavorites = new Set();
-const tokenExpiry=Number(sessionStorage.getItem("resourcePackAdminTokenExpiresAt")||0);
-if(tokenExpiry&&tokenExpiry<=Date.now()){token="";sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");}
 const BASE_CATEGORIES = ["シェーダー","軽量化","UI・テーマ","UI・操作","UI・メニュー","自然・植物","ブロック・建築","ブロック・アイテム","UI・シンプル","サウンド","空・天候","水・環境","モブ・モデル","アニメーション","言語・フォント","便利・農業","便利・操作","季節・テーマ","テーマ・世界観","その他"];
 let categories = ["すべて", ...BASE_CATEGORIES];
 const searchCache = new WeakMap();
@@ -309,7 +323,7 @@ async function load(){
  if(token){
   try{await api("/api/admin/session");showEditor(true);await loadCandidates();await loadTrash();}
   catch(error){
-   if(/401|ログインしてください|認証/i.test(error.message)){token="";sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");showEditor(false);setStatus("ログイン期限が切れました。再度ログインしてください。","error");}
+   if(/401|ログインしてください|認証/i.test(error.message)){token="";clearSavedAdminToken();showEditor(false);setStatus("ログイン期限が切れました。再度ログインしてください。","error");}
    else{showEditor(false);setStatus("管理者認証サーバーに接続できません。通信を確認して再読み込みしてください。","error");}
   }
  }
