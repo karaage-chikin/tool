@@ -354,7 +354,7 @@ $("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=
 $("loadMorePacks").addEventListener("click",()=>{currentPage++;render();});if($("prevPacks"))$("prevPacks").addEventListener("click",()=>{currentPage=Math.max(1,currentPage-1);render();});
 $("favoritesOnly").addEventListener("click",()=>{favoritesOnly=!favoritesOnly;currentPage=1;$("favoritesOnly").classList.toggle("primary",favoritesOnly);render();});
 $("adminToggle").addEventListener("click",()=>{const panel=$("adminPanel"),opening=panel.classList.contains("hidden");panel.classList.toggle("hidden");$("adminToggle").setAttribute("aria-expanded",String(opening));});
-$("logoutBtn").addEventListener("click",()=>{token="";sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");showEditor(false);render();setStatus("ログアウトしました。");});
+$("logoutBtn").addEventListener("click",async()=>{try{await fetch(API+"/api/admin/logout",{method:"POST",headers:{Authorization:"Bearer "+token,Accept:"application/json"}});}catch{}token="";clearSavedAdminToken();showEditor(false);render();setStatus("ログアウトしました。");});
 
 $("uploadPackFile").addEventListener("click",async()=>{
  const file=$("editPackFile").files?.[0];
