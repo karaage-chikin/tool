@@ -239,12 +239,12 @@
     "galleryImages": [
       "https://media.forgecdn.net/attachments/2278/725/nuvora-visuals_-sunset-valley-gl-png.png",
       "https://cdn.mcpedl.com/web/content/logo.png",
-      "https://media.forgecdn.net/attachments/2260/441/solva-visuals-in-a-glowing-oak-f-png.png",
       "https://media.forgecdn.net/attachments/2272/165/instant-structures_-palace-cast-png.png",
+      "https://media.forgecdn.net/attachments/2260/441/solva-visuals-in-a-glowing-oak-f-png.png",
       "https://media.forgecdn.net/attachments/2089/5/watermark-removed.png",
       "https://cdn.mcpedl.com/web/ow_logo.png"
     ],
-    "imagesFetchedAt": "2026-11-27",
+    "imagesFetchedAt": "2026-11-28",
     "fullDescription": "Nuvora Visuals is a dreamy pink shader for Minecraft Bedrock with blush skies, cinematic god rays, vivid biome-specific fog, upgraded water and rich color gr…",
     "detailsFiltered": false,
     "publishedAt": "2026-11-26",
@@ -6921,9 +6921,11 @@
       "https://media.forgecdn.net/attachments/2202/512/1003186110-png.png",
       "https://media.forgecdn.net/attachments/2111/483/1003155568-png.png",
       "https://media.forgecdn.net/attachments/1971/694/1002746408-jpg.jpg",
+      "https://r2.mcpedl.com/users/5046780/e87ed6665567f99ddfc016b7dcc12280.png",
+      "https://r2.mcpedl.com/users/5951007/a8e2e49d13bc61ea06f1f545c97d8ca9.png",
       "https://cdn.mcpedl.com/web/ow_logo.png"
     ],
-    "imagesFetchedAt": "2026-11-27",
+    "imagesFetchedAt": "2026-11-28",
     "fullDescription": "🔴 The Red Best Tools is a custom Minecraft Bedrock texture pack featuring unique red, dark purple, and black tool designs. Give your tools a bold new look!",
     "detailsFiltered": false,
     "publishedAt": "2026-11-17",
@@ -12595,7 +12597,7 @@
       "https://r2.mcpedl.com/users/6016925/af31c981f9bbf6ee4b995db20ef7e704.png",
       "https://cdn.mcpedl.com/web/ow_logo.png"
     ],
-    "imagesFetchedAt": "2026-11-27",
+    "imagesFetchedAt": "2026-11-28",
     "fullDescription": "Implement what's important for Minecraft Bedrock players",
     "detailsFiltered": false,
     "publishedAt": "2026-11-15",
@@ -136212,13 +136214,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-28",
     "sourceUpdatedAt": "2026-11-28",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2292/845/thumbnail-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2292/845/thumbnail-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/2252/125/thumbnail-jpg.jpg",
+      "https://media.forgecdn.net/attachments/2275/18/thumbnail-png.png",
+      "https://media.forgecdn.net/attachments/1276/973/oie_wq9f3d29a732-png.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "Transform your Minecraft skies by replacing the classic pixelated squares with a breathtaking, realistic sun and moon.",
     "detailsFiltered": false,
     "publishedAt": "2024-12-29",
     "updatedAt": "2026-11-28",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-gurjars-better-leaves-55dcb5595269",
@@ -136232,13 +136242,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-28",
     "sourceUpdatedAt": "2026-11-28",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2176/547/gurjars-better-leaves-2-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2176/547/gurjars-better-leaves-2-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1941/50/9350df32-c747-446f-afe4-0c57e06ac1c0-1-png.png",
+      "https://media.forgecdn.net/attachments/2084/159/odid2smmn7qmsviuuuq2xixxan5mf02bujzyjuf8gg8-1-png.png",
+      "https://media.forgecdn.net/attachments/2114/201/endless-inventory-png.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "Bushy 3D leaves for every tree! 11 leaf types with real Minecraft textures, 4 varied shapes, 3 density options and optional auto-convert.",
     "detailsFiltered": false,
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-28",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-3061-newb-x-vanilla-shader-html-9f8ff43ae510",
@@ -136254,11 +136272,29 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2024-10/newb-x-vanilla-shader-main-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2024-10/newb-x-vanilla-shader-main-cover.webp"
+      "https://modbay.org/uploads/posts/2024-10/newb-x-vanilla-shader-main-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2025-01/medium/newb-x-vanilla-shader-logo.webp",
+      "https://modbay.org/uploads/posts/2024-12/newb-x-vanilla-shader-information.webp",
+      "https://modbay.org/uploads/posts/2025-01/newb-x-vanilla-shader-update-info.webp",
+      "https://modbay.org/uploads/posts/2025-01/newb-x-vanilla-shader-screenshots.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-1.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-2.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-3.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-4.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-5.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-6.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/newb-x-vanilla-shader-screenshot-7.webp",
+      "https://modbay.org/uploads/posts/2025-05/73a66f0d36_vanilla-rtx-texture-pack-cover.webp",
+      "https://modbay.org/uploads/posts/2024-12/vanilla-pbr-v2-10-cover.webp",
+      "https://modbay.org/uploads/posts/2024-12/explorer-texture-pack-main-cover.webp",
+      "https://modbay.org/uploads/posts/2024-12/maxs-better-mobs-v1-8-cover.webp",
+      "https://modbay.org/uploads/posts/2023-09/better-mob-animations-pack-new-cover.webp"
     ],
     "fullDescription": "Rexx Craft 1 Oct 2024 upd: 10 Jan 2025 Textures Copy link Newb X Vanilla Shader | Supports RenderDragon [UPDATE v15.0.4] Go to files Newb X Vanilla is a brightened build of Newb X Legacy. Shader Informarion Changelog: Added side block shadows (code from enoughrise). Torch/Light Changes: Changed torch color in the overworld. Changed torch opacity. Changed All Sky Colors: New sunset/sunrise sky colors. New day/noon sky colors. New night/midnight sky colors. Improved end sky. Clouds: Increased cloud opacity. Subpacks: Added Vanilla Clouds Aurora Subpack. Update v15.0.4 Info NEWB VANILLA V15.0.4: Added star and weather materials. Vanilla Style: Vanilla-style sun and moon texture. No grass shading. Torch light matches with the world coloring. Vanilla water. Godrays. Default MC end sky. No sun bloom during dawn. Newb Style: 45° sun/moon angle. New lights color. Newb sun/moon texture. Transparent water. Bumpy water. Wavy water. New end sky of Newb Vanilla. Newb world coloring. Vanilla Plus Style: Side block shadows. Yellow dawn sky. Godrays. Orange tint light. 20° sun/moon angle. No sun bloom during dawn. Lowered clouds. Screenshots In-game: --> COPYRIGHT / CREDIT / SOURCE <--Creator: adeybodei Creator of Newb Shader: Deven Join Discord Newb Community! Download links V15.0.4 | Android Only![mcpack, 1.12 Mb] / Downloads: 14344 Supported versions 1.21.50 1.21.40 1.21.30 1.21.20 1.21.10 1.21.0 Tags Shaders 24 19 770",
     "detailsFiltered": false,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-3210-fresh-animations-bedrock-html-c51507046d2e",
@@ -136274,11 +136310,31 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2024-10/fresh-animations-bedrock-main-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2024-10/fresh-animations-bedrock-main-cover.webp"
+      "https://modbay.org/uploads/posts/2024-10/fresh-animations-bedrock-main-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2025-04/fresh-animations-bedrock-permission-from-freshlx.webp",
+      "https://modbay.org/uploads/posts/2025-07/05070572ec_fresh-animations-bedrock-texture-pack-1.webp",
+      "https://modbay.org/uploads/posts/2025-07/d8c444b988_fresh-animations-bedrock-texture-pack-2.webp",
+      "https://modbay.org/uploads/posts/2025-07/af288dbe9e_fresh-animations-bedrock-texture-pack-3.webp",
+      "https://modbay.org/uploads/posts/2025-07/c0e9e5adad_fresh-animations-bedrock-texture-pack-4.webp",
+      "https://modbay.org/uploads/posts/2025-07/6e08fcf51b_fresh-animations-bedrock-texture-pack-5.webp",
+      "https://modbay.org/uploads/posts/2025-07/39d0840224_fresh-animations-bedrock-texture-pack-6.webp",
+      "https://modbay.org/uploads/posts/2025-07/334cb01746_fresh-animations-bedrock-texture-pack-7.webp",
+      "https://modbay.org/uploads/posts/2025-07/640dad8d34_fresh-animations-bedrock-texture-pack-8.webp",
+      "https://modbay.org/uploads/posts/2025-07/f03fde1a85_fresh-animations-bedrock-texture-pack-9.webp",
+      "https://modbay.org/uploads/posts/2025-07/03d29f888e_fresh-animations-bedrock-texture-pack-10.webp",
+      "https://modbay.org/uploads/posts/2025-07/3ad07ebb6f_fresh-animations-bedrock-texture-pack-11.webp",
+      "https://modbay.org/uploads/posts/2025-07/b25a5e5589_fresh-animations-bedrock-texture-pack-12.webp",
+      "https://modbay.org/uploads/posts/2025-07/5037e0867e_fresh-animations-bedrock-texture-pack-13.webp",
+      "https://modbay.org/uploads/posts/2025-07/ac94c63393_fresh-animations-bedrock-texture-pack-14.webp",
+      "https://modbay.org/uploads/posts/2025-07/f00e61a993_fresh-animations-bedrock-texture-pack-15.webp",
+      "https://modbay.org/uploads/posts/2025-07/05c3d40b97_fresh-animations-bedrock-texture-pack-16.webp",
+      "https://modbay.org/uploads/posts/2025-07/fd81107f88_fresh-animations-bedrock-texture-pack-17.webp"
     ],
     "fullDescription": "",
     "detailsFiltered": true,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-4583-pandamines-no-hurt-cam-html-3b3d42146e9b",
@@ -136294,11 +136350,23 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/28241c3476_pandamines-no-hurt-cam-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2026-07/28241c3476_pandamines-no-hurt-cam-cover.webp"
+      "https://modbay.org/uploads/posts/2026-07/28241c3476_pandamines-no-hurt-cam-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2026-07/medium/4b836f1b65_pandamines-no-hurt-cam.webp",
+      "https://modbay.org/uploads/posts/2026-07/medium/cc3e04b4f5_pandamines-no-hurt-cam.webp",
+      "https://modbay.org/uploads/posts/2026-07/medium/2f6cc8d769_pandamines-no-hurt-cam.webp",
+      "https://modbay.org/uploads/posts/2026-07/medium/d866f509b2_pandamines-no-hurt-cam.webp",
+      "https://modbay.org/uploads/posts/2025-05/883c48ed15a77_pandamines-clear-aquatics.gif",
+      "https://modbay.org/uploads/posts/2026-06/7a2a1c24fe_pandamines-clear-aquatics-cover.webp",
+      "https://modbay.org/uploads/posts/2026-07/8227f1580a_pandamines-enhanced-touch-controls-cover.webp",
+      "https://modbay.org/uploads/posts/2026-06/525754ae0c_pandamines-mip-mapper-cover.webp",
+      "https://modbay.org/uploads/posts/2025-01/quick-cam-main-cover.webp",
+      "https://modbay.org/uploads/posts/2024-11/no-hurt-close-main-cover.webp"
     ],
     "fullDescription": "PandaMine5 8 Jun 2025 upd: 6 Jul 2026 Textures Copy link PandaMine's No Hurt Cam (No Vignette + No Hurt Close) Go to files Tired of screen shake and Nausea effect in Survival or PvP? This pack adds: No Hurt Cam (1st, 3rd, 3rd front) No Nether Portal distortions No Nausea wobble effect No Underwater FOV effects No Inventory Close on Hurt No Vignette effect in cave Gives upto 15% better performance than vanilla Damage Tilt option and loads UI faster. And is compatible with Actions & Stuff, Vibrant Visuals and RTX!Requirements PandaMine's Mip Mapper Damage Tilt - 0% Showcase Installation GuideAndroid Download MT Manager or APK Editor 3.0 Copy \"cameras\" and \"__brarchive\" folders from downloaded file Using MT Manager or APK Editor paste them inside APK path: \"/assets/assets/resource_packs/vanilla/\" Click \"Replace\", then build and install that APK. Or Download Patched APK with No Hurt Cam: https://mediafire.com/folder/k2axko6m22zyp/ iOS You need Jailbreak for this. Windows Download IOBit or use Windows Explorer Copy \"cameras\" and \"__brarchive\" folders from downloaded file Paste them into: \"C:\\\\XboxGames\\\\Minecraft for Windows\\\\Content\\\\data\\\\resource_packs\\\\vanilla\\\\\" Then click on \"Replace all\" Allowed ✅ Showcase the pack in any video as long as there is this CurseForge link. Share this texture pack using the CurseForge link. Not Allowed ❌ Steal the code for any addon or texture pack. Modify the pack for Public use. Monetize for own benefit. Upload and share on any 3rd-party website. Violators will face DMCA takedowns, legal claims.Downloading from other websites can give malware.AboutAuthor: PandaMine5Discord: pandamine5xRate & share this mod! Updated on July 6, 2026 Improved pack performance Added No Hurt Close for all UI screens Removed Nausea & Vignette effect Download links Download Supported versions 26.30 26.20 Tags Shaders 8x 16x 32x 64x 128x 256x 512x 5 19 813",
     "detailsFiltered": false,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-3878-stay-true-html-a41c8d382f66",
@@ -136314,11 +136382,31 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2025-01/stay-true-main-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2025-01/stay-true-main-cover.webp"
+      "https://modbay.org/uploads/posts/2025-01/stay-true-main-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-1.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-2.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-3.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-4.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-5.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-6.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-7.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-8.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-9.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-10.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-11.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-12.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-13.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-14.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-15.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-16.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-17.webp",
+      "https://modbay.org/uploads/posts/2025-01/stay-true-screenshot-18.webp"
     ],
     "fullDescription": "Haimcyfly 24 Jan 2025 upd: 22 Mar 2025 Textures Copy link Stay True Go to files Stay True is a visual remaster of the current default texture pack. I tweaked and changed a lot of current textures that I thought needed it. The changes are not drastic and still fit perfectly with the current color scheme and textures of the default texture pack. Many of these changes will add a lot more diversity, removing repetitiveness, which in turn results in a more realistic and overall nicer appearance. (In my opinion :P) Updated on March 23 Minor bug fixes like grass block glitch and pale boat glitch. Fixed dirt block texture. Fixed the download link. Changelog for March 05 / Old Update Updated Pale Oak. Changelog for February 25 / Old Update Logs. Terrain. Pink & orange birch leaves. Signs. Netherite Armor. Etc, etc... Fixed few things in pack. Changed pink leaves. Smoker top on. 3 blocks variations. Fixed TNT purple black glitch. Fixed the download link. Added bunch of variations of flowers. Fixed ender chest glitch. Changelog for February 03 / Old Update Added textures of fences & pressure plates. Download links Bedrock VersionJava Version Supported versions 1.21.60 1.21.50 1.21.40 1.21.30 1.21.20 1.21.10 1.21.0 1.20.80 1.20.70 1.20.60 1.20.50 1.20.40 1.20.30 1.20.10 1.20.0 1.19.80 1.19.70 1.19.60 1.19.50 1.19.40 1.19.30 1.19.20 1.19.10 1.19.0 1.18.31 1.18.30 1.18.12 1.18.10 1.18.2 1.18.1 1.18.0 1.17.41 1.17.40 1.17.34 1.17.32 1.17.30 1.17.11 1.17.10 1.17.2 1.17.0 1.16 Tags Shaders 8x 16x 32x 64x 128x 256x 512x 11 41 020",
     "detailsFiltered": false,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-3023-bsl-x-shader-html-4e89a89e06d1",
@@ -136334,10 +136422,30 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2024-12/bsl-x-shader-main-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2024-12/bsl-x-shader-main-cover.webp"
+      "https://modbay.org/uploads/posts/2024-12/bsl-x-shader-main-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-glossy-effects-resolution-screenshot-1.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-glossy-effects-resolution-screenshot-2.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-glossy-effects-resolution-screenshot-3.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-glossy-effects-resolution-screenshot-4.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-1.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-2.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-3.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-4.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-5.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-6.webp",
+      "https://modbay.org/uploads/posts/2024-11/medium/bsl-x-shader-default-resolution-screenshot-7.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-1.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-2.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-3.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-4.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-5.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-glossy-effects-screenshot-6.webp",
+      "https://modbay.org/uploads/posts/2024-12/medium/bsl-x-shader-default-screenshot-1.webp"
     ],
     "fullDescription": "Official Technology 27 Sep 2024 upd: 10 Oct 2025 Textures Copy link BSL X Shader Improvement (Discontinued) Go to files Experience a visually stunning world with this innovative shader. Featuring unique, realistic clouds and advanced atmospheric effects, this shader adds a touch of the surreal to your gameplay.Optimized for low- to mid-end devices, it includes the following features: Beautiful sun rays, sunrise and sunset! Realistic atmosphere! Amazing outlined glowing ores! Glowing armor trims! Shiny blocks! Realistic water! Realistic clouds! Shiny blocks! Amazing visual! Very optimize! Mob glowing eye! Supported the pale garden! Glossy Effects Resolution Glossy Effects Images: Default Resolution Default Resolution Images: Pictures:Resolution: Glossy Effects Resolution: Default End Pictures:Resolution: Glossy Effects Resolution: Default UI: Pale Garden: New:Lite (Default): Lite (Glossy Effects): ​BSL X shader improvement discontinuation Announcement - The Overhaul Update is the Final Release​Hello everyone,​I'm writing to let you all know that development on the BSL X Shader improvement is being discontinued for now.​The reason is simple: my work schedule has become too demanding, and I no longer have the free time required to update and maintain the shader with the quality you all deserve. This was a difficult decision, but I need to prioritize my commitments outside of development.​The \"Overhaul\" update will stand as the final version. If you want to keep using it, please note you will need the MB loader and Minecraft versions 1.21.93+ to 1.21.101.​You can find the direct download link in the download section.Thank you all so much for your support, feedback, and for sharing your incredible screenshots and videos over the past year, since the shader was first created on September 27, 2024. It truly meant a lot to me.​While I'm stepping away for now, I hope that someday I'll be able to come back to the project. Until then, keep creating!​All the best,​Official Technology. Things you must not do: Don't put this resource pack on another website! Avoid posting direct links to file hosting services like MediaFire. I will take them down. If you're showcasing my shader, please use this link: https://modbay.org/textures/3023-bsl-x-shader.html READ! This shader is created from Newb code! Newb Shader Repository IMPORTANT NOTES: I recommend using the YSS patch rather than the Draco patch because... If you use the Draco patch, you would find tons of bugs, and the end sky would be glitchy. Recommend brightness: 0% bright. Turn off clouds and fancy graphics if you are experiencing low performance! JOIN MY DISCORD SERVER TO GET THE DIRECT LINK!This shader requires Minecraft Patch version 1.21.20 to 1.21.51+My shader is compatible with Android, but it does not work on PC or iOS.Updated on October 10, 2025 Development discontinued — the author is pausing active development due to personal/work commitments. The \"Overhaul\" update will be the final release for now; no further updates are planned at this time. The final release requires MB loader and Minecraft versions 1.21.93 to 1.21.101. Direct download is available in the download section (see the provided page link in the article). Thank you to everyone for your support; the author may return to the project in the future. Changelog for December 28 / Old Update New Update: Changelog! Added glowing flowers. Added 10 glowing blocks. Added animations for the blast furnace, furnace, and smoker. Added animations for some items. Revamped glossy effects for Lite and updated the default Lite cloud appearance. Updated glossy effects visuals. Updated end sky for default. Added moon bloom. Added sun bloom. Removed mob glowing eyes. Updated manifest.json. Updated the panorama background UI. Bug fixes: Fixed llamas being invisible. Fixed paintings appearing blurry. If you find a bug, please report it to our Discord server. Changelog for October 07 / Old Update Bug Fix Update: Fixed trial spawner becoming invisible. Fixed trial spawner becoming purple and black MOB GLOWING EYES UPDATE! Fixed bugs. Fix sand becoming super dark even tho is day. Changelog for September 29 / Old Update BSl X Shader Improvements: glowing eyes designed to provide a more immersive and visually stunning Minecraft experience by introducing enhanced glowing eyes, improved action and compatibility. This shader requires Minecraft Patch version 1.21.20 to 1.21.30. My shader is compatible with Android, but I'm not really sure if it's going to work on PC and iOS because I haven't checked it yet. Download links Final Update Supported versions 1.21.100 1.21.90 Tags Shaders 8x 16x 32x 64x 128x 256x 512x 23 67 890",
     "detailsFiltered": false,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   }
 ]
