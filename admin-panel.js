@@ -32,7 +32,7 @@ const formatDate=value=>{
 let currentPage="overview",requestSequence=0,logPage=0,accessPage=0;
 class ApiError extends Error{constructor(message,status=0){super(message);this.name="ApiError";this.status=status;}}
 async function api(path){
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
  try{
   const response=await fetch(API+path,{method:"GET",headers:{Authorization:"Bearer "+token,Accept:"application/json"},cache:"no-store",signal:controller.signal});
   let data;try{data=await response.json();}catch{throw new ApiError("サーバーから正しいJSON応答がありません。",response.status);}
@@ -164,7 +164,7 @@ async function loadOverview(seq){
  const d=data.overview||{},p=d.packs||{},c=d.candidates||{},ac=d.access||{};
  let html=cards([{label:"リソースパック（D1登録分）",value:number(p.count)},{label:"未承認候補",value:number(c.count)},{label:"累計アクセス",value:number(ac.count)},{label:"監査ログ",value:number(d.logs?.count)},{label:"パック情報の概算容量",value:formatBytes(p.approx_bytes)}]);
  html+=await expansionPanel();
- html+=await liveScanPanel();
+ html+='<section class="panel" id="liveScanMount"><h2>リアルタイム収集モニター</h2><p class="muted">収集ログを取得しています…</p></section>';
  html+='<div class="overview-grid">';
  html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
  html+='<section class="panel overview-panel"><h2>Debug・エラー</h2>'+(data.debug?rows((data.debug.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("debug"))||"取得失敗"}))+'</section>';
@@ -172,6 +172,7 @@ async function loadOverview(seq){
  html+='<section class="panel overview-panel"><h2>更新・画像処理の状態</h2>'+rows([{title:d.imageJob?.status||"未実行",body:d.imageJob?.result_json||"処理結果はまだありません。",meta:"開始: "+formatDate(d.imageJob?.started_at)+" / 完了: "+formatDate(d.imageJob?.finished_at)}])+'</section></div>';
  if(errors.length)html+='<p class="notice">一部のAPIに接続できませんでした。各欄の再読み込みを試してください。<br>'+esc(errors.join(" / "))+'</p>';
  $("pageContent").innerHTML=html;
+ liveScanPanel().then(panel=>{const mount=$("liveScanMount");if(mount)mount.outerHTML=panel;});
  status("最終確認: "+formatDate(Date.now()),errors.length?"error":"good");
 }
 async function loadLogs(type,page,seq){
