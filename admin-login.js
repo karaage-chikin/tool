@@ -10,7 +10,10 @@ form.addEventListener("submit",async event=>{
   let data;try{data=await response.json();}catch{throw new Error("サーバーから正しい応答がありません。");}
   if(!response.ok)throw new Error(data.error||"ログインできませんでした。");
   if(typeof data.token!=="string"||!/^[A-Za-z0-9_.-]{20,2048}$/.test(data.token))throw new Error("認証応答が不正です。");
-  sessionStorage.setItem("resourcePackAdminToken",data.token);if(data.expiresIn)sessionStorage.setItem("resourcePackAdminTokenExpiresAt",String(Date.now()+Number(data.expiresIn)));location.href="admin.html";
+  const expiresAt=Date.now()+Math.max(60000,Number(data.expiresIn)||30*24*60*60*1000);
+  try{localStorage.setItem("resourcePackAdminToken",data.token);localStorage.setItem("resourcePackAdminTokenExpiresAt",String(expiresAt));sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");}
+  catch{sessionStorage.setItem("resourcePackAdminToken",data.token);sessionStorage.setItem("resourcePackAdminTokenExpiresAt",String(expiresAt));}
+  location.href="admin.html";
  }catch(error){status.className="login-status error";status.textContent=error.name==="AbortError"?"通信がタイムアウトしました。":"ログインできませんでした："+error.message;const hint=document.getElementById("homeAdminSetupHint");if(hint&&/設定されていません|シークレット/.test(error.message))hint.hidden=false;}
  finally{clearTimeout(timer);button.disabled=false;}
 });
