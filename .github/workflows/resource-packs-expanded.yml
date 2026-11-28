@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 concurrency:
   group: resource-pack-catalogue
@@ -30,7 +31,8 @@ jobs:
       MAX_NEW_PACKS: "3000"
       MAX_ADDITIONAL_PAGES: "1000"
       STALE_PAGE_LIMIT: "1000"
-      ADDITIONAL_STALE_PAGE_LIMIT: "60"\n      RESOURCE_PACK_LIVE_LOG_URL: "https://resource-packs-api.karaage-chikin-029.workers.dev/api/collector/live-log"
+      ADDITIONAL_STALE_PAGE_LIMIT: "60"
+      RESOURCE_PACK_LIVE_LOG_URL: "https://resource-packs-api.karaage-chikin-029.workers.dev/api/collector/live-log"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
