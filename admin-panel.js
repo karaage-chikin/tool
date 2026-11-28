@@ -46,7 +46,7 @@ function pager(kind,page,total,hasMore){
  return '<div class="pager"><button type="button" data-page="'+kind+'" data-step="-1" '+(!prev?"disabled":"")+'>前へ</button><span>'+(page+1)+'ページ目 / '+Math.max(1,Math.ceil(number(total)/PAGE_SIZE))+'ページ</span><button type="button" data-page="'+kind+'" data-step="1" '+(!next?"disabled":"")+'>次へ</button></div>';
 }
 async function expansionPanel(){
- let count=null,run=null,catalogueError="",monitorError="";
+ let count=null,run=null,measurement=null,catalogueError="",monitorError="";
  try{
   const response=await fetch("./resource-packs.json",{cache:"no-store"});
   if(!response.ok)throw new Error("図鑑JSON HTTP "+response.status);
@@ -57,6 +57,7 @@ async function expansionPanel(){
  try{
   const monitor=await api("/api/admin/monitor/storage");
   run=monitor.expansion||null;
+  measurement=monitor.expansionProgress||null;
   if(run?.available===false)monitorError=run.error||"GitHub Actionsの実行状況を取得できません";
   if(run?.error){monitorError=run.error.includes("HTTP 403")?"GitHub Actions APIがHTTP 403を返しました（認証・API利用制限の可能性）。":run.error;}
  }catch(e){monitorError=e?.message||"実行状況を取得できません";}
@@ -74,8 +75,21 @@ async function expansionPanel(){
  else if(run?.status==="not_started"){state="未実行";stateClass="muted";}
  const countText=count===null?"件数取得不可":count.toLocaleString("ja-JP")+" / 10,000件";
  const progressText=count===null?catalogueError:"達成率 "+pct.toFixed(1)+"%";
- const etaText=monitorError?"予想終了時刻：実行状況を取得できないため算出不可":(runningCount||waitingCount?"予想終了時刻：処理速度を計測中（実測値が取れ次第表示）":"予想終了時刻：実行中の処理がないため算出対象なし");
- return '<section class="panel expansion-panel"><h2>図鑑の拡張処理</h2><div class="progress-head"><strong>'+countText+'</strong><span class="job-state '+stateClass+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="図鑑の拡張進捗" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:count)+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">図鑑JSONの登録件数とGitHub Actionsの実行状態は別々に取得します。一方が失敗しても、もう一方の表示は維持します。D1の管理者登録分とは重複する場合があるため別集計です。</p><p class="notice">'+esc(etaText)+'</p>'+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">拡張処理の実行ログを開く ↗</a>':"")+'</section>';
+ const history=Array.isArray(measurement?.history)?measurement.history.slice(-5):[];
+ const completedRuns=history.filter(x=>Number(x.added)>0&&Number(x.durationMs)>0);
+ const avgAddedPerRun=completedRuns.length?completedRuns.reduce((sum,x)=>sum+Number(x.added),0)/completedRuns.length:0;
+ const cycleHours=6;
+ const hoursRemaining=avgAddedPerRun>0&&remaining!==null?remaining/avgAddedPerRun*cycleHours:null;
+ const etaDate=hoursRemaining===null?null:new Date(Date.now()+hoursRemaining*3600000);
+ const durationLabel=hours=>hours<1?Math.max(1,Math.round(hours*60))+"分":hours<48?hours.toFixed(1)+"時間":(hours/24).toFixed(1)+"日";
+ const etaText=count!==null&&count>=10000?"目標10,000件に到達しています":hoursRemaining!==null?"予想残り時間："+durationLabel(hoursRemaining)+"（直近"+completedRuns.length+"回の実績・6時間間隔を含む）":"予想残り時間：実績データを収集中（完了した拡張処理が"+(history.length<2?"まだ不足しています":"有効な追加件数を取得できていません")+"）";
+ const currentDelta=measurement?.status==="running"?Math.max(0,Number(measurement.currentCount||0)-Number(measurement.baselineCount||0)):0;
+ const currentElapsed=measurement?.runStartedAt?Math.max(0,(Date.now()-Date.parse(measurement.runStartedAt))/60000):0;
+ const stageText=measurement?.stage?"現在の工程："+measurement.stage:"工程情報：未取得";
+ const updatedText=measurement?.updatedAt?"進捗更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗更新：未計測";
+ const etaDateText=etaDate&&!Number.isNaN(etaDate.getTime())?"予想到達日時："+formatDate(etaDate.getTime()):"";
+ const speedText=avgAddedPerRun>0?"平均追加："+avgAddedPerRun.toFixed(1)+"件 / 実行（6時間ごと）":(currentDelta>0&&currentElapsed>0?"今回の追加："+currentDelta+"件 / "+currentElapsed.toFixed(0)+"分":"追加速度：計測中");
+ return '<section class="panel expansion-panel"><h2>図鑑の拡張処理</h2><div class="progress-head"><strong>'+countText+'</strong><span class="job-state '+stateClass+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="図鑑の拡張進捗" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:count)+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">図鑑JSONの登録件数とGitHub Actionsの実行状態は別々に取得します。一方が失敗しても、もう一方の表示は維持します。D1の管理者登録分とは重複する場合があるため別集計です。</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(speedText)+'</p><p class="notice">'+esc(stageText)+'</p><p class="notice">'+esc(updatedText)+'</p>'+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">拡張処理の実行ログを開く ↗</a>':"")+'</section>';
 }
 function storageMeter(label,used,limit,detail,unlimited=false){
  const u=number(used),l=number(limit),pct=unlimited||!l?null:Math.min(100,u/l*100);
