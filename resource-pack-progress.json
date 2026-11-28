@@ -1,11 +1,28 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-28T11:44:50.284Z",
-  "status": "running",
+  "updatedAt": "2026-11-28T11:44:51.452Z",
+  "status": "completed",
   "runStartedAt": "2026-11-28T11:37:41.791Z",
-  "runFinishedAt": null,
+  "runFinishedAt": "2026-11-28T11:44:51.452Z",
   "baselineCount": 4671,
   "currentCount": 4671,
-  "stage": "画像情報取得完了・図鑑更新中",
-  "history": []
+  "stage": "完了",
+  "history": [
+    {
+      "startedAt": "2026-11-28T11:37:41.791Z",
+      "finishedAt": "2026-11-28T11:44:51.452Z",
+      "durationMs": 429711,
+      "baselineCount": 4671,
+      "finalCount": 4671,
+      "added": 0
+    }
+  ],
+  "lastRun": {
+    "startedAt": "2026-11-28T11:37:41.791Z",
+    "finishedAt": "2026-11-28T11:44:51.452Z",
+    "durationMs": 429711,
+    "baselineCount": 4671,
+    "finalCount": 4671,
+    "added": 0
+  }
 }
