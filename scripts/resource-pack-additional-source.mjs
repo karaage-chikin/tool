@@ -8,8 +8,7 @@ const urls=new Set(packs.map(p=>normalizeSourceUrl(p.sourceUrl)).filter(Boolean)
 const titles=new Set(packs.map(p=>titleKey(p.title)));
 const ids=new Set(packs.map(p=>p.id));
 const headers={"User-Agent":"Mozilla/5.0 (compatible; KaraageChikinBedrockPackDirectory/3.1)","Accept":"text/html,application/xhtml+xml"};
-const targetTotal=Math.max(1,Math.min(50000,Number(process.env.TARGET_TOTAL_PACKS)||10000));
-const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000,targetTotal-packs.length));
+const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000));
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||80));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
 function cardDate($,card){
@@ -46,7 +45,6 @@ function authorFrom($,card){
  return "";
 }
 function add(provider,href,title,$,card,base){
- if(packs.length>=targetTotal)return false;
  title=clean(title).slice(0,160);if(!title||title.length<4)return false;
  let u;try{u=new URL(href,base);}catch{return false;}if(u.protocol!=="https:")return false;
  const canonical=normalizeSourceUrl(u.href);if(!canonical||urls.has(canonical))return false;
