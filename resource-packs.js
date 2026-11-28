@@ -35,6 +35,14 @@ function setFavorites(set){
  try{localStorage.setItem(favKey,JSON.stringify([...set]));favoriteStorageAvailable=true;}
  catch{favoriteStorageAvailable=false;}
 }
+function parseDownloadCount(value){
+ const raw=String(value??"").trim().toLocaleLowerCase().replace(/,/g,"");
+ const number=Number((raw.match(/[0-9]+(?:\\.[0-9]+)?/)||[])[0]||0);
+ if(/(?:m|million)/.test(raw))return number*1000000;
+ if(/(?:k|千)/.test(raw))return number*1000;
+ if(/(?:万)/.test(raw))return number*10000;
+ return number;
+}
 function searchableText(p){
  let value=searchCache.get(p);
  if(value===undefined){value=[p.title,p.author,p.description,p.category,...(p.searchKeywords||[]),...(p.tags||[])].join(" ").normalize("NFKC").toLocaleLowerCase();searchCache.set(p,value);}
@@ -107,7 +115,7 @@ function filtered(){
  if(sort==="az")list=[...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
  if(sort==="fav")list=[...list].sort((a,b)=>(Number(fav.has(b.id))-Number(fav.has(a.id)))||a.title.localeCompare(b.title,"ja"));
  if(sort==="updated")list=[...list].sort((a,b)=>String(b.sourceUpdatedAt||b.updatedAt||b.createdAt||"").localeCompare(String(a.sourceUpdatedAt||a.updatedAt||a.createdAt||"")));
- if(sort==="downloads")list=[...list].sort((a,b)=>Number(String(b.downloads||0).replace(/[^0-9.]/g,""))-Number(String(a.downloads||0).replace(/[^0-9.]/g,"")));
+ if(sort==="downloads")list=[...list].sort((a,b)=>parseDownloadCount(b.downloads)-parseDownloadCount(a.downloads));
  if(sort==="author")list=[...list].sort((a,b)=>String(a.author||"").localeCompare(String(b.author||""),"ja")||a.title.localeCompare(b.title,"ja"));
  return list;
 }
@@ -117,7 +125,7 @@ function safeImageUrl(value){
 }
 function imageMarkup(url,alt,cls){
  const safe=safeImageUrl(url);
- return '<div class="'+cls+'">'+(safe?'<img src="'+esc(safe)+'" alt="'+esc(alt)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer"><div class="image-placeholder" hidden>📦</div>':'<div class="image-placeholder">📦</div>')+'</div>';
+ return '<div class="'+cls+'">'+(safe?'<img src="'+esc(safe)+'" alt="'+esc(alt)+'" loading="lazy" decoding="async" referrerpolicy="strict-origin-when-cross-origin"><div class="image-placeholder" hidden>📦</div>':'<div class="image-placeholder">📦</div>')+'</div>';
 }
 function render(){
  const list=filtered(),fav=favorites(),totalPages=Math.max(1,Math.ceil(list.length/pageSize));
