@@ -44,7 +44,7 @@ function syncCategoryOptions(){
  const dynamic=[...new Set(packs.map(p=>String(p.category||"その他").trim()).filter(Boolean))];
  categories=["すべて",...new Set([...BASE_CATEGORIES,...dynamic])];
  const select=$("editCategory");
- if(select){const current=select.value;select.replaceChildren(...categories.slice(1).map(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;return option;}));select.value=categories.includes(current)?current:"その他";}
+ if(select){const current=select.value;const requestedCategory=initialSearchParams.get("category");if(requestedCategory&&dynamic.includes(requestedCategory))activeCategory=requestedCategory;select.replaceChildren(...categories.slice(1).map(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;return option;}));select.value=categories.includes(current)?current:"その他";}
 }
 function setStatus(message,type=""){const editorVisible=!$("editorArea").classList.contains("hidden");const el=$(editorVisible?"adminStatus":"loginStatus");if(el){el.textContent=message;el.className="status "+type;}}
 function categoryNav(){ $("filters").innerHTML=categories.map(c=>'<button class="chip '+(c===activeCategory?"active":"")+'" data-category="'+esc(c)+'">'+esc(c)+'</button>').join(""); }
@@ -134,23 +134,23 @@ function renderGallery(index=0){
  const box=$("modalGallery");
  if(!currentGalleryImages.length){box.innerHTML=imageMarkup("","画像なし","modal-gallery-main");return;}
  const safeIndex=Math.max(0,Math.min(index,currentGalleryImages.length-1)),url=currentGalleryImages[safeIndex];
- box.innerHTML=imageMarkup(url,"リソースパック画像 "+(safeIndex+1),"modal-gallery-main")+(currentGalleryImages.length>1?'<div class="gallery-thumbs">'+currentGalleryImages.map((src,i)=>'<button type="button" data-gallery-index="'+i+'" class="'+(i===safeIndex?"active":"")+'" aria-pressed="'+String(i===safeIndex)+'" aria-label="画像 '+(i+1)+'"><img src="'+esc(src)+'" alt="" loading="lazy" referrerpolicy="no-referrer"></button>').join("")+'</div>':"");
+ box.innerHTML=imageMarkup(url,"リソースパック画像 "+(safeIndex+1),"modal-gallery-main")+(currentGalleryImages.length>1?'<div class="gallery-thumbs">'+currentGalleryImages.map((src,i)=>'<button type="button" data-gallery-index="'+i+'" class="'+(i===safeIndex?"active":"")+'" aria-pressed="'+String(i===safeIndex)+'" aria-label="画像 '+(i+1)+'"><img src="'+esc(src)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button>').join("")+'</div>':"");
 }
 function openDetail(id){
  const p=packs.find(x=>x.id===id);if(!p)return;modalReturnFocus=document.activeElement;currentModalId=id;
  $("modalCategory").textContent=p.category;$("modalTitle").textContent=p.title;
- const meta=[["作者",p.author],["対応バージョン",p.compatibility||p.versions],["配布元",p.source],["公開日",p.publishedAt||p.createdAt],["最終更新日",p.sourceUpdatedAt||p.updatedAt],["ダウンロード数",p.downloads],["ファイルサイズ",p.fileSize],["ライセンス",p.license],["必要条件",p.requirements],["対応言語",Array.isArray(p.languages)?p.languages.join("、"):p.languages],["タグ",(p.tags||[]).join("、")]].filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="");const sections=[["説明",p.fullDescription||p.description],["主な特徴",p.features],["導入方法",p.installationSteps],["更新履歴",p.changelog],["注意事項",p.notes]].filter(x=>x[1]);$("modalBody").innerHTML='<div class="detail-meta">'+meta.map(x=>'<div><b>'+esc(x[0])+'</b><span>'+esc(Array.isArray(x[1])?x[1].join("、"):x[1])+'</span></div>').join("")+'</div>'+sections.map(x=>'<section class="detail-section"><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></section>').join("")+(p.sourceUrl?'<section class="detail-section"><h3>掲載情報について</h3><p>この図鑑に取得できた情報を掲載しています。未取得・未公表の項目は表示していません。内容の確認日：'+esc(p.detailsFetchedAt||"未記録")+'</p></section>':"");
+ const meta=[["作者",p.author||"不明"],["対応バージョン",p.compatibility||p.versions||"不明"],["配布元",p.source||"不明"],["公開日",p.publishedAt||p.createdAt],["最終更新日",p.sourceUpdatedAt||p.updatedAt],["ダウンロード数",p.downloads],["ファイルサイズ",p.fileSize],["ライセンス",p.license],["必要条件",p.requirements],["対応言語",Array.isArray(p.languages)?p.languages.join("、"):p.languages],["タグ",(p.tags||[]).join("、")]].filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="");const sections=[["説明",p.fullDescription||p.description],["主な特徴",p.features],["導入方法",p.installationSteps],["更新履歴",p.changelog],["注意事項",p.notes]].filter(x=>x[1]);$("modalBody").innerHTML='<div class="detail-meta">'+meta.map(x=>'<div><b>'+esc(x[0])+'</b><span>'+esc(Array.isArray(x[1])?x[1].join("、"):x[1])+'</span></div>').join("")+'</div>'+sections.map(x=>'<section class="detail-section"><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></section>').join("")+(p.sourceUrl?'<section class="detail-section"><h3>掲載情報について</h3><p>この図鑑に取得できた情報を掲載しています。未取得・未公表の項目は表示していません。内容の確認日：'+esc(p.detailsFetchedAt||"未記録")+'</p></section>':"");
  currentGalleryImages=[...new Set([p.thumbnailUrl,...(Array.isArray(p.galleryImages)?p.galleryImages:[])].map(safeImageUrl).filter(Boolean))].slice(0,20);
  renderGallery(0);
- $("sourceLink").href=safeImageUrl(p.sourceUrl)||"#";
- $("downloadLink").href=API+"/api/download/"+encodeURIComponent(p.id);
+ $("sourceLink").href=safeImageUrl(p.sourceUrl)||"#";$("sourceLink").classList.toggle("hidden",!safeImageUrl(p.sourceUrl));
  $("downloadLink").href=API+"/api/download/"+encodeURIComponent(p.id);
  $("downloadLink").classList.toggle("hidden",!(p.directDownloadAllowed&&p.directDownloadUrl));
  $("downloadLink").textContent="サイト内からダウンロード ↓";
  const isFav=favorites().has(id);$("modalFav").textContent=isFav?"★ お気に入り済み":"☆ お気に入り";
- const isJapanese=JAPANESE_RE.test((p.fullDescription||p.description||""));
- $("translateDescription").href="https://translate.google.com/?sl=auto&tl="+(isJapanese?"en":"ja")+"&text="+encodeURIComponent(p.fullDescription||p.description||"")+"&op=translate";
- $("translateDescription").textContent=isJapanese?"英語に翻訳 ↗":"日本語に翻訳 ↗";
+ const description=p.fullDescription||p.description||"";
+ const isJapanese=JAPANESE_RE.test(description),shortDescription=description.length<=1500;
+ $("translateDescription").href="https://translate.google.com/?sl=auto&tl="+(isJapanese?"en":"ja")+(shortDescription?"&text="+encodeURIComponent(description):"")+"&op=translate";
+ $("translateDescription").textContent=shortDescription?(isJapanese?"英語に翻訳 ↗":"日本語に翻訳 ↗"):"翻訳サイトを開く（長文） ↗";
  $("modal").classList.remove("hidden");$("modal").setAttribute("aria-hidden","false");document.body.style.overflow="hidden";$("modalClose").focus();
 }
 function closeModal(){
@@ -161,7 +161,7 @@ function closeModal(){
 }
 function toggleFav(id){
  const f=favorites();f.has(id)?f.delete(id):f.add(id);setFavorites(f);
- if(favoritesOnly){currentPage=1;render();}
+ if(favoritesOnly||$("sort").value==="fav"){currentPage=1;render();}
  else{
   const button=$("grid").querySelector('[data-fav="'+CSS.escape(id)+'"]');
   if(button){const active=f.has(id);button.classList.toggle("on",active);button.setAttribute("aria-pressed",String(active));button.textContent=active?"★":"☆";}
@@ -187,7 +187,7 @@ async function api(path,options={}){
  }catch(error){if(error.name==="AbortError")throw new Error("通信がタイムアウトしました。");throw error;}
  finally{clearTimeout(timer);}
 }
-const candidateCategories=["その他","シェーダー","軽量化","UI・テーマ","UI・操作","UI・メニュー","自然・植物","ブロック・建築","ブロック・アイテム","サウンド","空・天候","水・環境","モブ・モデル","アニメーション","言語・フォント","便利・農業","季節・テーマ"];
+const candidateCategories=BASE_CATEGORIES;
 
 async function loadTrash(){
  const box=$("trashList");if(!box||!token)return;
@@ -278,7 +278,7 @@ async function load(){
   else throw new Error("公開APIのデータ形式が不正です。");
  }catch(error){liveError=error;console.info("Cloud catalogue unavailable.",error.message);}
  syncCategoryOptions();categoryNav();render();$("grid").removeAttribute("aria-busy");
- if(seedError&&liveError)catalogueNotice("図鑑データを読み込めませんでした。通信を確認して再読み込みしてください。","error");
+ if(seedError&&liveError){$("countStat").textContent="件数取得不可";catalogueNotice("図鑑データを読み込めませんでした。通信を確認して再読み込みしてください。","error");}
  else if(seedError)catalogueNotice("基本カタログを読み込めませんでした。現在表示できるデータは公開API分のみです。","warning");
  else if(liveError)catalogueNotice("追加データとの同期に失敗しました。基本カタログを表示しています。","warning");
  else catalogueNotice("");
