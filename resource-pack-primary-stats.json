@@ -1,1 +1,12 @@
-{}
+{
+  "total": 4645,
+  "added": 14,
+  "updated": 1,
+  "removed": 0,
+  "scanned": 14,
+  "cutoff": "2025-11-28",
+  "maxPages": 1000,
+  "maxNew": 3000,
+  "staleLimit": 1000,
+  "directDownloadable": 0
+}

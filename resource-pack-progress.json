@@ -1,17 +1,22 @@
 {
   "schema": 2,
-  "updatedAt": "2026-11-28T15:28:01.402Z",
+  "updatedAt": "2026-11-28T15:32:20.572Z",
   "status": "running",
   "runStartedAt": "2026-11-28T15:28:01.402Z",
   "runFinishedAt": null,
   "baselineCount": 4631,
-  "currentCount": 4631,
-  "stage": "収集ジョブを開始",
+  "currentCount": 4645,
+  "stage": "MCPEDL収集完了・追加サイト収集中",
   "stageHistory": [
     {
       "at": "2026-11-28T15:28:01.402Z",
       "stage": "収集ジョブを開始",
       "count": 4631
+    },
+    {
+      "at": "2026-11-28T15:32:20.572Z",
+      "stage": "MCPEDL収集完了・追加サイト収集中",
+      "count": 4645
     }
   ],
   "history": [
