@@ -248,7 +248,7 @@ async function init(){
   if(error.status===401){clearSavedAdminToken();location.href="index.html";return;}
   status(error.message,"error");$("pageContent").innerHTML=failurePanel(error);return;
  }
- $("logoutBtn")?.addEventListener("click",()=>{clearSavedAdminToken();location.href="index.html";});
+ $("logoutBtn")?.addEventListener("click",async()=>{try{await fetch(API+"/api/admin/logout",{method:"POST",headers:{Authorization:"Bearer "+token,Accept:"application/json"}});}catch{}clearSavedAdminToken();location.href="index.html";});
  $("refreshBtn")?.addEventListener("click",()=>renderPage());
  document.querySelectorAll("[data-nav]").forEach(a=>a.addEventListener("click",e=>{
   e.preventDefault();const next=a.dataset.nav;
