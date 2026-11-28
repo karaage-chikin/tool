@@ -343,6 +343,10 @@ $("uploadPackFile").addEventListener("click",async()=>{
  if(!token){$("uploadPackStatus").textContent="管理者ログインが必要です。";return;}
  if(!$("editDownloadAllowed").checked||!$("editPermissionUrl").value.trim()){$("uploadPackStatus").textContent="再配布許可の根拠URLを入力し、確認欄にチェックしてください。";return;}
  if(!/\.(mcpack|mcaddon|zip)$/i.test(file.name)||file.size>50*1024*1024){$("uploadPackStatus").textContent="mcpack / mcaddon / zip形式、50MB以下のファイルを選んでください。";return;}
+ let permission;try{permission=new URL($("editPermissionUrl").value.trim());}catch{$("uploadPackStatus").textContent="再配布許可の根拠URLを確認してください。";return;}
+ if(permission.protocol!=="https:"){$("uploadPackStatus").textContent="再配布許可の根拠URLはHTTPSにしてください。";return;}
+ if(!confirm("このファイルを図鑑サイトの公開ストレージに保存します。配布元から再配布の許可を得ていますか？\n許可根拠："+permission.href))return;
+ if(!confirm("保存したファイルは公開URLから誰でも取得できます。許可範囲・対象バージョン・条件を確認しましたか？"))return;
  const button=$("uploadPackFile");button.disabled=true;$("uploadPackStatus").textContent="アップロード中…";
  try{
   const form=new FormData();form.append("file",file);form.append("permissionUrl",$("editPermissionUrl").value.trim());
