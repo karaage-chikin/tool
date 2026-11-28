@@ -78,9 +78,13 @@ function expandSearch(q){
  return [...new Set(out.filter(Boolean))];
 }
 function suggestionItems(q){
- const n=normalized(q);if(!n)return ["シェーダー","UI","自然","空","水","ブロック","アイテム","サウンド","軽量化","フォント"];
+ const n=normalized(q);
+ if(!n)return ["シェーダー","UI","自然","空","水","ブロック","アイテム","サウンド","軽量化","フォント"];
  const matches=[];
- for(const group of searchTerms){const label=group[0];if(group.some(t=>normalized(t).includes(n)||n.includes(normalized(t))))matches.push(label,...group.filter(t=>normalized(t)!==n).slice(0,2));}
+ for(const group of searchTerms){
+  const terms=group.map(normalized);
+  if(terms.some(term=>term===n||term.startsWith(n)))matches.push(group[0],...group.filter(t=>normalized(t)!==n).slice(0,2));
+ }
  return [...new Set(matches)].slice(0,8);
 }
 function renderSuggestions(){
@@ -124,7 +128,7 @@ function render(){
  if($("prevPacks")){$("prevPacks").classList.toggle("hidden",totalPages<=1);$("prevPacks").disabled=currentPage<=1;}
  if($("pageIndicator"))$("pageIndicator").textContent=currentPage+" / "+totalPages+"ページ";
  syncSearchUrl();
- $("grid").innerHTML=visible.length?visible.map(p=>'<article class="pack" data-open="'+esc(p.id)+'">'+imageMarkup(p.thumbnailUrl||(p.galleryImages||[])[0]||"",p.title+"の画像","pack-thumb")+'<div class="pack-top"><span class="category">'+esc(p.category)+'</span><button class="fav '+(fav.has(p.id)?"on":"")+'" data-fav="'+esc(p.id)+'" aria-label="お気に入り">'+(fav.has(p.id)?"★":"☆")+'</button></div><h2>'+esc(p.title)+'</h2><div class="author">作者：'+esc(p.author||"不明")+'</div><p class="desc">'+esc(p.description)+'</p><div class="pack-bottom"><span class="version">'+esc(p.compatibility||"対応情報は配布元で確認")+'</span><button class="details" data-open="'+esc(p.id)+'">詳細を見る →</button></div>'+(p.directDownloadAllowed?'<div class="version">サイト内ダウンロード対応</div>':'')+(token?'<div class="admin-actions"><button class="btn small" data-delete="'+esc(p.id)+'">削除</button></div>':"")+'</article>').join(""):'<div class="empty">該当するパックが見つかりませんでした。検索語やジャンルを変えてみてね。</div>';
+ $("grid").innerHTML=visible.length?visible.map(p=>'<article class="pack" data-open="'+esc(p.id)+'" tabindex="0" aria-label="'+esc(p.title+" の詳細を開く")+'">'+imageMarkup(p.thumbnailUrl||(p.galleryImages||[])[0]||"",p.title+"の画像","pack-thumb")+'<div class="pack-top"><span class="category">'+esc(p.category)+'</span><button class="fav '+(fav.has(p.id)?"on":"")+'" data-fav="'+esc(p.id)+'" aria-label="お気に入り" aria-pressed="'+String(fav.has(p.id))+'">'+(fav.has(p.id)?"★":"☆")+'</button></div><h2>'+esc(p.title)+'</h2><div class="author">作者：'+esc(p.author||"不明")+'</div><p class="desc">'+esc(p.description)+'</p><div class="pack-bottom"><span class="version">'+esc(p.compatibility||"対応情報は配布元で確認")+'</span><button class="details" data-open="'+esc(p.id)+'">詳細を見る →</button></div>'+(p.directDownloadAllowed?'<div class="version">サイト内ダウンロード対応</div>':'')+(token?'<div class="admin-actions"><button class="btn small" data-delete="'+esc(p.id)+'">削除</button></div>':"")+'</article>').join(""):'<div class="empty">該当するパックが見つかりませんでした。検索語やジャンルを変えてみてね。</div>';
 }
 function renderGallery(index=0){
  const box=$("modalGallery");
@@ -139,6 +143,7 @@ function openDetail(id){
  currentGalleryImages=[...new Set([p.thumbnailUrl,...(Array.isArray(p.galleryImages)?p.galleryImages:[])].map(safeImageUrl).filter(Boolean))].slice(0,20);
  renderGallery(0);
  $("sourceLink").href=safeImageUrl(p.sourceUrl)||"#";
+ $("downloadLink").href=API+"/api/download/"+encodeURIComponent(p.id);
  $("downloadLink").href=API+"/api/download/"+encodeURIComponent(p.id);
  $("downloadLink").classList.toggle("hidden",!(p.directDownloadAllowed&&p.directDownloadUrl));
  $("downloadLink").textContent="サイト内からダウンロード ↓";
@@ -290,6 +295,7 @@ function showEditor(loggedIn){
  $("loginArea").classList.toggle("hidden",loggedIn);$("editorArea").classList.toggle("hidden",!loggedIn);
 }
 $("filters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;activeCategory=b.dataset.category;currentPage=1;categoryNav();render();});
+$("grid").addEventListener("keydown",e=>{const card=e.target.closest(".pack[data-open]");if(!card||e.target.closest("button,a,input,select,textarea"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(card.dataset.open);}});
 $("grid").addEventListener("click",e=>{
  const reset=e.target.closest("[data-reset-search]");if(reset){$("search").value="";activeCategory="すべて";favoritesOnly=false;$("sort").value="new";$("favoritesOnly").classList.remove("primary");currentPage=1;categoryNav();render();return;}
  const fav=e.target.closest("[data-fav]");if(fav){e.stopPropagation();toggleFav(fav.dataset.fav);return;}
@@ -305,7 +311,7 @@ $("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=
  window.addEventListener("popstate",()=>{const p=new URLSearchParams(location.search);$("search").value=p.get("q")||"";activeCategory=categories.includes(p.get("category"))?p.get("category"):"すべて";$("sort").value=["new","az","fav","updated","author"].includes(p.get("sort"))?p.get("sort"):"new";favoritesOnly=p.get("fav")==="1";currentPage=Math.max(1,Number.parseInt(p.get("page")||"1",10)||1);$("favoritesOnly").classList.toggle("primary",favoritesOnly);categoryNav();render();});
 $("loadMorePacks").addEventListener("click",()=>{currentPage++;render();});if($("prevPacks"))$("prevPacks").addEventListener("click",()=>{currentPage=Math.max(1,currentPage-1);render();});
 $("favoritesOnly").addEventListener("click",()=>{favoritesOnly=!favoritesOnly;currentPage=1;$("favoritesOnly").classList.toggle("primary",favoritesOnly);render();});
-$("adminToggle").addEventListener("click",()=>$("adminPanel").classList.toggle("hidden"));
+$("adminToggle").addEventListener("click",()=>{const panel=$("adminPanel"),opening=panel.classList.contains("hidden");panel.classList.toggle("hidden");$("adminToggle").setAttribute("aria-expanded",String(opening));});
 $("loginBtn").addEventListener("click",async()=>{
  const password=$("adminPassword").value;if(!password){setStatus("パスワードを入力してください。","error");return;}
  try{
