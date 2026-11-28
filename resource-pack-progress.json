@@ -1,12 +1,12 @@
 {
   "schema": 2,
-  "updatedAt": "2026-11-28T15:54:27.316Z",
-  "status": "running",
+  "updatedAt": "2026-11-28T15:54:29.602Z",
+  "status": "completed",
   "runStartedAt": "2026-11-28T15:28:01.402Z",
-  "runFinishedAt": null,
+  "runFinishedAt": "2026-11-28T15:54:29.602Z",
   "baselineCount": 4631,
   "currentCount": 4649,
-  "stage": "画像情報取得完了・図鑑更新中",
+  "stage": "今回の巡回サイクル終了",
   "stageHistory": [
     {
       "at": "2026-11-28T15:28:01.402Z",
@@ -31,6 +31,11 @@
     {
       "at": "2026-11-28T15:54:27.316Z",
       "stage": "画像情報取得完了・図鑑更新中",
+      "count": 4649
+    },
+    {
+      "at": "2026-11-28T15:54:29.602Z",
+      "stage": "今回の巡回サイクル終了",
       "count": 4649
     }
   ],
@@ -224,6 +229,108 @@
           "count": 4631
         }
       ]
+    },
+    {
+      "startedAt": "2026-11-28T15:28:01.402Z",
+      "finishedAt": "2026-11-28T15:54:29.602Z",
+      "durationMs": 1588262,
+      "baselineCount": 4631,
+      "finalCount": 4649,
+      "added": 18,
+      "failed": false,
+      "addedBySource": {
+        "MCPEDL category listing": 14,
+        "MCPEDL REST API": 0,
+        "GitHub": 1,
+        "CurseForge": 0,
+        "ModBay": 3,
+        "Planet Minecraft": 0
+      },
+      "sourceStats": {
+        "MCPEDL category listing": {
+          "scanned": 14,
+          "added": 14,
+          "updated": 1,
+          "removed": 0
+        },
+        "MCPEDL REST API": {
+          "scanned": 0,
+          "added": 0,
+          "duplicates": 0,
+          "tooOld": 0,
+          "noDate": 0,
+          "notBedrock": 0,
+          "errors": 1
+        },
+        "GitHub": {
+          "scanned": 1,
+          "added": 1,
+          "duplicates": 0,
+          "tooOld": 0,
+          "noDate": 0,
+          "notBedrock": 0,
+          "errors": 0
+        },
+        "ModBay": {
+          "scanned": 5024,
+          "added": 3,
+          "duplicates": 432,
+          "tooOld": 375,
+          "noDate": 0,
+          "notBedrock": 0,
+          "errors": 4526
+        },
+        "Planet Minecraft": {
+          "scanned": 0,
+          "added": 0,
+          "duplicates": 0,
+          "tooOld": 0,
+          "noDate": 0,
+          "notBedrock": 0,
+          "errors": 1
+        },
+        "CurseForge": {
+          "scanned": 2413,
+          "added": 0,
+          "duplicates": 652,
+          "tooOld": 0,
+          "noDate": 2348,
+          "notBedrock": 0,
+          "errors": 0
+        }
+      },
+      "stageHistory": [
+        {
+          "at": "2026-11-28T15:28:01.402Z",
+          "stage": "収集ジョブを開始",
+          "count": 4631
+        },
+        {
+          "at": "2026-11-28T15:32:20.572Z",
+          "stage": "MCPEDL収集完了・追加サイト収集中",
+          "count": 4645
+        },
+        {
+          "at": "2026-11-28T15:53:57.295Z",
+          "stage": "追加サイト収集完了・説明情報取得中",
+          "count": 4649
+        },
+        {
+          "at": "2026-11-28T15:54:22.732Z",
+          "stage": "説明・メタデータ取得完了・画像情報取得中",
+          "count": 4649
+        },
+        {
+          "at": "2026-11-28T15:54:27.316Z",
+          "stage": "画像情報取得完了・図鑑更新中",
+          "count": 4649
+        },
+        {
+          "at": "2026-11-28T15:54:29.602Z",
+          "stage": "今回の巡回サイクル終了",
+          "count": 4649
+        }
+      ]
     }
   ],
   "sourceStats": {
@@ -278,5 +385,107 @@
       "notBedrock": 0,
       "errors": 0
     }
+  },
+  "lastRun": {
+    "startedAt": "2026-11-28T15:28:01.402Z",
+    "finishedAt": "2026-11-28T15:54:29.602Z",
+    "durationMs": 1588262,
+    "baselineCount": 4631,
+    "finalCount": 4649,
+    "added": 18,
+    "failed": false,
+    "addedBySource": {
+      "MCPEDL category listing": 14,
+      "MCPEDL REST API": 0,
+      "GitHub": 1,
+      "CurseForge": 0,
+      "ModBay": 3,
+      "Planet Minecraft": 0
+    },
+    "sourceStats": {
+      "MCPEDL category listing": {
+        "scanned": 14,
+        "added": 14,
+        "updated": 1,
+        "removed": 0
+      },
+      "MCPEDL REST API": {
+        "scanned": 0,
+        "added": 0,
+        "duplicates": 0,
+        "tooOld": 0,
+        "noDate": 0,
+        "notBedrock": 0,
+        "errors": 1
+      },
+      "GitHub": {
+        "scanned": 1,
+        "added": 1,
+        "duplicates": 0,
+        "tooOld": 0,
+        "noDate": 0,
+        "notBedrock": 0,
+        "errors": 0
+      },
+      "ModBay": {
+        "scanned": 5024,
+        "added": 3,
+        "duplicates": 432,
+        "tooOld": 375,
+        "noDate": 0,
+        "notBedrock": 0,
+        "errors": 4526
+      },
+      "Planet Minecraft": {
+        "scanned": 0,
+        "added": 0,
+        "duplicates": 0,
+        "tooOld": 0,
+        "noDate": 0,
+        "notBedrock": 0,
+        "errors": 1
+      },
+      "CurseForge": {
+        "scanned": 2413,
+        "added": 0,
+        "duplicates": 652,
+        "tooOld": 0,
+        "noDate": 2348,
+        "notBedrock": 0,
+        "errors": 0
+      }
+    },
+    "stageHistory": [
+      {
+        "at": "2026-11-28T15:28:01.402Z",
+        "stage": "収集ジョブを開始",
+        "count": 4631
+      },
+      {
+        "at": "2026-11-28T15:32:20.572Z",
+        "stage": "MCPEDL収集完了・追加サイト収集中",
+        "count": 4645
+      },
+      {
+        "at": "2026-11-28T15:53:57.295Z",
+        "stage": "追加サイト収集完了・説明情報取得中",
+        "count": 4649
+      },
+      {
+        "at": "2026-11-28T15:54:22.732Z",
+        "stage": "説明・メタデータ取得完了・画像情報取得中",
+        "count": 4649
+      },
+      {
+        "at": "2026-11-28T15:54:27.316Z",
+        "stage": "画像情報取得完了・図鑑更新中",
+        "count": 4649
+      },
+      {
+        "at": "2026-11-28T15:54:29.602Z",
+        "stage": "今回の巡回サイクル終了",
+        "count": 4649
+      }
+    ]
   }
 }
