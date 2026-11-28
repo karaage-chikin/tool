@@ -37,7 +37,7 @@ function setFavorites(set){
 }
 function parseDownloadCount(value){
  const raw=String(value??"").trim().toLocaleLowerCase().replace(/,/g,"");
- const number=Number((raw.match(/[0-9]+(?:\\.[0-9]+)?/)||[])[0]||0);
+ const number=Number((raw.match(/[0-9]+(?:\.[0-9]+)?/)||[])[0]||0);
  if(/(?:m|million)/.test(raw))return number*1000000;
  if(/(?:k|千)/.test(raw))return number*1000;
  if(/(?:万)/.test(raw))return number*10000;
