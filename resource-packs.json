@@ -135323,5 +135323,73 @@
     "sourceUpdatedAt": "2026-03-09",
     "thumbnailUrl": "",
     "galleryImages": []
+  },
+  {
+    "id": "github-Faithful-32x-Bedrock-c744372bc131",
+    "title": "Faithful 32x",
+    "author": "Faithful-Resource-Pack",
+    "category": "その他",
+    "description": "The go-to 32x texture pack for Minecraft. Now for Bedrock Edition.",
+    "sourceUrl": "https://github.com/Faithful-Resource-Pack/Faithful-32x-Bedrock/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "GitHub",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-26",
+    "sourceUpdatedAt": "2026-11-26",
+    "thumbnailUrl": "https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-32x-Bedrock/bedrock-latest/pack_icon.png",
+    "galleryImages": [
+      "https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-32x-Bedrock/bedrock-latest/pack_icon.png"
+    ]
+  },
+  {
+    "id": "modbay-7180-pandamines-vibrant-visuals-unlock-a1e97fd33449",
+    "title": "PandaMine Vibrant Visuals Unlocker Texture Pack for MCPE",
+    "author": "Java",
+    "category": "シェーダー",
+    "description": "Forces Vibrant Visuals on unsupported devices and servers, enabling enhanced graphics on Android, Windows, and jailbroken iOS.",
+    "sourceUrl": "https://modbay.org/textures/7180-pandamines-vibrant-visuals-unlocker.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-07-29",
+    "sourceUpdatedAt": "2026-07-29",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-7339-anime-girl-animated-ui-html-0625c351ae0a",
+    "title": "Anime Girl Animated UI Texture Pack for Minecraft Bedrock",
+    "author": "Java] {Public Beta} Mods 1 Sep 2026 V",
+    "category": "UI・テーマ",
+    "description": "High-definition animated anime girl UI with 60 FPS visuals, customizable elements, and compatibility for streaming overlays and desktops.",
+    "sourceUrl": "https://modbay.org/textures/7339-anime-girl-animated-ui.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-08-21",
+    "sourceUpdatedAt": "2026-08-21",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-6991-craftedge-client-html-8996a94cd3f6",
+    "title": "CraftEdge Client Texture Pack for Minecraft Bedrock 26.50",
+    "author": "Java] {Public Beta} Mods 1 Sep 2026 VanillAnimals Update v1.1.5",
+    "category": "ブロック・建築",
+    "description": "CraftEdge Client brings an in-game mod menu, 30+ HUD modules, cosmetics, and extensive UI customization for Minecraft Bedrock.",
+    "sourceUrl": "https://modbay.org/textures/6991-craftedge-client.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-07-02",
+    "sourceUpdatedAt": "2026-07-02",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp"
+    ]
   }
 ]
