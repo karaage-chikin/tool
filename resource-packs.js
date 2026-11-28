@@ -413,8 +413,16 @@ $("downloadLink").addEventListener("click",async e=>{
  try{
   const res=await fetch(API+"/api/download/"+encodeURIComponent(p.id));
   if(!res.ok){let data={};try{data=await res.json();}catch{}throw new Error(data.error||"ダウンロードできませんでした。");}
-  const blob=await res.blob(),cd=res.headers.get("Content-Disposition")||"",m=cd.match(/filename\*=UTF-8''([^;]+)/i);
+  const cd=res.headers.get("Content-Disposition")||"",m=cd.match(/filename\*=UTF-8''([^;]+)/i),total=Number(res.headers.get("Content-Length")||0);
   let filename=(p.title||"resource-pack")+".mcpack";if(m){try{filename=decodeURIComponent(m[1]);}catch{}}
+  const reader=res.body?.getReader();if(!reader)throw new Error("ダウンロードデータを読み取れません。");
+  const chunks=[];let received=0;
+  while(true){
+   const part=await reader.read();if(part.done)break;
+   chunks.push(part.value);received+=part.value.byteLength;
+   button.textContent=total>0?"ダウンロード中… "+Math.min(100,received/total*100).toFixed(0)+"%":"ダウンロード中… "+(received/1048576).toFixed(1)+" MB";
+  }
+  const blob=new Blob(chunks,{type:"application/octet-stream"});
   const objectUrl=URL.createObjectURL(blob),a=document.createElement("a");a.href=objectUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectUrl),30000);
   button.textContent="ダウンロードを開始しました";
  }catch(err){alert(err.message);button.textContent=label;}
