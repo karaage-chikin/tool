@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { createHash } from "node:crypto";
 import { load } from "cheerio";
 import { category, isRestricted, normalizeSourceUrl, subtractCalendarYear, titleKey } from "./resource-pack-utils.mjs";
-// Scheduled by resource-packs-expanded.yml every 6 hours; the workflow queues runs without canceling active collection.
+// Collection is not capped at the 10,000-entry milestone; MAX_NEW_PACKS only limits work per run.
 const path="resource-packs.json";
 const packs=JSON.parse(fs.readFileSync(path,"utf8"));
 const cutoff=subtractCalendarYear();
@@ -10,8 +10,7 @@ const known=new Map(packs.map(p=>[normalizeSourceUrl(p.sourceUrl),p]).filter(([k
 const ids=new Set(packs.map(p=>p.id));
 const headers={"User-Agent":"Mozilla/5.0 (compatible; KaraageChikinBedrockPackDirectory/3.1)","Accept":"text/html,application/xhtml+xml"};
 const maxPages=Math.max(1,Math.min(5000,Number(process.env.MAX_MCPEDL_PAGES)||1000));
-const targetTotal=Math.max(1,Math.min(50000,Number(process.env.TARGET_TOTAL_PACKS)||10000));
-const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000,targetTotal-packs.length));
+const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000));
 const staleLimit=Math.max(3,Math.min(5000,Number(process.env.STALE_PAGE_LIMIT)||1000));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
 async function getPage(page){
