@@ -349,6 +349,13 @@ $("uploadPackFile").addEventListener("click",async()=>{
 $("savePack").addEventListener("click",async()=>{
  const payload={title:$("editTitle").value.trim(),author:$("editAuthor").value.trim(),category:$("editCategory").value,compatibility:$("editVersion").value.trim()||"配布元で確認",sourceUrl:$("editUrl").value.trim(),thumbnailUrl:$("editThumbnail").value.trim(),galleryImages:$("editGallery").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),directDownloadUrl:$("editDownloadUrl").value.trim(),directDownloadAllowed:$("editDownloadAllowed").checked,permissionUrl:$("editPermissionUrl").value.trim(),permissionNote:$("editPermissionNote").value.trim(),imagePermissionUrl:$("editImagePermissionUrl").value.trim(),description:$("editDescription").value.trim(),source:"管理者登録"};
  if(!payload.title||!payload.sourceUrl||!payload.description){setStatus("パック名・説明・配布元URLを入力してください。","error");return;}
+ if(payload.directDownloadAllowed){
+  let permission;
+  try{permission=new URL(payload.permissionUrl);}catch{setStatus("再配布許可の根拠URLを確認してください。","error");return;}
+  if(permission.protocol!=="https:"||!payload.directDownloadUrl){setStatus("直接ダウンロードにはHTTPSのファイルURLと再配布許可URLが必要です。","error");return;}
+  if(!confirm("配布元の規約・ライセンスで、このファイルを第三者サイトから再配布する許可を確認しましたか？\n許可根拠： "+permission.href))return;
+  if(!confirm("このファイルを図鑑サイト内から配布可能にします。許可範囲・対象バージョン・条件を再確認しましたか？"))return;
+ }
  try{const data=await api("/api/admin/packs",{method:"POST",body:JSON.stringify(payload)});packs.unshift(data.pack);clearEditor();render();setStatus("登録しました。","ok");}
  catch(e){setStatus(e.message,"error");}
 });
