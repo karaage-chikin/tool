@@ -13,6 +13,9 @@ const maxPages=Math.max(1,Math.min(5000,Number(process.env.MAX_MCPEDL_PAGES)||10
 const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000));
 const staleLimit=Math.max(3,Math.min(5000,Number(process.env.STALE_PAGE_LIMIT)||1000));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
+let oidcToken="",liveQueue=Promise.resolve();
+function liveLog(type,provider,detail={}){const event={at:new Date().toISOString(),type,provider,...detail};console.log("[LIVE_SCAN] "+JSON.stringify(event));liveQueue=liveQueue.then(async()=>{if(!oidcToken||!process.env.RESOURCE_PACK_LIVE_LOG_URL)return;try{await fetch(process.env.RESOURCE_PACK_LIVE_LOG_URL,{method:"POST",headers:{"Authorization":"Bearer "+oidcToken,"Content-Type":"application/json"},body:JSON.stringify(event),signal:AbortSignal.timeout(8000)});}catch(error){console.warn("Live log delivery failed:",error?.message||error);}});}
+
 async function getPage(page){
  const url=page===1?"https://mcpedl.com/category/texture-packs/":"https://mcpedl.com/category/texture-packs/page/"+page+"/";
  const response=await fetch(url,{headers,signal:AbortSignal.timeout(25000)});
@@ -45,7 +48,7 @@ function cardDate($,card){
    const card=a.closest("article, li, .post, .entry, .card, .type-post").first();
    const title=clean(a.text()||a.attr("title")||a.find("img").attr("alt"));
    if(!title||title.length<4||title.length>160||/^\d+(?:\.\d+)?$/.test(title)||/^image$/i.test(title)||isRestricted(title,key))continue;
-   const modified=card.length?cardDate($,card):null;
+   liveLog("candidate_found","MCPEDL",{title,sourceUrl:key});\n   const modified=card.length?cardDate($,card):null;
    if(modified&&modified<cutoff){reachedOld=true;break;}
    const existing=known.get(key);
    if(existing){
@@ -67,10 +70,10 @@ function cardDate($,card){
    if(ids.has(id))continue;
    const dateText=modified.toISOString().slice(0,10);
    const record={id,title,author:"",category:category(title),description:"Minecraft Bedrock向けリソースパック。詳しい説明・対応バージョンは取得できた情報を掲載します。",sourceUrl:key+"/",compatibility:"Bedrock向け（配布元でバージョン確認）",source:"MCPEDL",sourceType:"automatic",createdAt:dateText,sourceUpdatedAt:dateText,thumbnailUrl:"",galleryImages:[]};
-   packs.push(record);known.set(key,record);ids.add(id);added++;pageItems++;pageChanges++;scanned++;
+   packs.push(record);known.set(key,record);ids.add(id);added++;pageItems++;pageChanges++;scanned++;liveLog("candidate_added","MCPEDL",{title,sourceUrl:key});
    if(added>=maxNew)break;
   }
-  console.log("MCPEDL page",page,"valid links",validListingLinks,"new",pageItems,"changed",pageChanges,"total new",added);
+  console.log("MCPEDL page",page,"valid links",validListingLinks,"new",pageItems,"changed",pageChanges,"total new",added);liveLog("listing_result","MCPEDL",{page,url:"https://mcpedl.com/category/texture-packs/"+(page>1?"page/"+page+"/":""),candidateLinks:validListingLinks,added:pageItems,totalAdded:added});
   if(validListingLinks===0){console.warn("Listing page yielded no valid item links; stopping to avoid treating a parser failure as an empty page.");break;}
   stalePages=pageChanges===0?stalePages+1:0;
   if(stalePages>=staleLimit){console.log("Stopping after",stalePages,"consecutive unchanged listing pages.");break;}
@@ -88,5 +91,5 @@ function cardDate($,card){
  fs.writeFileSync(path,JSON.stringify(retained,null,2)+"\n");
  const summary={total:retained.length,added,updated,removed,scanned,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit,directDownloadable:retained.filter(p=>p.directDownloadAllowed&&p.directDownloadUrl).length};
  fs.writeFileSync("resource-pack-primary-stats.json",JSON.stringify(summary,null,2)+"\n");
- console.log(JSON.stringify(summary,null,2));
+ await liveQueue;\n console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
