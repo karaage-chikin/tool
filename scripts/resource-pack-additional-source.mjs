@@ -14,7 +14,7 @@ const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000))
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||1000));
 const staleLimit=Math.max(10,Math.min(200,Number(process.env.ADDITIONAL_STALE_PAGE_LIMIT)||60));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
-const stats={MCPEDL:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
+const stats={"MCPEDL REST API":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function parseDate(value){
  if(!value)return null;
@@ -156,7 +156,7 @@ async function processListingCandidates(provider,candidates,base){
  return added;
 }
 async function scanMcpedlRest(){
- const st=stats.MCPEDL;let added=0;
+ const st=stats["MCPEDL REST API"];let added=0;
  const catText=await fetchText("https://mcpedl.com/wp-json/wp/v2/categories?slug=texture-packs","application/json");
  const cats=JSON.parse(catText);const categoryId=Array.isArray(cats)?Number(cats[0]?.id):0;
  if(!categoryId)throw new Error("MCPEDL Texture Packs category unavailable");
@@ -225,12 +225,15 @@ async function scanHtmlSource(provider){
 function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\n");}
 (async()=>{
  const results={};
- for(const [name,scan] of [["MCPEDL",scanMcpedlRest],["CurseForge",()=>scanHtmlSource("CurseForge")],["ModBay",()=>scanHtmlSource("ModBay")],["Planet Minecraft",()=>scanHtmlSource("Planet Minecraft")]]){
+ for(const [name,scan] of [["MCPEDL REST API",scanMcpedlRest],["CurseForge",()=>scanHtmlSource("CurseForge")],["ModBay",()=>scanHtmlSource("ModBay")],["Planet Minecraft",()=>scanHtmlSource("Planet Minecraft")]]){
   try{results[name]=await scan();save();}
   catch(error){console.warn(name+" scan failed; keeping already collected records:",error?.message||error);stats[name].errors++;results[name]=0;save();}
  }
  const added=Object.values(results).reduce((sum,n)=>sum+n,0);
- const summary={addedFromAdditionalSource:added,addedBySource:results,sourceStats:stats,total:packs.length,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit};
+ let primary={};try{primary=JSON.parse(fs.readFileSync("resource-pack-primary-stats.json","utf8"));}catch{}
+ const addedBySource={"MCPEDL category listing":Number(primary.added||0),...results};
+ const sourceStats={"MCPEDL category listing":{scanned:Number(primary.scanned||0),added:Number(primary.added||0),updated:Number(primary.updated||0),removed:Number(primary.removed||0)},...stats};
+ const summary={addedFromAdditionalSource:added,totalNewAdded:Object.values(addedBySource).reduce((sum,n)=>sum+Number(n||0),0),addedBySource,sourceStats,total:packs.length,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit};
  fs.writeFileSync("resource-pack-collector-stats.json",JSON.stringify(summary,null,2)+"\n");
  console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
