@@ -1,7 +1,7 @@
 export function normalizeText(value){
  return String(value??"").normalize("NFKC").toLocaleLowerCase("ja-JP");
 }
-const restrictedPattern=/(?:\b(?:gun|guns|weapon|weapons|knife|knives|sword|swords|rifle|pistol|shotgun|grenade|ammo|ammunition|blade|crossbow|mace|spear|firearm|firearms)\b|銃|武器|刃物|刀剣|弾薬|弾丸|火器)/iu;
+const restrictedPattern=/(?:\b(?:gun|guns|weapon|weapons|knife|knives|sword|swords|rifle|pistol|shotgun|grenade|ammo|ammunition|blade|crossbow|mace|spear|firearm|firearms)\b|銃|武器|刃物|刀剣|弾薬|弾丸|火器|\b(?:bow|arrow|arrows|trident|crossbow|launcher|ammo|ammunition)\b|弓|矢|トライデント)/iu;
 export function isRestricted(...values){
  return restrictedPattern.test(normalizeText(values.filter(Boolean).join(" ")));
 }
