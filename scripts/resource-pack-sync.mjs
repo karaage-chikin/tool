@@ -86,5 +86,7 @@ function cardDate($,card){
  });
  removed=before-retained.length;
  fs.writeFileSync(path,JSON.stringify(retained,null,2)+"\n");
- console.log(JSON.stringify({total:retained.length,added,updated,removed,scanned,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit,directDownloadable:retained.filter(p=>p.directDownloadAllowed&&p.directDownloadUrl).length},null,2));
+ const summary={total:retained.length,added,updated,removed,scanned,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit,directDownloadable:retained.filter(p=>p.directDownloadAllowed&&p.directDownloadUrl).length};
+ fs.writeFileSync("resource-pack-primary-stats.json",JSON.stringify(summary,null,2)+"\\n");
+ console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
