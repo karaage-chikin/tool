@@ -196,63 +196,43 @@ async function scanMcpedlRest(){
 
 async function scanGithubRepos(){
  const provider="GitHub",st=stats[provider];let added=0;
- const queries=["topic:minecraft-bedrock topic:resource-pack","topic:bedrock topic:texture-pack"];
- const seenRepos=new Set();
- for(const query of queries){
-  for(let pageNo=1;pageNo<=5&&added<maxNew;pageNo++){
-   const api="https://api.github.com/search/repositories?q="+encodeURIComponent(query)+"&sort=updated&order=desc&per_page=100&page="+pageNo;
-   liveLog("listing_scan",provider,{query,page:pageNo,url:api});
-   let data;
-   try{data=JSON.parse(await fetchText(api,"application/vnd.github+json"));}catch(error){st.errors++;console.warn("GitHub repository search failed:",error?.message||error);break;}
-   const repos=Array.isArray(data.items)?data.items:[];
-   if(!repos.length)break;
-   for(const repo of repos){
-    st.scanned++;
-    const full=String(repo.full_name||"").toLowerCase();
-    if(!full||seenRepos.has(full))continue;seenRepos.add(full);
-    const updated=parseDate(repo.pushed_at||repo.updated_at);
-    if(!updated){st.noDate++;continue;}
-    if(updated<cutoff){st.tooOld++;continue;}
-    const title=clean(repo.name||"").replace(/[-_]+/g," ").slice(0,160);
-    const summary=clean(repo.description||"").slice(0,1200);
-    const topics=Array.isArray(repo.topics)?repo.topics.join(" "):"";
-    if(!title||isRestricted(title,summary,topics,repo.html_url)){st.notBedrock++;continue;}
-    const evidence=(topics+" "+summary).toLowerCase();
-    if(!/(bedrock|mcpe|pocket edition)/.test(evidence)||!/(resource.?pack|texture.?pack|mcpack)/.test(evidence)){st.notBedrock++;continue;}
-    const repoUrl=String(repo.html_url||"");
-    if(normalizeSourceUrl(repoUrl)===""||knownUrls.has(normalizeSourceUrl(repoUrl))){st.duplicates++;continue;}
-    try{
-     const rootUrl="https://api.github.com/repos/"+repo.full_name+"/contents?ref="+encodeURIComponent(repo.default_branch||"main");
-     const root=JSON.parse(await fetchText(rootUrl,"application/vnd.github+json"));
-     if(!Array.isArray(root)){st.notBedrock++;continue;}
-     const manifestFile=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="manifest.json");
-     if(!manifestFile){st.notBedrock++;continue;}
-     const rawBase="https://raw.githubusercontent.com/"+repo.full_name+"/"+encodeURIComponent(repo.default_branch||"main")+"/";
-     const manifest=JSON.parse(await fetchText(rawBase+"manifest.json","application/json"));
-     const resourceModule=Array.isArray(manifest.modules)&&manifest.modules.some(m=>m?.type==="resources");
-     const headerName=clean(manifest.header?.name);
-     const headerDescription=clean(manifest.header?.description);
-     const finalTitle=(headerName||title).slice(0,160);
-     const description=(headerDescription||summary).slice(0,1200);
-     if(!resourceModule||isRestricted(finalTitle,description,topics,repoUrl)){st.notBedrock++;continue;}
-     const key=titleKey(finalTitle);
-     if(!key||knownTitles.has(key)){st.duplicates++;continue;}
-     const icon=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="pack_icon.png");
-     const image=icon?safeImage(rawBase+"pack_icon.png",repoUrl):"";
-     const record=makeRecord(provider,repoUrl,finalTitle,repo.owner?.login||"",description,updated,image);
-     if(knownIds.has(record.id)){st.duplicates++;continue;}
-     packs.push(record);knownUrls.add(normalizeSourceUrl(repoUrl));knownTitles.add(key);knownIds.add(record.id);
-     st.added++;added++;
-     liveLog("candidate_added",provider,{title:finalTitle,sourceUrl:repoUrl,hasImage:Boolean(image),updatedAt:updated.toISOString().slice(0,10)});
-     if(added>=maxNew)break;
-    }catch(error){
-     st.errors++;liveLog("candidate_skipped",provider,{title,reason:"GitHub manifest/metadata verification failed"});
-     console.log("GitHub repository skipped:",repo.full_name,error?.message||error);
-    }
-   }
-   liveLog("listing_result",provider,{query,page:pageNo,results:repos.length,totalAdded:added});
-   if(repos.length<100)break;
-   await wait(300);
+ const vettedRepos=["Faithful-Resource-Pack/Faithful-32x-Bedrock"];
+ for(const fullName of vettedRepos){
+  st.scanned++;
+  try{
+   const repo=JSON.parse(await fetchText("https://api.github.com/repos/"+fullName,"application/vnd.github+json"));
+   const updated=parseDate(repo.pushed_at||repo.updated_at);
+   if(!updated){st.noDate++;continue;}
+   if(updated<cutoff){st.tooOld++;continue;}
+   const topics=Array.isArray(repo.topics)?repo.topics.join(" "):"";
+   const evidence=(clean(repo.description)+" "+topics).toLowerCase();
+   if(repo.archived||!/(bedrock|mcpe)/.test(evidence)||!/(resource.?pack|texture.?pack)/.test(evidence)||isRestricted(repo.name,repo.description,topics,repo.html_url)){st.notBedrock++;continue;}
+   const repoUrl=String(repo.html_url||"");
+   const canonical=normalizeSourceUrl(repoUrl);
+   if(!canonical||knownUrls.has(canonical)){st.duplicates++;continue;}
+   const rootUrl="https://api.github.com/repos/"+fullName+"/contents?ref="+encodeURIComponent(repo.default_branch||"main");
+   const root=JSON.parse(await fetchText(rootUrl,"application/vnd.github+json"));
+   if(!Array.isArray(root)){st.notBedrock++;continue;}
+   const manifestFile=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="manifest.json");
+   if(!manifestFile){st.notBedrock++;continue;}
+   const rawBase="https://raw.githubusercontent.com/"+fullName+"/"+encodeURIComponent(repo.default_branch||"main")+"/";
+   const manifest=JSON.parse(await fetchText(rawBase+"manifest.json","application/json"));
+   const resourceModule=Array.isArray(manifest.modules)&&manifest.modules.some(m=>m?.type==="resources");
+   const finalTitle=clean(manifest.header?.name||repo.name).replace(/[-_]+/g," ").slice(0,160);
+   const description=clean(manifest.header?.description||repo.description).slice(0,1200);
+   if(!resourceModule||isRestricted(finalTitle,description,topics,repoUrl)){st.notBedrock++;continue;}
+   const key=titleKey(finalTitle);
+   if(!key||knownTitles.has(key)){st.duplicates++;continue;}
+   const icon=root.find(x=>x.type==="file"&&x.name.toLowerCase()==="pack_icon.png");
+   const image=icon?safeImage(rawBase+"pack_icon.png",repoUrl):"";
+   const record=makeRecord(provider,repoUrl,finalTitle,repo.owner?.login||"",description,updated,image);
+   if(knownIds.has(record.id)){st.duplicates++;continue;}
+   packs.push(record);knownUrls.add(canonical);knownTitles.add(key);knownIds.add(record.id);
+   st.added++;added++;
+   liveLog("candidate_added",provider,{title:finalTitle,sourceUrl:repoUrl,hasImage:Boolean(image),updatedAt:updated.toISOString().slice(0,10)});
+  }catch(error){
+   st.errors++;liveLog("candidate_skipped",provider,{repository:fullName,reason:"GitHub manifest/metadata verification failed"});
+   console.log("GitHub repository skipped:",fullName,error?.message||error);
   }
  }
  return added;
