@@ -59,23 +59,23 @@ function categoryNav(){ $("filters").innerHTML=categories.map(c=>'<button class=
 const searchTerms = [
  ["シェーダー","shader","shaders","visual","graphics","グラフィック"],
  ["軽量化","performance","fps","軽い","最適化"],
- ["UI","ユーアイ","gui","hud","メニュー","menu","インベントリ","inventory"],
- ["空","sky","cloud","雲","sun","太陽","moon","月","stars","星"],
- ["水","water","ocean","海","川","river"],
- ["自然","nature","植物","plant","tree","木","草","grass","leaves","葉"],
- ["ブロック","block","blocks","建築","building","texture","テクスチャ"],
- ["アイテム","item","items","道具","持ち物"],
+ ["UI・テーマ","UI","ユーアイ","gui","hud","メニュー","menu","インベントリ","inventory"],
+ ["空・天候","空","sky","cloud","雲","sun","太陽","moon","月","stars","星"],
+ ["水・環境","水","water","ocean","海","川","river"],
+ ["自然・植物","自然","nature","植物","plant","tree","木","草","grass","leaves","葉"],
+ ["ブロック・建築","ブロック","block","blocks","建築","building","texture","テクスチャ"],
+ ["ブロック・アイテム","アイテム","item","items","道具","持ち物"],
  ["サウンド","sound","sounds","audio","音","効果音"],
- ["フォント","font","文字","language","言語","翻訳"],
+ ["言語・フォント","フォント","font","文字","language","言語","翻訳"],
  ["アニメーション","animation","animated","動き"],
- ["モブ","mob","model","モデル","動物","animal"],
- ["天候","weather","rain","雨","snow","雪"],
- ["透明","透明化","transparent","glass","ガラス"],
- ["かわいい","cute","カラフル","colorful","pastel","パステル"],
- ["リアル","realistic","realism","高画質","HD"],
- ["シンプル","simple","minimal","ミニマル"],
- ["暗い","dark","黒","black"],
- ["明るい","bright","light","白","white"]
+ ["モブ・モデル","モブ","mob","model","モデル","動物","animal"],
+ ["空・天候","天候","weather","rain","雨","snow","雪"],
+ ["ブロック・建築","透明","透明化","transparent","glass","ガラス"],
+ ["テーマ・世界観","かわいい","cute","カラフル","colorful","pastel","パステル"],
+ ["シェーダー","リアル","realistic","realism","高画質","HD"],
+ ["UI・シンプル","シンプル","simple","minimal","ミニマル"],
+ ["UI・テーマ","暗い","dark","黒","black"],
+ ["UI・テーマ","明るい","bright","light","白","white"]
 ];
 function normalized(s){return String(s||"").normalize("NFKC").toLocaleLowerCase().trim();}
 const formatDateJst=value=>{const n=Number(value);if(!Number.isFinite(n))return "不明";const d=new Date(n);return Number.isNaN(d.getTime())?"不明":new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(d);};
