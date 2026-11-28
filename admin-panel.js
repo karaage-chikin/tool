@@ -44,6 +44,8 @@ async function api(path){
   throw new ApiError("通信に失敗しました。ネットワークを確認してください。");
  }finally{clearTimeout(timer);}
 }
+function formatElapsed(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return h>0?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
+function updateElapsedClocks(){document.querySelectorAll("[data-elapsed-start]").forEach(el=>{const start=Number(el.dataset.elapsedStart);if(Number.isFinite(start)&&start>0)el.textContent=formatElapsed(Date.now()-start);});}
 function status(message,kind=""){
  const el=$("pageStatus");if(!el)return;
  el.textContent=String(message??"");el.className="status "+kind;
@@ -94,7 +96,8 @@ async function expansionPanel(){
  const stageMap={"開始":"収集ジョブを開始","MCPEDL収集完了・追加サイト収集中":"MCPEDL収集完了 → 他サイトを巡回中","追加サイト収集完了・説明情報取得中":"他サイト巡回完了 → 説明情報を取得中","説明・メタデータ取得完了・画像情報取得中":"説明情報完了 → 画像情報を取得中","画像情報取得完了・図鑑更新中":"画像情報完了 → 図鑑データを保存中","完了":"今回の巡回サイクル終了"};
  const rawStage=measurement?.stage||"工程情報なし";
  const stageText=measurement?.status==="completed"?"今回の巡回："+(stageMap[rawStage]||"終了") : "現在の工程："+(stageMap[rawStage]||rawStage);
- const elapsed=measurement?.runStartedAt&&measurement?.status==="running"?durationLabel(Date.now()-Date.parse(measurement.runStartedAt)):"";
+ const elapsedStart=measurement?.runStartedAt&&measurement?.status==="running"?Date.parse(measurement.runStartedAt):0;
+ const elapsed=elapsedStart>0?'<span class="elapsed-clock" data-elapsed-start="'+elapsedStart+'">'+formatElapsed(Date.now()-elapsedStart)+'</span>':"";
  const lastRunText=last?"前回の巡回："+durationLabel(last.durationMs)+" ／ 新規追加 "+Number(last.added||0).toLocaleString("ja-JP")+"件 ／ "+Number(last.finalCount||last.currentCount||0).toLocaleString("ja-JP")+"件":"前回の巡回結果：まだありません";
  const etaDateText=etaDate&&!Number.isNaN(etaDate.getTime())?"予測到達日時："+formatDate(etaDate.getTime()):"";
  const sourceStats=last?.sourceStats&&typeof last.sourceStats==="object"?last.sourceStats:{};
@@ -105,7 +108,7 @@ async function expansionPanel(){
  const stageRows=stageHistory.map(x=>'<tr><td>'+esc(formatDate(Date.parse(x.at)))+'</td><td>'+esc(x.stage||"")+'</td><td>'+esc(Number(x.count||0).toLocaleString("ja-JP"))+'件</td></tr>').join("");
  const stageTable=stageRows?'<h3>前回の工程別進捗</h3><table><thead><tr><th>時刻</th><th>工程</th><th>その時点の登録数</th></tr></thead><tbody>'+stageRows+'</tbody></table>':"";
  const historyRows=history.map(x=>'<tr><td>'+esc(formatDate(Date.parse(x.finishedAt||x.startedAt)))+'</td><td>'+esc(durationLabel(x.durationMs))+'</td><td>'+esc(Number(x.added||0).toLocaleString("ja-JP"))+'件</td><td>'+esc(Number(x.finalCount||0).toLocaleString("ja-JP"))+'件</td></tr>').join("");
- return '<section class="panel expansion-panel"><h2>リソースパック図鑑の収集状況</h2><div class="progress-head"><strong>'+esc(countText)+'</strong><span class="job-state '+(stateClass)+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="10,000件の通過目標" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:Math.min(count,10000))+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"目安まで残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">重要：10,000件は最初の通過目標で、上限でも処理完了条件でもありません。達成後も新しいBedrock向けパックを探して追加します。</p><div class="notice">'+esc(stageText)+(elapsed?" ／ 経過 "+esc(elapsed):"")+'</div><p class="notice">'+esc(lastRunText)+'</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(measurement?.updatedAt?"進捗最終更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗最終更新：未取得")+'</p>'+sourceTable+stageTable+(historyRows?'<h3>直近5回の巡回履歴</h3><table><thead><tr><th>終了日時</th><th>所要時間</th><th>新規追加</th><th>終了時の登録数</th></tr></thead><tbody>'+historyRows+'</tbody></table>':"")+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">今回の巡回ログを開く ↗</a>':"")+'</section>';
+ return '<section class="panel expansion-panel"><h2>リソースパック図鑑の収集状況</h2><div class="progress-head"><strong>'+esc(countText)+'</strong><span class="job-state '+(stateClass)+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="10,000件の通過目標" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:Math.min(count,10000))+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"目安まで残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">重要：10,000件は最初の通過目標で、上限でも処理完了条件でもありません。達成後も新しいBedrock向けパックを探して追加します。</p><div class="notice stage-notice">'+(measurement?.status==="running"?'<span class="stage-live"><span class="pulse-dot"></span><span class="stage-sweep" aria-hidden="true"></span>'+esc(stageText)+'</span> ／ 経過 '+elapsed:esc(stageText))+'</div>'+(measurement?.status==="running"?'<div class="stage-progress" aria-label="巡回処理中"><span></span></div>':'')+'<p class="notice">'+esc(lastRunText)+'</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(measurement?.updatedAt?"進捗最終更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗最終更新：未取得")+'</p>'+sourceTable+stageTable+(historyRows?'<h3>直近5回の巡回履歴</h3><table><thead><tr><th>終了日時</th><th>所要時間</th><th>新規追加</th><th>終了時の登録数</th></tr></thead><tbody>'+historyRows+'</tbody></table>':"")+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">今回の巡回ログを開く ↗</a>':"")+'</section>';
 }
 function storageMeter(label,used,limit,detail,unlimited=false){
  const u=number(used),l=number(limit),pct=unlimited||!l?null:Math.min(100,u/l*100);
@@ -218,6 +221,7 @@ async function init(){
  });
  window.addEventListener("hashchange",()=>{currentPage=pageFromHash();renderPage();});
  currentPage=pageFromHash();renderPage();
+ setInterval(updateElapsedClocks,1000);
  setInterval(()=>{if(currentPage==="overview"&&document.visibilityState==="visible")renderPage();},60000);
 }
 init();
