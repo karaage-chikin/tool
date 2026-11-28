@@ -136229,5 +136229,90 @@
     "sourceUpdatedAt": "2026-11-28",
     "thumbnailUrl": "",
     "galleryImages": []
+  },
+  {
+    "id": "modbay-3061-newb-x-vanilla-shader-html-9f8ff43ae510",
+    "title": "Newb X Vanilla Shader for Minecraft Bedrock 1.21.50",
+    "author": "medieval architecture. The choice of texture pack depends",
+    "category": "シェーダー",
+    "description": "Newb X Vanilla is a brightened build of Newb X Legacy. Added side block shadows (code from enoughrise).",
+    "sourceUrl": "https://modbay.org/textures/3061-newb-x-vanilla-shader.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-28",
+    "sourceUpdatedAt": "2026-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2024-10/newb-x-vanilla-shader-main-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2024-10/newb-x-vanilla-shader-main-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-3210-fresh-animations-bedrock-html-c51507046d2e",
+    "title": "Fresh Animations Bedrock Texture Pack for MCPE 1.21.70",
+    "author": "medieval architecture. The choice of texture pack depends",
+    "category": "アニメーション",
+    "description": "This pack is a port of fresh animations from Java Edition to Bedrock Edition. This pack overhauls all of the animations of mobs in Minecraft.",
+    "sourceUrl": "https://modbay.org/textures/3210-fresh-animations-bedrock.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-28",
+    "sourceUpdatedAt": "2026-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2024-10/fresh-animations-bedrock-main-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2024-10/fresh-animations-bedrock-main-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-4583-pandamines-no-hurt-cam-html-3b3d42146e9b",
+    "title": "PandaMine's No Hurt Cam Texture Pack for MCPE 26.30",
+    "author": "medieval architecture. The choice of texture pack depends",
+    "category": "ブロック・建築",
+    "description": "Eliminate screen shaking during hits and nether portal distortions with PandaMine's No Hurt Cam for a smoother Minecraft experience.",
+    "sourceUrl": "https://modbay.org/textures/4583-pandamines-no-hurt-cam.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-28",
+    "sourceUpdatedAt": "2026-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/28241c3476_pandamines-no-hurt-cam-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2026-07/28241c3476_pandamines-no-hurt-cam-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-3878-stay-true-html-a41c8d382f66",
+    "title": "Stay True Texture Pack for Minecraft Bedrock 1.21.60",
+    "author": "medieval architecture. The choice of texture pack depends",
+    "category": "ブロック・建築",
+    "description": "Stay True is a visual remaster of the default texture pack, enhancing textures for better realism and diversity while reducing repetitiveness, all while staying true to the original color scheme.",
+    "sourceUrl": "https://modbay.org/textures/3878-stay-true.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-28",
+    "sourceUpdatedAt": "2026-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2025-01/stay-true-main-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2025-01/stay-true-main-cover.webp"
+    ]
+  },
+  {
+    "id": "modbay-3023-bsl-x-shader-html-4e89a89e06d1",
+    "title": "BSL X Shader for Minecraft Bedrock 1.21.100",
+    "author": "medieval architecture. The choice of texture pack depends",
+    "category": "シェーダー",
+    "description": "Experience a visually striking world with this innovative shader. Featuring unique realistic clouds and advanced atmospheric effects, this shader adds a touch of the surreal to your gameplay.",
+    "sourceUrl": "https://modbay.org/textures/3023-bsl-x-shader.html/",
+    "compatibility": "Bedrock Edition（対応バージョンは配布元で確認）",
+    "source": "ModBay",
+    "sourceType": "automatic",
+    "createdAt": "2026-11-28",
+    "sourceUpdatedAt": "2026-11-28",
+    "thumbnailUrl": "https://modbay.org/uploads/posts/2024-12/bsl-x-shader-main-cover.webp",
+    "galleryImages": [
+      "https://modbay.org/uploads/posts/2024-12/bsl-x-shader-main-cover.webp"
+    ]
   }
 ]
