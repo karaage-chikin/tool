@@ -96,10 +96,11 @@ function suggestionItems(q){
  return [...new Set(matches)].slice(0,8);
 }
 function renderSuggestions(){
- const q=$("search").value,box=$("searchSuggestions"),items=suggestionItems(q);
+ const q=$("search").value,box=$("searchSuggestions"),listbox=$("searchOptions"),translate=$("searchTranslateAction"),items=suggestionItems(q);
  if(!items.length&&!q){box.classList.add("hidden");$("search").setAttribute("aria-expanded","false");$("search").removeAttribute("aria-activedescendant");suggestionActiveIndex=-1;return;}
  suggestionActiveIndex=-1;$("search").removeAttribute("aria-activedescendant");
- box.innerHTML='<div id="searchOptions" role="listbox">'+items.map((v,i)=>'<button id="search-option-'+i+'" type="button" role="option" aria-selected="false" data-suggest="'+esc(v)+'"><span>'+esc(v)+'</span><small>'+(i===0&&q?"候補":"関連キーワード")+'</small></button>').join("")+'</div>'+(q?'<button type="button" data-translate-search="1"><span>入力した言葉を'+(JAPANESE_RE.test(q)?"英語":"日本語")+'に翻訳して検索</span><small>Google翻訳</small></button>':"");
+ listbox.innerHTML=items.map((v,i)=>'<button id="search-option-'+i+'" type="button" role="option" aria-selected="false" data-suggest="'+esc(v)+'"><span>'+esc(v)+'</span><small>'+(i===0&&q?"候補":"関連キーワード")+'</small></button>').join("");
+ translate.hidden=!q;translate.querySelector("span").textContent="入力した言葉を"+(JAPANESE_RE.test(q)?"英語":"日本語")+"に翻訳して検索";
  box.classList.remove("hidden");$("search").setAttribute("aria-expanded","true");
 }
 
