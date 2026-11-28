@@ -5,7 +5,8 @@ if (!API) throw new Error("API endpoint is not configured");
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const favKey = "bedrock-resource-pack-favorites-v1";
-let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = sessionStorage.getItem("resourcePackAdminToken") || "", currentModalId = null, currentGalleryImages = [];
+let imageOffset = 0, packs = [], seedPacks = [], activeCategory = "すべて", favoritesOnly = false, currentPage = 1, pageSize = 60, searchTimer = 0, suggestionActiveIndex = -1, modalReturnFocus = null, token = sessionStorage.getItem("resourcePackAdminToken") || "", currentModalId = null, currentGalleryImages = [], favoriteStorageAvailable = true;
+const volatileFavorites = new Set();
 const tokenExpiry=Number(sessionStorage.getItem("resourcePackAdminTokenExpiresAt")||0);
 if(tokenExpiry&&tokenExpiry<=Date.now()){token="";sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");}
 const BASE_CATEGORIES = ["シェーダー","軽量化","UI・テーマ","UI・操作","UI・メニュー","自然・植物","ブロック・建築","ブロック・アイテム","UI・シンプル","サウンド","空・天候","水・環境","モブ・モデル","アニメーション","言語・フォント","便利・農業","便利・操作","季節・テーマ","テーマ・世界観","その他"];
