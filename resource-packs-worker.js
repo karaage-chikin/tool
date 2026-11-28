@@ -38,7 +38,7 @@ async function makeToken(secret) {
   const payload = b64url(encoder.encode(JSON.stringify({ role: "admin", exp: Date.now() + SESSION_MS })));
   return payload + "." + b64url(await hmac(secret, payload));
 }
-async function isAdmin(request, secret) {
+async function isAdmin(request, secret, env) {
   const auth = request.headers.get("Authorization") || "";
   const match = auth.match(/^Bearer ([A-Za-z0-9_.-]+)$/);
   if (!match) return false;
@@ -52,7 +52,11 @@ async function isAdmin(request, secret) {
     for (let i = 0; i < expected.length; i++) diff |= expected[i] ^ actual[i];
     if (diff !== 0) return false;
     const payload = JSON.parse(new TextDecoder().decode(unb64url(parts[0])));
-    return payload.role === "admin" && Number(payload.exp) > Date.now();
+    if(payload.role!=="admin"||Number(payload.exp)<=Date.now())return false;
+    await ensureAdminLogTables(env);
+    const tokenHash=b64url(new Uint8Array(await crypto.subtle.digest("SHA-256",encoder.encode(match[1]))));
+    const revoked=await env.DB.prepare("SELECT 1 AS revoked FROM resource_pack_revoked_sessions WHERE token_hash=? AND expires_at>?").bind(tokenHash,Date.now()).first();
+    return !revoked;
   } catch { return false; }
 }
 function galleryFromJson(value) {
@@ -250,6 +254,7 @@ async function ensureAdminLogTables(env) {
       await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_admin_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at INTEGER NOT NULL, type TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', ip_hash TEXT NOT NULL DEFAULT '', user_agent TEXT NOT NULL DEFAULT '')").run();
       await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_daily_access (day TEXT PRIMARY KEY, route TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0)").run();
       await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_daily_access_v2 (day TEXT NOT NULL, route TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(day,route))").run();
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_revoked_sessions (token_hash TEXT PRIMARY KEY, expires_at INTEGER NOT NULL, revoked_at INTEGER NOT NULL)").run();
       await env.DB.prepare("INSERT OR IGNORE INTO resource_pack_daily_access_v2(day,route,count) SELECT day,route,count FROM resource_pack_daily_access").run();
     })().catch(error=>{adminLogTablesPromise=null;throw error;});
   }
@@ -522,6 +527,16 @@ export default {
       return reply({ok:true},200,origin);
     }
 
+    if(request.method==="POST"&&url.pathname==="/api/admin/logout"){
+      if(!env.SESSION_SECRET||!(await isAdmin(request,env.SESSION_SECRET,env)))return reply({error:"管理者セッションが無効です。"},401,origin);
+      const bearer=(request.headers.get("Authorization")||"").replace(/^Bearer /,"");
+      const payload=JSON.parse(new TextDecoder().decode(unb64url(bearer.split(".")[0])));
+      const tokenHash=b64url(new Uint8Array(await crypto.subtle.digest("SHA-256",encoder.encode(bearer))));
+      await ensureAdminLogTables(env);
+      await env.DB.prepare("INSERT OR REPLACE INTO resource_pack_revoked_sessions(token_hash,expires_at,revoked_at) VALUES (?,?,?)").bind(tokenHash,Number(payload.exp),Date.now()).run();
+      await auditEvent(env,request,"access","logout","管理者ログアウト");
+      return reply({ok:true},200,origin);
+    }
     if (request.method === "POST" && url.pathname === "/api/admin/login") {
       if (!env.ADMIN_PASSWORD || !env.SESSION_SECRET) return reply({ error: "管理者認証がまだ設定されていません。管理者用シークレットを設定してください。" }, 503, origin);
       try {
@@ -542,7 +557,7 @@ export default {
       }
     }
     if (url.pathname.startsWith("/api/admin/")) {
-      if (!env.SESSION_SECRET || !(await isAdmin(request, env.SESSION_SECRET))) return reply({ error: "管理者としてログインしてください。" }, 401, origin);
+      if (!env.SESSION_SECRET || !(await isAdmin(request, env.SESSION_SECRET, env))) return reply({ error: "管理者としてログインしてください。" }, 401, origin);
       await auditEvent(env,request,request.method==="GET"?"access":"update","admin_"+request.method.toLowerCase(),url.pathname);
       if (request.method === "POST" && url.pathname === "/api/admin/storage/upload") {
         return await uploadPackToSupabase(env, request, origin);
