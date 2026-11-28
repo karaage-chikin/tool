@@ -76717,13 +76717,13 @@
     "galleryImages": [
       "https://media.forgecdn.net/attachments/1931/127/1000014679-png.png",
       "https://cdn.mcpedl.com/web/content/logo.png",
-      "https://media.forgecdn.net/attachments/2072/814/1000023099-png.png",
       "https://media.forgecdn.net/attachments/1907/64/1000008323-png.png",
-      "https://media.forgecdn.net/attachments/2100/217/1000024040-png.png",
+      "https://media.forgecdn.net/attachments/2072/814/1000023099-png.png",
+      "https://media.forgecdn.net/attachments/2128/415/1000023398-png.png",
       "https://r2.mcpedl.com/users/4931731/5fec5bec50d9a819d2072ee4c5c982de.png",
       "https://cdn.mcpedl.com/web/ow_logo.png"
     ],
-    "imagesFetchedAt": "2026-11-27",
+    "imagesFetchedAt": "2026-11-28",
     "fullDescription": "A texture pack who adds new textures for minigames like bedwars",
     "detailsFiltered": false,
     "publishedAt": "2026-09-08",
@@ -135126,13 +135126,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-28",
     "sourceUpdatedAt": "2026-11-28",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2293/388/untitled-design-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2293/388/untitled-design-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/2252/125/thumbnail-jpg.jpg",
+      "https://media.forgecdn.net/attachments/2275/18/thumbnail-png.png",
+      "https://media.forgecdn.net/attachments/1276/973/oie_wq9f3d29a732-png.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "A suffocating, pale-gray fog descends without warning, swallowing every biome from sun-drenched deserts to dense dark forests in a claustrophobic veil that c…",
     "detailsFiltered": false,
     "publishedAt": "2024-11-20",
     "updatedAt": "2026-11-28",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-bsl-zenxveda-shaders-5e8479e0eb8d",
@@ -135146,13 +135154,23 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-25",
     "sourceUpdatedAt": "2026-11-25",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1866/52/mcpedl_-1-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1866/52/mcpedl_-1-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1797/395/mcpedl-png.png",
+      "https://media.forgecdn.net/attachments/1777/735/mcpedl-4-jpg.jpg",
+      "https://media.forgecdn.net/attachments/2184/585/zenxveda-reimagined-shaders-png.png",
+      "https://r2.mcpedl.com/users/3532255/d9e8622ea9e402097469aeee11679d8a.png",
+      "https://r2.mcpedl.com/users/5246956/d062d554fe3cbc699927a323c2e00a0c.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "A highly optimized, performance-friendly Deferred Renderer pack with radiant glowing ores, crystal-clear water, and vibrant lighting.",
     "detailsFiltered": false,
     "publishedAt": "2026-08-14",
     "updatedAt": "2026-11-25",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-barely-drops-5924f419aa2b",
@@ -135166,13 +135184,25 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-24",
     "sourceUpdatedAt": "2026-11-24",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1929/998/image_2026-09-07_142415056-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1929/998/image_2026-09-07_142415056-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1260/293/newbbnslogo-png.png",
+      "https://media.forgecdn.net/attachments/1935/596/image_2026-09-09_213209110-png.png",
+      "https://media.forgecdn.net/attachments/1943/115/image_2026-09-12_183805631-png.png",
+      "https://r2.mcpedl.com/users/4982654/58282cc77ff4cbb77f882afd7b09824f.png",
+      "https://r2.mcpedl.com/users/5064545/c7c42feef46c574da687a6e170f1b649.png",
+      "https://r2.mcpedl.com/users/3799975/889981bdd7d92a4732f3917c0ff3d576.png",
+      "https://r2.mcpedl.com/users/3762106/40beb731a2af0ceb8ff553fb77ab06b1.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "A pack that adds Tiny Takeover, Chaos Cubed, Wilderness Bound and Deep Freeze to Bare Bones for Bedrock! All of 26.X!!",
     "detailsFiltered": false,
     "publishedAt": "2026-08-17",
     "updatedAt": "2026-11-24",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-entity-culling-95eeda92925c",
@@ -135186,13 +135216,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-20",
     "sourceUpdatedAt": "2026-11-20",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2227/700/1000079108-gif.gif",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2227/700/1000079108-gif.gif",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/2032/331/1001722528-png.png",
+      "https://media.forgecdn.net/attachments/1952/391/1001508587-jpg.jpg",
+      "https://media.forgecdn.net/attachments/1781/815/1001476969-png.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-11-20",
     "updatedAt": "2026-11-20",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-hera-potion-labels-9878cd212a20",
@@ -135206,13 +135244,22 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-19",
     "sourceUpdatedAt": "2026-11-19",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2226/330/hera_potion_labels_01_combat_recovery-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2226/330/hera_potion_labels_01_combat_recovery-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/2199/51/minecraft-for-windows-14_11_2026-00_42_24-png.png",
+      "https://media.forgecdn.net/attachments/1865/487/minecraft-for-windows-14_08_2026-10_04_11-png.png",
+      "https://media.forgecdn.net/attachments/2209/389/downloads-15_11_2026-16_58_50-png.png",
+      "https://r2.mcpedl.com/users/4590524/63699ffa993142d618371feff90ea831.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-11-19",
     "updatedAt": "2026-11-19",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-midnight-pvp-texture-packs-a10e0e82e1e5",
@@ -135226,13 +135273,22 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-14",
     "sourceUpdatedAt": "2026-11-14",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2206/277/1000093140-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2206/277/1000093140-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1864/232/1000079238-png.png",
+      "https://media.forgecdn.net/attachments/2076/288/1000089211-jpg.jpg",
+      "https://media.forgecdn.net/attachments/1923/10/1000083356-png.png",
+      "https://r2.mcpedl.com/users/5194670/62abc1e8e96d0005ffd5fd8bbc304b73.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-07-01",
     "updatedAt": "2026-11-14",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-better-classic-tools-10f2fbfaa60f",
@@ -135246,13 +135302,22 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-09",
     "sourceUpdatedAt": "2026-11-09",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1673/491/6d7b62e9-47f9-4b1c-8061-d543f69e999b-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1673/491/6d7b62e9-47f9-4b1c-8061-d543f69e999b-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1666/917/img_1202-png.png",
+      "https://r2.mcpedl.com/submissions/116828/113/picsart250319230637040_1-520x245.png",
+      "https://media.forgecdn.net/attachments/1308/602/mcpedl.png",
+      "https://r2.mcpedl.com/users/1046788/2361ca57c33f0743ed34146489cd8601.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "It’s a texture pack that makes all tools look a little bit better.",
     "detailsFiltered": false,
     "publishedAt": "2026-05-10",
     "updatedAt": "2026-11-09",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-item-counter-f30993bdfc5c",
@@ -135266,13 +135331,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-06",
     "sourceUpdatedAt": "2026-11-06",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1644/451/mcpedl-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1644/451/mcpedl-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://r2.mcpedl.com/submissions/116828/113/picsart250319230637040_1-520x245.png",
+      "https://media.forgecdn.net/attachments/1308/602/mcpedl.png",
+      "https://r2.mcpedl.com/submissions/129006/100/file00000000d80061f6843ff3d8328177d8conversationid67f9aeb3ee4c800c855f80c9f2da6daemessageid365a926ca9a441ffadf3c5f8302bed02_1-520x245.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-04-13",
     "updatedAt": "2026-11-06",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-bluelock-ui-0bef256be8dc",
@@ -135286,13 +135359,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-10-28",
     "sourceUpdatedAt": "2026-10-28",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2082/677/ezgif-com-video-to-gif-converter-4-gif.gif",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2082/677/ezgif-com-video-to-gif-converter-4-gif.gif",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1956/4/screenshot_2026-09-18-13-48-35.jpg",
+      "https://media.forgecdn.net/attachments/1955/729/screenshot_2026-09-18-11-57-20.jpg",
+      "https://media.forgecdn.net/attachments/2016/820/screenshot_2026-09-30-22-44-42.jpg",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-10-21",
     "updatedAt": "2026-10-28",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-longarrowpath-02cb67c408ae",
@@ -135306,13 +135387,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-10-20",
     "sourceUpdatedAt": "2026-10-20",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2081/961/pack_icon.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2081/961/pack_icon.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1895/196/pack_icon.png",
+      "https://media.forgecdn.net/attachments/2102/272/1792896970687.jpg",
+      "https://media.forgecdn.net/attachments/2008/129/screenshot_20261004-043741_levilauncher.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-10-20",
     "updatedAt": "2026-10-20",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-suviles-directional-hoppers-19a99981757a",
@@ -135326,13 +135415,26 @@
     "sourceType": "automatic",
     "createdAt": "2026-09-28",
     "sourceUpdatedAt": "2026-09-28",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1189/290/mcpedl-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1189/290/mcpedl-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1200/982/mcpedl-png.png",
+      "https://media.forgecdn.net/attachments/1151/133/mcpedl-png.png",
+      "https://media.forgecdn.net/attachments/1154/68/image_2025-04-10_113525151-png.png",
+      "https://r2.mcpedl.com/users/4538956/d3825e27dd1caacb8382e005e5474b46.png",
+      "https://r2.mcpedl.com/users/3794353/6b949040e8bc623225bcc3bbf8f8c780.png",
+      "https://r2.mcpedl.com/users/162709/b5601c64ac5165ddcea0d1c8b2f13abd.png",
+      "https://r2.mcpedl.com/users/3087306/a8edb64a505bef257f4e455268e84c13.png",
+      "https://r2.mcpedl.com/users/3737748/58535bf607a17a65987cee59f8167c34.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2025-05-18",
     "updatedAt": "2026-09-28",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-charge-indicator-6837d90d6378",
@@ -135346,13 +135448,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-10-06",
     "sourceUpdatedAt": "2026-10-06",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/2019/697/1000836007-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/2019/697/1000836007-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1974/363/1000925485-jpg.jpg",
+      "https://media.forgecdn.net/attachments/1921/23/1000907266-jpg.jpg",
+      "https://media.forgecdn.net/attachments/1876/637/1000895307-jpg.jpg",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-06-18",
     "updatedAt": "2026-10-06",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-vanilla-tridents-resource-pack-273cce2a6448",
@@ -135366,13 +135476,21 @@
     "sourceType": "automatic",
     "createdAt": "2026-11-04",
     "sourceUpdatedAt": "2026-11-04",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1867/849/20260814_205336-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1867/849/20260814_205336-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/2259/744/thumbnail-png.png",
+      "https://media.forgecdn.net/attachments/2259/79/thumbnail-png.png",
+      "https://media.forgecdn.net/attachments/1839/95/captura-de-pantalla-2026-08-02-150145-png.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-08-15",
     "updatedAt": "2026-11-04",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "mcpedl-the-simple-things-4769b35fa1f5",
@@ -135386,13 +135504,23 @@
     "sourceType": "automatic",
     "createdAt": "2026-03-09",
     "sourceUpdatedAt": "2026-03-09",
-    "thumbnailUrl": "",
-    "galleryImages": [],
+    "thumbnailUrl": "https://media.forgecdn.net/attachments/1572/45/the-simple-things-thumbnail-png.png",
+    "galleryImages": [
+      "https://media.forgecdn.net/attachments/1572/45/the-simple-things-thumbnail-png.png",
+      "https://cdn.mcpedl.com/web/content/logo.png",
+      "https://media.forgecdn.net/attachments/1303/238/thumbnails-png.png",
+      "https://r2.mcpedl.com/submissions/103720/106/goproperspectivethumbnail_1-520x245.png",
+      "https://media.forgecdn.net/attachments/1318/8/dynamic-first-person-model-png.png",
+      "https://r2.mcpedl.com/users/5052838/79ee6f92cced2c6824b5069704508dde.png",
+      "https://r2.mcpedl.com/users/892095/e8bd6494bf6857069ff05bb8fef8a89e.png",
+      "https://cdn.mcpedl.com/web/ow_logo.png"
+    ],
     "fullDescription": "",
     "detailsFiltered": true,
     "publishedAt": "2026-03-09",
     "updatedAt": "2026-03-09",
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "github-Faithful-32x-Bedrock-c744372bc131",
@@ -135428,11 +135556,24 @@
     "sourceUpdatedAt": "2026-07-29",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp"
+      "https://modbay.org/uploads/posts/2026-07/c5f2345ac1_pandamines-vibrant-visuals-unlocker-vibrant-visuals-force-enable-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2026-08/medium/96d1a31755_pandamines-vibrant-visuals-unlocker.webp",
+      "https://modbay.org/uploads/posts/2026-08/medium/13d523b393_pandamines-vibrant-visuals-unlocker.webp",
+      "https://modbay.org/uploads/posts/2026-08/medium/3d1a337285_pandamines-vibrant-visuals-unlocker.webp",
+      "https://modbay.org/uploads/posts/2026-08/medium/d6a6a3df47_pandamines-vibrant-visuals-unlocker.webp",
+      "https://modbay.org/uploads/posts/2026-08/medium/8dc2e942da_pandamines-vibrant-visuals-unlocker.webp",
+      "https://modbay.org/uploads/posts/2025-04/pandamines-mip-mapper-five-stars.gif",
+      "https://modbay.org/uploads/posts/2026-06/fde28f68d7_classic-textures-fix-cover.webp",
+      "https://modbay.org/uploads/posts/2024-10/ultimate-survival-v3-9-cover.webp",
+      "https://modbay.org/uploads/posts/2025-07/9f4e8cc87b_la-nature-by-carrot-cover.webp",
+      "https://modbay.org/uploads/posts/2025-05/73a66f0d36_vanilla-rtx-texture-pack-cover.webp",
+      "https://modbay.org/uploads/posts/2024-12/vanilla-pbr-v2-10-cover.webp"
     ],
     "fullDescription": "",
     "detailsFiltered": true,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-7339-anime-girl-animated-ui-html-0625c351ae0a",
@@ -135448,11 +135589,19 @@
     "sourceUpdatedAt": "2026-08-21",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp"
+      "https://modbay.org/uploads/posts/2026-08/69702accab_anime-girl-animated-ui-v3-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2026-08/medium/19d448bb2dc1e8_anime-girl-animated-ui-screenshot.webp",
+      "https://modbay.org/uploads/posts/2026-06/b3e8af893e_bedrock-26-30-mcb.webp",
+      "https://modbay.org/uploads/posts/2026-03/307df44b40_minecraft-version-numbering-in-2026-what-changed-and-whats-next-cover.webp",
+      "https://modbay.org/uploads/posts/2025-01/minecraft-2024-in-a-nutshell-main-cover.webp",
+      "https://modbay.org/uploads/posts/2024-09/minecraft-live-2024-leaks-main-cover.webp",
+      "https://modbay.org/uploads/posts/2022-10/minecraft-live-2022.webp"
     ],
     "fullDescription": "",
     "detailsFiltered": true,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   },
   {
     "id": "modbay-6991-craftedge-client-html-8996a94cd3f6",
@@ -135468,10 +135617,18 @@
     "sourceUpdatedAt": "2026-07-02",
     "thumbnailUrl": "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp",
     "galleryImages": [
-      "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp"
+      "https://modbay.org/uploads/posts/2026-07/3a3c0534f1_craftedge-client-cover.webp",
+      "https://modbay.org/templates/Modbay2/images/logo_s.png",
+      "https://modbay.org/uploads/posts/2026-07/medium/b827c43842_craftedge-client.webp",
+      "https://modbay.org/uploads/posts/2026-06/fde28f68d7_classic-textures-fix-cover.webp",
+      "https://modbay.org/uploads/posts/2024-10/ultimate-survival-v3-9-cover.webp",
+      "https://modbay.org/uploads/posts/2025-07/9f4e8cc87b_la-nature-by-carrot-cover.webp",
+      "https://modbay.org/uploads/posts/2024-12/vanilla-pbr-v2-10-cover.webp",
+      "https://modbay.org/uploads/posts/2024-11/the-ty-els-settings-overlay-ui-pack-main-cover.webp"
     ],
     "fullDescription": "",
     "detailsFiltered": true,
-    "detailsFetchedAt": "2026-11-28"
+    "detailsFetchedAt": "2026-11-28",
+    "imagesFetchedAt": "2026-11-28"
   }
 ]
