@@ -14,6 +14,7 @@ const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000))
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||1000));
 const staleLimit=Math.max(10,Math.min(200,Number(process.env.ADDITIONAL_STALE_PAGE_LIMIT)||60));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
+function liveLog(type,provider,detail={}){console.log("[LIVE_SCAN] "+JSON.stringify({at:new Date().toISOString(),type,provider,...detail}));}
 const stats={"MCPEDL REST API":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function parseDate(value){
@@ -82,11 +83,12 @@ function pageAuthor($,card){
  return m?m[1].trim().slice(0,120):"";
 }
 async function fetchText(url,accept="text/html,application/xhtml+xml"){
+ liveLog("page_request","",{url});
  let last;
  for(let attempt=0;attempt<4;attempt++){
   try{
    const response=await fetch(url,{headers:{...headers,Accept:accept},signal:AbortSignal.timeout(25000),redirect:"follow"});
-   if(response.ok)return await response.text();
+   if(response.ok){liveLog("page_loaded","",{url:response.url||url,status:response.status});return await response.text();}
    last=new Error("HTTP "+response.status+" at "+url);
    if(response.status!==429&&response.status<500)break;
    const retry=Number(response.headers.get("Retry-After"))||Math.min(10,2**attempt);
@@ -109,28 +111,28 @@ function makeRecord(provider,canonical,title,author,description,date,image){
  return {id,title,author,category:category(title),description:description||"Bedrock Edition向けリソースパックです。詳細・対応バージョンは配布元ページで確認してください。",sourceUrl:canonical.endsWith("/")?canonical:canonical+"/",compatibility:"Bedrock Edition（対応バージョンは配布元で確認）",source:provider,sourceType:"automatic",createdAt:date.toISOString().slice(0,10),sourceUpdatedAt:date.toISOString().slice(0,10),thumbnailUrl:image,galleryImages:image?[image]:[]};
 }
 async function addExternal(provider,href,title,card$,card,base){
- const st=stats[provider];st.scanned++;
+ const st=stats[provider];st.scanned++;liveLog("candidate_found",provider,{title,sourceUrl:href});
  let u;try{u=new URL(href,base);}catch{st.errors++;return false;}
  if(u.protocol!=="https:"||u.hostname.toLowerCase().replace(/^www\./,"")!==new URL(base).hostname.toLowerCase().replace(/^www\./,""))return false;
  const canonical=normalizeSourceUrl(u.href);if(!canonical)return false;
- if(knownUrls.has(canonical)){st.duplicates++;return false;}
- const tk=titleKey(title);if(!tk||knownTitles.has(tk)||isRestricted(title,canonical)){st.duplicates++;return false;}
+ if(knownUrls.has(canonical)){st.duplicates++;liveLog("candidate_skipped",provider,{title,reason:"URL重複"});return false;}
+ const tk=titleKey(title);if(!tk||knownTitles.has(tk)||isRestricted(title,canonical)){st.duplicates++;liveLog("candidate_skipped",provider,{title,reason:!tk?"タイトル不正":knownTitles.has(tk)?"タイトル重複":"登録対象外"});return false;}
  try{
   const html=await fetchText(canonical),$=load(html),ld=jsonLdInfo($);
   const updated=cardDateFromCard(card$,card)||dateFromDocument($)||parseDate(ld.updatedAt)||parseDate(ld.publishedAt);
-  if(!updated){st.noDate++;return false;}
-  if(updated<cutoff){st.tooOld++;return false;}
+  if(!updated){st.noDate++;liveLog("candidate_skipped",provider,{title,reason:"公開日・更新日を確認できない"});return false;}
+  if(updated<cutoff){st.tooOld++;liveLog("candidate_skipped",provider,{title,reason:"1年以上前"});return false;}
   const description=pageDescription($,card,title)||clean(ld.description).slice(0,1200);
-  if(!bedrockEvidence(provider,canonical,$,description)){st.notBedrock++;return false;}
-  if(isRestricted(title,canonical,description)){st.duplicates++;return false;}
+  if(!bedrockEvidence(provider,canonical,$,description)){st.notBedrock++;liveLog("candidate_skipped",provider,{title,reason:"Bedrock対応の根拠なし"});return false;}
+  if(isRestricted(title,canonical,description)){st.duplicates++;liveLog("candidate_skipped",provider,{title,reason:"制限対象"});return false;}
   const detailTitle=meta($,"meta[property='og:title']")||$("h1").first().text()||title;
   const finalTitle=clean(detailTitle).replace(/\s*[|–-]\s*(?:ModBay|Planet Minecraft|CurseForge).*$/i,"").slice(0,160)||title;
   const finalKey=titleKey(finalTitle);
-  if(!finalKey||knownTitles.has(finalKey)){st.duplicates++;return false;}
+  if(!finalKey||knownTitles.has(finalKey)){st.duplicates++;liveLog("candidate_skipped",provider,{title:finalTitle,reason:"詳細ページのタイトル重複"});return false;}
   const image=imageFrom($,canonical)||safeImage(card.find("img").first().attr("data-src")||card.find("img").first().attr("src"),base);
   const record=makeRecord(provider,canonical,finalTitle,pageAuthor($,card),description,updated,image);
   if(knownIds.has(record.id)){st.duplicates++;return false;}
-  packs.push(record);knownUrls.add(canonical);knownTitles.add(finalKey);knownIds.add(record.id);st.added++;
+  packs.push(record);knownUrls.add(canonical);knownTitles.add(finalKey);knownIds.add(record.id);st.added++;liveLog("candidate_added",provider,{title:finalTitle,sourceUrl:canonical,hasImage:Boolean(image)});
   return true;
  }catch(error){st.errors++;console.log(provider+" detail skipped:",title,error?.message||error);return false;}
 }
@@ -184,7 +186,7 @@ async function scanMcpedlRest(){
    packs.push(record);knownUrls.add(canonical);knownTitles.add(tk);knownIds.add(record.id);st.added++;added++;pageAdded++;
    if(added>=maxNew)break;
   }
-  console.log("MCPEDL REST page",pageNo,"posts",posts.length,"new",pageAdded);
+  liveLog("listing_result","MCPEDL REST API",{page:pageNo,url,posts:posts.length,added:pageAdded,totalAdded:added});
   if(posts.length<100)break;
   await wait(250);
  }
@@ -197,6 +199,7 @@ async function scanHtmlSource(provider){
   if(provider==="ModBay"){base="https://modbay.org";url=pageNo===1?base+"/textures/":base+"/textures/page/"+pageNo+"/";selector='a[href*="/textures/"]';}
   else if(provider==="Planet Minecraft"){base="https://www.planetminecraft.com";url=base+"/texture-packs/?platform=2&p="+(pageNo-1);selector='a[href*="/texture-pack/"]';}
   else{base="https://www.curseforge.com";url=base+"/minecraft-bedrock/search?class=texture-packs&page="+pageNo+"&pageSize=50&sortBy=latest+update";selector='a[href*="/minecraft-bedrock/texture-packs/"]';}
+  liveLog("listing_scan",provider,{page:pageNo,url});
   const html=await fetchText(url),$=load(html),anchors=$(selector).toArray(),candidates=[],seen=new Set();
   for(const el of anchors){
    const a=$(el);let u;try{u=new URL(a.attr("href"),base);}catch{continue;}
@@ -214,7 +217,7 @@ async function scanHtmlSource(provider){
   }
   const pageAdded=await processListingCandidates(provider,candidates,base);
   added+=pageAdded;
-  console.log(provider+" page",pageNo,"candidate links",candidates.length,"added",pageAdded);
+  liveLog("listing_result",provider,{page:pageNo,url,candidateLinks:candidates.length,added:pageAdded,totalAdded:added});
   if(candidates.length===0){console.warn(provider+" parser found no candidate links; stopping.");break;}
   stale=pageAdded===0?stale+1:0;
   if(stale>=staleLimit){console.log(provider+" stopped after "+stale+" pages without new verified Bedrock entries.");break;}
