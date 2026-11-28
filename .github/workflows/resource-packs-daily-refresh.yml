@@ -1,0 +1,58 @@
+name: Daily Resource Pack Catalogue Refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 03:00 Japan Standard Time (18:00 UTC)
+    - cron: "0 18 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resource-pack-catalogue
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install HTML parser
+        run: npm install --no-save --package-lock=false cheerio@1.0.0
+      - name: Validate refresh scripts
+        run: |
+          node --check scripts/resource-pack-sync.mjs
+          node --check scripts/resource-pack-detail-enrichment.mjs
+          node --check scripts/resource-pack-image-enrichment.mjs
+          node --check scripts/resource-pack-utils.mjs
+      - name: Refresh existing entries and check source updates
+        run: node scripts/resource-pack-sync.mjs
+      - name: Refresh descriptions and metadata
+        run: node scripts/resource-pack-detail-enrichment.mjs
+      - name: Refresh gallery image information
+        run: node scripts/resource-pack-image-enrichment.mjs
+      - name: Commit refreshed catalogue
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resource-packs.json
+          if git diff --cached --quiet; then
+            echo "No catalogue updates found."
+          else
+            git commit -m "Daily refresh of Bedrock resource pack catalogue"
+            for attempt in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main
+              if git push; then
+                exit 0
+              fi
+              sleep $((attempt * 2))
+            done
+            echo "Could not push refreshed catalogue."
+            exit 1
+          fi
