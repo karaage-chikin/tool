@@ -14,7 +14,7 @@ const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000))
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||1000));
 const staleLimit=Math.max(10,Math.min(200,Number(process.env.ADDITIONAL_STALE_PAGE_LIMIT)||60));
 const clean=s=>String(s||"").replace(/\s+/g," ").trim();
-function liveLog(type,provider,detail={}){console.log("[LIVE_SCAN] "+JSON.stringify({at:new Date().toISOString(),type,provider,...detail}));}
+function liveLog(type,provider,detail={}){const event={at:new Date().toISOString(),type,provider,...detail};console.log("[LIVE_SCAN] "+JSON.stringify(event));globalThis.__liveLogQueue=(globalThis.__liveLogQueue||Promise.resolve()).then(async()=>{const endpoint=process.env.RESOURCE_PACK_LIVE_LOG_URL,token=process.env.ACTIONS_ID_TOKEN;if(!endpoint||!token)return;try{await fetch(endpoint,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(event),signal:AbortSignal.timeout(8000)});}catch(error){console.warn("Live log delivery failed:",error?.message||error);}});}
 const stats={"MCPEDL REST API":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function parseDate(value){
@@ -238,5 +238,5 @@ function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\n");}
  const sourceStats={"MCPEDL category listing":{scanned:Number(primary.scanned||0),added:Number(primary.added||0),updated:Number(primary.updated||0),removed:Number(primary.removed||0)},...stats};
  const summary={addedFromAdditionalSource:added,totalNewAdded:Object.values(addedBySource).reduce((sum,n)=>sum+Number(n||0),0),addedBySource,sourceStats,total:packs.length,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit};
  fs.writeFileSync("resource-pack-collector-stats.json",JSON.stringify(summary,null,2)+"\n");
- console.log(JSON.stringify(summary,null,2));
+ await globalThis.__liveLogQueue;\n console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
