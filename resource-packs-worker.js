@@ -1,5 +1,6 @@
 const ORIGIN = "https://karaage-chikin.github.io";
 const SESSION_MS = 30 * 24 * 60 * 60 * 1000;
+const PACK_CATEGORIES=["シェーダー","軽量化","UI・テーマ","UI・操作","UI・メニュー","自然・植物","ブロック・建築","ブロック・アイテム","UI・シンプル","サウンド","空・天候","水・環境","モブ・モデル","アニメーション","言語・フォント","便利・農業","便利・操作","季節・テーマ","テーマ・世界観","その他"];
 const encoder = new TextEncoder();
 
 function cors(origin) {
@@ -91,8 +92,21 @@ function validatePack(input) {
 }
 async function readJson(request) {
   const length = Number(request.headers.get("Content-Length") || 0);
-  if (length > 20000) throw new Error("送信データが大きすぎます。");
-  return await request.json();
+  if (Number.isFinite(length) && length > 20000) throw new Error("送信データが大きすぎます。");
+  if (!request.body) throw new Error("送信データがありません。");
+  const reader=request.body.getReader(),chunks=[];let total=0;
+  try{
+    while(true){
+      const {done,value}=await reader.read();if(done)break;
+      total+=value.byteLength;
+      if(total>20000){await reader.cancel();throw new Error("送信データが大きすぎます。");}
+      chunks.push(value);
+    }
+  }finally{try{reader.releaseLock();}catch{}}
+  const bytes=new Uint8Array(total);let offset=0;
+  for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+  try{return JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));}
+  catch{throw new Error("JSON形式が正しくありません。");}
 }
 async function loginAllowed(env, request) {
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
@@ -223,17 +237,26 @@ async function discoverMcpedl(env, posts=null) {
 }
 function normalizeCandidate(r){return {id:r.id,title:r.title,author:r.author,description:r.description,sourceUrl:r.source_url,provider:r.provider,discoveredAt:r.discovered_at,thumbnailUrl:r.thumbnail_url||"",galleryImages:galleryFromJson(r.gallery_json)};}
 
+let adminLogTablesPromise=null;
 async function ensureAdminLogTables(env) {
-  await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_admin_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at INTEGER NOT NULL, type TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', ip_hash TEXT NOT NULL DEFAULT '', user_agent TEXT NOT NULL DEFAULT '')").run();
-  await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_daily_access (day TEXT PRIMARY KEY, route TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0)").run();
+  if(!adminLogTablesPromise){
+    adminLogTablesPromise=(async()=>{
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_admin_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at INTEGER NOT NULL, type TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', ip_hash TEXT NOT NULL DEFAULT '', user_agent TEXT NOT NULL DEFAULT '')").run();
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_daily_access (day TEXT PRIMARY KEY, route TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0)").run();
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS resource_pack_daily_access_v2 (day TEXT NOT NULL, route TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(day,route))").run();
+      await env.DB.prepare("INSERT OR IGNORE INTO resource_pack_daily_access_v2(day,route,count) SELECT day,route,count FROM resource_pack_daily_access").run();
+    })().catch(error=>{adminLogTablesPromise=null;throw error;});
+  }
+  return adminLogTablesPromise;
 }
 async function auditEvent(env, request, type, action, detail="") {
   try {
     await ensureAdminLogTables(env);
+    const actor=request.headers.get("X-Worker-Actor")||"";
     const ip=request.headers.get("CF-Connecting-IP")||"unknown";
     const digest=await crypto.subtle.digest("SHA-256",encoder.encode(ip+":admin-audit-v1"));
-    const ipHash=b64url(new Uint8Array(digest).slice(0,12));
-    const ua=String(request.headers.get("User-Agent")||"").slice(0,120);
+    const ipHash=actor==="scheduled"?"scheduled":b64url(new Uint8Array(digest).slice(0,12));
+    const ua=String(request.headers.get("User-Agent")||(actor==="scheduled"?"Cloudflare Scheduled Worker":"")).slice(0,120);
     await env.DB.prepare("INSERT INTO resource_pack_admin_logs (created_at,type,action,detail,ip_hash,user_agent) VALUES (?,?,?,?,?,?)")
       .bind(Date.now(),type,action,String(detail).slice(0,500),ipHash,ua).run();
   } catch(error) { console.warn("Admin audit log write failed",String(error?.message||error)); }
@@ -242,7 +265,7 @@ async function recordPublicAccess(env, route) {
   try {
     await ensureAdminLogTables(env);
     const day=new Date(Date.now()+9*60*60*1000).toISOString().slice(0,10);
-    await env.DB.prepare("INSERT INTO resource_pack_daily_access (day,route,count) VALUES (?,?,1) ON CONFLICT(day) DO UPDATE SET count=count+1")
+    await env.DB.prepare("INSERT INTO resource_pack_daily_access_v2 (day,route,count) VALUES (?,?,1) ON CONFLICT(day,route) DO UPDATE SET count=count+1")
       .bind(day,route).run();
   } catch(error) { console.warn("Public access counter failed",String(error?.message||error)); }
 }
@@ -421,7 +444,7 @@ async function verifyCollectorOidc(request) {
 }
 
 export default {
-  async scheduled(controller, env, ctx) { ctx.waitUntil((async()=>{await ensureAdminLogTables(env);await auditEvent(env,{headers:new Headers()},"update","scheduled_started","定期更新を開始");try{const images=await enrichMcpedlImages(env,0,20);const posts=await fetchMcpedlPosts();const discovery=await discoverMcpedl(env,posts);await auditEvent(env,{headers:new Headers()},"update","scheduled_completed",JSON.stringify({images,discovery}).slice(0,450));}catch(e){await auditEvent(env,{headers:new Headers()},"debug","scheduled_failed",String(e?.message||e));console.error("Scheduled discovery/image refresh failed",e);}})()); },
+  async scheduled(controller, env, ctx) { ctx.waitUntil((async()=>{const actorRequest={headers:new Headers({"X-Worker-Actor":"scheduled","User-Agent":"Cloudflare Scheduled Worker"})};await ensureAdminLogTables(env);await auditEvent(env,actorRequest,"update","scheduled_started","定期更新を開始");try{await env.DB.prepare("INSERT OR IGNORE INTO resource_pack_image_jobs (id,status) VALUES (1,'idle')").run();await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='running',started_at=?,finished_at=NULL,result_json=NULL WHERE id=1").bind(Date.now()).run();const images=await enrichMcpedlImages(env,0,100);const posts=await fetchMcpedlPosts();const discovery=await discoverMcpedl(env,posts);const result={images,discovery};await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='done',finished_at=?,result_json=? WHERE id=1").bind(Date.now(),JSON.stringify(result)).run();await auditEvent(env,actorRequest,"update","scheduled_completed",JSON.stringify(result).slice(0,450));}catch(e){await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='failed',finished_at=?,result_json=? WHERE id=1").bind(Date.now(),JSON.stringify({error:String(e?.message||e)})).run();await auditEvent(env,actorRequest,"debug","scheduled_failed",String(e?.message||e));console.error("Scheduled discovery/image refresh failed",e);}})()); },
   async fetch(request, env, ctx) {
     const origin = request.headers.get("Origin") || "";
     if (request.method === "OPTIONS") {
@@ -437,31 +460,20 @@ export default {
         return reply({ ok: true }, 200, origin);
       } catch { return reply({ ok: false }, 503, origin); }
     }
+    if(request.method==="POST"&&url.pathname==="/api/public/access"){
+      try{
+        const body=await readJson(request),route=String(body.route||"");
+        if(!["/resource-packs.html","/api/packs"].includes(route))return reply({error:"集計対象のページが不正です。"},400,origin);
+        await recordPublicAccess(env,route);
+        return reply({ok:true},202,origin);
+      }catch(error){return reply({error:"アクセス記録を保存できませんでした。"},400,origin);}
+    }
     if (request.method === "GET" && url.pathname === "/api/packs") {
-      await recordPublicAccess(env,"/api/packs");
       try {
-        await env.DB.prepare("INSERT OR IGNORE INTO resource_pack_image_jobs (id,status) VALUES (1,'idle')").run();
-        const now=Date.now();
-        const claim=await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='running',started_at=?,finished_at=NULL,result_json=NULL WHERE id=1 AND status!='running' AND (finished_at IS NULL OR finished_at<?)")
-          .bind(now,now-21600000).run();
-        if(Number(claim?.meta?.changes||0)===1){
-          ctx.waitUntil((async()=>{
-            try{
-              const result=await enrichMcpedlImages(env,0,100);
-              await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='done',finished_at=?,result_json=? WHERE id=1")
-                .bind(Date.now(),JSON.stringify(result)).run();
-              console.log("Automatic gallery image import completed",result);
-            }catch(error){
-              await env.DB.prepare("UPDATE resource_pack_image_jobs SET status='failed',finished_at=?,result_json=? WHERE id=1")
-                .bind(Date.now(),JSON.stringify({error:String(error?.message||error)})).run();
-              console.error("Automatic gallery image import failed",error);
-            }
-          })());
-        }
         const result = await env.DB.prepare(
           "SELECT id,title,author,category,description,source_url,compatibility,source,created_at,thumbnail_url,gallery_json,direct_download_url,direct_download_allowed FROM resource_packs ORDER BY created_at DESC, title COLLATE NOCASE"
         ).all();
-        return reply({ packs: (result.results || []).map(normalize), imageImportStarted:Number(claim?.meta?.changes||0)===1 }, 200, origin);
+        return reply({ packs: (result.results || []).map(normalize) }, 200, origin);
       } catch (error) {
         console.error("Pack listing failed", error);
         return reply({ error: "一覧を読み込めませんでした。" }, 503, origin);
@@ -655,7 +667,7 @@ export default {
         await ensureAdminLogTables(env);
         const limit=Math.min(100,Math.max(1,Number.parseInt(url.searchParams.get("limit")||"50",10)||50));
         const offset=Math.min(1000000,Math.max(0,Number.parseInt(url.searchParams.get("offset")||"0",10)||0));
-        const days=await env.DB.prepare("SELECT day,route,count FROM resource_pack_daily_access ORDER BY day DESC LIMIT 90").all();
+        const days=await env.DB.prepare("SELECT day,route,count FROM resource_pack_daily_access_v2 ORDER BY day DESC,route ASC LIMIT 180").all();
         const count=await env.DB.prepare("SELECT COUNT(*) AS total FROM resource_pack_admin_logs WHERE type='access'").first();
         const admins=await env.DB.prepare("SELECT id,created_at,action,detail,ip_hash,user_agent FROM resource_pack_admin_logs WHERE type='access' ORDER BY id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
         return reply({daily:days.results||[],admin:admins.results||[],adminTotal:Number(count?.total||0),limit,offset,hasMore:offset+((admins.results||[]).length)<Number(count?.total||0)},200,origin);
@@ -701,8 +713,8 @@ export default {
         try{
           const c=await env.DB.prepare("SELECT * FROM resource_pack_candidates WHERE id=? AND status='pending'").bind(cm[1]).first();
           if(!c)return reply({error:"候補が見つかりません。"},404,origin);
-          const body=await readJson(request), category=String(body.category||"その他").slice(0,60), id=crypto.randomUUID(), now=Date.now();
-          await env.DB.prepare("INSERT INTO resource_packs (id,title,author,category,description,source_url,compatibility,source,created_at,updated_at,thumbnail_url,gallery_json,direct_download_url,direct_download_allowed,permission_url,permission_note,image_permission_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(id,c.title,c.author,category,c.description,c.source_url,"配布元で確認","MCPEDL自動発見（管理者承認）",now,now,c.thumbnail_url||"",c.gallery_json||"[]","",0,"","","").run();
+          const body=await readJson(request), requestedCategory=String(body.category||"その他").trim(), category=PACK_CATEGORIES.includes(requestedCategory)?requestedCategory:"その他", id=crypto.randomUUID(), now=Date.now();
+          await env.DB.prepare("INSERT INTO resource_packs (id,title,author,category,description,source_url,compatibility,source,created_at,updated_at,thumbnail_url,gallery_json,direct_download_url,direct_download_allowed,permission_url,permission_note,image_permission_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(id,c.title,c.author,category,c.description,c.source_url,"配布元で確認",String(c.provider||"自動発見")+"（管理者承認）",now,now,c.thumbnail_url||"",c.gallery_json||"[]","",0,"","","").run();
           await env.DB.prepare("DELETE FROM resource_pack_candidates WHERE id=?").bind(c.id).run();
           const row=await env.DB.prepare("SELECT * FROM resource_packs WHERE id=?").bind(id).first();
           return reply({pack:normalize(row)},201,origin);
