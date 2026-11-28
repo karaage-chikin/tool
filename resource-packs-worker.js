@@ -673,6 +673,7 @@ export default {
             "INSERT INTO resource_packs (id,title,author,category,description,source_url,compatibility,source,created_at,updated_at,thumbnail_url,gallery_json,direct_download_url,direct_download_allowed,permission_url,permission_note,image_permission_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
           ).bind(id,String(body.title).trim(),String(body.author||"").trim(),String(body.category||"その他"),String(body.description).trim(),String(body.sourceUrl).trim(),String(body.compatibility||"配布元で確認"),"管理者登録",now,now,String(body.thumbnailUrl||""),JSON.stringify(body.galleryImages||[]),body.directDownloadAllowed?String(body.directDownloadUrl||""):"",body.directDownloadAllowed?1:0,String(body.permissionUrl||""),String(body.permissionNote||"").slice(0,500),String(body.imagePermissionUrl||"")).run();
           const row = await env.DB.prepare("SELECT * FROM resource_packs WHERE id=?").bind(id).first();
+          if(body.directDownloadAllowed===true) await auditEvent(env,request,"update","direct_download_enabled",JSON.stringify({id,permissionUrl:String(body.permissionUrl||"").slice(0,300)}));
           return reply({ pack: normalize(row) }, 201, origin);
         } catch (error) { console.error(error); return reply({ error: "登録できませんでした。" }, 500, origin); }
       }
