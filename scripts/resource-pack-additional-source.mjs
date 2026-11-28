@@ -238,5 +238,6 @@ function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\n");}
  const sourceStats={"MCPEDL category listing":{scanned:Number(primary.scanned||0),added:Number(primary.added||0),updated:Number(primary.updated||0),removed:Number(primary.removed||0)},...stats};
  const summary={addedFromAdditionalSource:added,totalNewAdded:Object.values(addedBySource).reduce((sum,n)=>sum+Number(n||0),0),addedBySource,sourceStats,total:packs.length,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit};
  fs.writeFileSync("resource-pack-collector-stats.json",JSON.stringify(summary,null,2)+"\n");
- await globalThis.__liveLogQueue;\n console.log(JSON.stringify(summary,null,2));
+ await globalThis.__liveLogQueue;
+ console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
