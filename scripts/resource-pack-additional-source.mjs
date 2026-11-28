@@ -13,7 +13,7 @@ const headers={"User-Agent":"Mozilla/5.0 (compatible; KaraageChikinBedrockPackDi
 const maxNew=Math.max(0,Math.min(20000,Number(process.env.MAX_NEW_PACKS)||3000));
 const maxPages=Math.max(1,Math.min(1000,Number(process.env.MAX_ADDITIONAL_PAGES)||1000));
 const staleLimit=Math.max(10,Math.min(200,Number(process.env.ADDITIONAL_STALE_PAGE_LIMIT)||60));
-const clean=s=>String(s||"").replace(/\\s+/g," ").trim();
+const clean=s=>String(s||"").replace(/\s+/g," ").trim();
 const stats={MCPEDL:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},ModBay:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},"Planet Minecraft":{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0},CurseForge:{scanned:0,added:0,duplicates:0,tooOld:0,noDate:0,notBedrock:0,errors:0}};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function parseDate(value){
@@ -22,7 +22,7 @@ function parseDate(value){
  return Number.isNaN(d.getTime())||d.getTime()>Date.now()+86400000?null:d;
 }
 function dateFromText(text){
- const patterns=[/\\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\s+\\d{1,2},?\\s+\\d{4}\\b/i,/\\b\\d{1,2}\\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*,?\\s+\\d{4}\\b/i,/\\b\\d{4}-\\d{2}-\\d{2}\\b/];
+ const patterns=[/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{4}\b/i,/\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*,?\s+\d{4}\b/i,/\b\d{4}-\d{2}-\d{2}\b/];
  for(const re of patterns){const m=String(text||"").match(re);if(m){const d=parseDate(m[0]);if(d)return d;}}
  return null;
 }
@@ -43,7 +43,7 @@ function dateFromDocument($){
   }catch{}
  });
  if(values.length)return values.sort((a,b)=>b-a)[0];
- return dateFromText($("body").text());
+ return null;
 }
 function jsonLdInfo($){
  let best={};
@@ -63,7 +63,8 @@ function jsonLdInfo($){
 }
 function meta($,selector){return clean($(selector).first().attr("content"));}
 function safeImage(raw,base){
- try{const u=new URL(raw,base);if(u.protocol!=="https:"||!u.hostname.includes(".")||/\\.svg(?:$|\\?)/i.test(u.pathname)||/advert|sponsor|banner|avatar|profile|logo|share/i.test(u.hostname+u.pathname))return "";return u.href;}catch{return "";}
+ if(!raw)return "";
+ try{const u=new URL(raw,base);if(u.protocol!=="https:"||!u.hostname.includes(".")||/\.svg(?:$|\?)/i.test(u.pathname)||/advert|sponsor|banner|avatar|profile|logo|share/i.test(u.hostname+u.pathname))return "";return u.href;}catch{return "";}
 }
 function imageFrom($,base){
  const raw=meta($,"meta[property='og:image']")||meta($,"meta[name='twitter:image']")||$("main img,article img").first().attr("data-src")||$("main img,article img").first().attr("src");
@@ -77,7 +78,7 @@ function pageAuthor($,card){
  const ld=jsonLdInfo($);
  if(ld.author)return clean(ld.author).slice(0,120);
  const text=clean(card.text()+" "+$("body").text().slice(0,2000));
- const m=text.match(/(?:\\bBy|Uploaded by|Created by|作者|作成者|投稿者)\\s*[:：]?\\s*([^\\n|·]{2,80}?)(?=\\s+(?:Updated|Last updated|Downloads|Views|on\\b)|$)/i);
+ const m=text.match(/(?:\bBy|Uploaded by|Created by|作者|作成者|投稿者)\s*[:：]?\s*([^\n|·]{2,80}?)(?=\s+(?:Updated|Last updated|Downloads|Views|on\b)|$)/i);
  return m?m[1].trim().slice(0,120):"";
 }
 async function fetchText(url,accept="text/html,application/xhtml+xml"){
@@ -99,7 +100,7 @@ function bedrockEvidence(provider,url,$,description){
  if(provider==="CurseForge"&&new URL(url).pathname.startsWith("/minecraft-bedrock/"))return true;
  const text=(description+" "+$("title").text()+" "+$("body").text().slice(0,18000)).toLowerCase();
  if(/java edition only|only for java edition|java-only|fabric mod|forge mod/.test(text))return false;
- return /minecraft bedrock|bedrock edition|bedrock platform|mcpe|pocket edition|\\.mcpack|\\.mcaddon|minecraft for android|minecraft for ios|windows 10 edition/.test(text);
+ return /minecraft bedrock|bedrock edition|bedrock platform|mcpe|pocket edition|\.mcpack|\.mcaddon|minecraft for android|minecraft for ios|windows 10 edition/.test(text);
 }
 function makeRecord(provider,canonical,title,author,description,date,image){
  const slug=new URL(canonical).pathname.split("/").filter(Boolean).at(-1)||"pack";
@@ -123,7 +124,7 @@ async function addExternal(provider,href,title,card$,card,base){
   if(!bedrockEvidence(provider,canonical,$,description)){st.notBedrock++;return false;}
   if(isRestricted(title,canonical,description)){st.duplicates++;return false;}
   const detailTitle=meta($,"meta[property='og:title']")||$("h1").first().text()||title;
-  const finalTitle=clean(detailTitle).replace(/\\s*[|–-]\\s*(?:ModBay|Planet Minecraft|CurseForge).*$/i,"").slice(0,160)||title;
+  const finalTitle=clean(detailTitle).replace(/\s*[|–-]\s*(?:ModBay|Planet Minecraft|CurseForge).*$/i,"").slice(0,160)||title;
   const finalKey=titleKey(finalTitle);
   if(!finalKey||knownTitles.has(finalKey)){st.duplicates++;return false;}
   const image=imageFrom($,canonical)||safeImage(card.find("img").first().attr("data-src")||card.find("img").first().attr("src"),base);
@@ -221,7 +222,7 @@ async function scanHtmlSource(provider){
  }
  return added;
 }
-function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\\n");}
+function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\n");}
 (async()=>{
  const results={};
  for(const [name,scan] of [["MCPEDL",scanMcpedlRest],["CurseForge",()=>scanHtmlSource("CurseForge")],["ModBay",()=>scanHtmlSource("ModBay")],["Planet Minecraft",()=>scanHtmlSource("Planet Minecraft")]]){
@@ -230,6 +231,6 @@ function save(){fs.writeFileSync(file,JSON.stringify(packs,null,2)+"\\n");}
  }
  const added=Object.values(results).reduce((sum,n)=>sum+n,0);
  const summary={addedFromAdditionalSource:added,addedBySource:results,sourceStats:stats,total:packs.length,cutoff:cutoff.toISOString().slice(0,10),maxPages,maxNew,staleLimit};
- fs.writeFileSync("resource-pack-collector-stats.json",JSON.stringify(summary,null,2)+"\\n");
+ fs.writeFileSync("resource-pack-collector-stats.json",JSON.stringify(summary,null,2)+"\n");
  console.log(JSON.stringify(summary,null,2));
 })().catch(error=>{console.error(error);process.exit(1);});
