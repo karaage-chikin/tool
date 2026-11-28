@@ -432,5 +432,6 @@ document.addEventListener("keydown",e=>{
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
  }
 });
+fetch(API+"/api/public/access",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({route:"/resource-packs.html"}),keepalive:true}).catch(()=>{});
 load().catch(error=>{console.error("Catalogue initialization failed",error);$("grid").removeAttribute("aria-busy");$("countStat").textContent="件数取得不可";$("resultCount").textContent="図鑑を読み込めませんでした";catalogueNotice("図鑑の初期化に失敗しました。ページを再読み込みしてください。","error");});
 })();
