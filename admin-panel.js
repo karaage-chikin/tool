@@ -22,7 +22,7 @@ const PAGE_SIZE=50,MAX_DATE=8640000000000000;
 const ESC_MAP={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};
 const esc=value=>String(value??"").replace(/[&<>"']/g,c=>ESC_MAP[c]);
 const number=value=>Number.isFinite(Number(value))?Number(value):0;
-const formatBytes=value=>(number(value)/1048576).toFixed(2)+" MB";
+const formatBytes=value=>{const n=Math.max(0,number(value));if(n>=1073741824)return (n/1073741824).toFixed(2)+" GB";if(n>=1048576)return (n/1048576).toFixed(2)+" MB";if(n>=1024)return (n/1024).toFixed(1)+" KB";return Math.round(n)+" B";};
 const formatDate=value=>{
  const n=Number(value);
  if(!Number.isFinite(n)||Math.abs(n)>MAX_DATE)return "—";
@@ -146,6 +146,13 @@ async function expansionPanel(){
  const historyRows=history.map(x=>'<tr><td>'+esc(formatDate(Date.parse(x.finishedAt||x.startedAt)))+'</td><td>'+esc(durationLabel(x.durationMs))+'</td><td>'+esc(Number(x.added||0).toLocaleString("ja-JP"))+'件</td><td>'+esc(Number(x.finalCount||0).toLocaleString("ja-JP"))+'件</td></tr>').join("");
  return '<section class="panel expansion-panel"><h2>リソースパック図鑑の収集状況</h2><div class="progress-head"><strong>'+esc(countText)+'</strong><span class="job-state '+(stateClass)+'">'+esc(state)+'</span></div><div class="meter" role="progressbar" aria-label="10,000件の通過目標" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="'+(count===null?0:Math.min(count,10000))+'"><span style="width:'+pct.toFixed(2)+'%"></span></div><div class="progress-foot"><span>'+esc(progressText)+'</span><span>'+(remaining===null?"":"目安まで残り "+remaining.toLocaleString("ja-JP")+"件")+'</span></div><p class="notice">重要：10,000件は最初の通過目標で、上限でも処理完了条件でもありません。達成後も新しいBedrock向けパックを探して追加します。</p><div class="notice stage-notice">'+(measurement?.status==="running"?'<span class="stage-live"><span class="pulse-dot"></span><span class="stage-sweep" aria-hidden="true"></span>'+esc(stageText)+'</span> ／ 経過 '+elapsed:esc(stageText))+'</div>'+(measurement?.status==="running"?'<div class="stage-progress" aria-label="巡回処理中"><span></span></div>':'')+'<p class="notice">'+esc(lastRunText)+'</p><p class="notice">'+esc(etaText)+'</p><p class="notice">'+esc(etaDateText)+'</p><p class="notice">'+esc(measurement?.updatedAt?"進捗最終更新："+formatDate(Date.parse(measurement.updatedAt)):"進捗最終更新：未取得")+'</p>'+sourceTable+stageTable+(historyRows?'<h3>直近5回の巡回履歴</h3><table><thead><tr><th>終了日時</th><th>所要時間</th><th>新規追加</th><th>終了時の登録数</th></tr></thead><tbody>'+historyRows+'</tbody></table>':"")+(monitorError?'<p class="notice error">実行状況の取得エラー：'+esc(monitorError)+'</p>':"")+(run?.url?'<a href="'+esc(run.url)+'" target="_blank" rel="noopener noreferrer">実際の収集ログを見る（ページ取得・候補の判定結果） ↗</a>':"")+'</section>';
 }
+function accessChart(items){
+ const totals=new Map();
+ for(const item of items||[])totals.set(item.day,(totals.get(item.day)||0)+number(item.count));
+ const days=[...totals.entries()].sort((x,y)=>x[0].localeCompare(y[0])).slice(-30),max=Math.max(1,...days.map(x=>x[1]));
+ if(!days.length)return "";
+ return '<div class="access-chart" role="img" aria-label="直近30日の日別アクセス数">'+days.map(([day,count])=>'<div class="access-bar-row"><span>'+esc(day.slice(5))+'</span><div class="access-bar-track"><i style="width:'+Math.max(1,count/max*100).toFixed(1)+'%"></i></div><b>'+count.toLocaleString("ja-JP")+'</b></div>').join("")+'</div>';
+}
 function storageMeter(label,used,limit,detail,unlimited=false){
  const u=number(used),l=number(limit),pct=unlimited||!l?null:Math.min(100,u/l*100);
  return '<div class="storage-item"><div class="storage-head"><strong>'+esc(label)+'</strong><b>'+formatBytes(u)+(l?' / '+formatBytes(l):'')+'</b></div>'+(pct===null?'<div class="capacity-no-limit">上限未設定（使用量のみ表示）</div>':'<div class="meter"><span style="width:'+pct.toFixed(2)+'%"></span></div>')+'<div class="storage-foot"><span>'+(pct===null?"固定上限なし・使用量のみ":pct.toFixed(2)+"% 使用")+'</span><span>'+esc(detail||"")+'</span></div></div>';
@@ -166,8 +173,8 @@ async function loadOverview(seq){
  html+='<section class="panel expansion-panel" id="expansionMount"><h2>図鑑拡張の進捗</h2><p class="muted">進捗情報を取得しています…（他の管理情報は先に表示します）</p></section>';
  html+='<section class="panel" id="liveScanMount"><h2>リアルタイム収集モニター</h2><p class="muted">収集ログを取得しています…</p></section>';
  html+='<div class="overview-grid">';
- html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
- html+='<section class="panel overview-panel"><h2>Debug・エラー</h2>'+(data.debug?rows((data.debug.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("debug"))||"取得失敗"}))+'</section>';
+ html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?'<p class="muted">直近4件を表示'+(number(data.updates.total)>4?'（ほか '+(number(data.updates.total)-4)+' 件）':'')+'</p>'+rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
+ html+='<section class="panel overview-panel"><h2>Debug・エラー</h2>'+(data.debug?'<p class="muted">直近4件を表示'+(number(data.debug.total)>4?'（ほか '+(number(data.debug.total)-4)+' 件）':'')+'</p>'+rows((data.debug.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("debug"))||"取得失敗"}))+'</section>';
  html+='<section class="panel overview-panel"><h2>アクセス記録</h2>'+(data.access?((data.access.daily||[]).length?'<table><thead><tr><th>日付</th><th>アクセス数</th></tr></thead><tbody>'+data.access.daily.map(x=>'<tr><td>'+esc(x.day)+'</td><td>'+esc(x.count)+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">アクセス記録はまだありません。</div>'):failurePanel({message:errors.find(x=>x.startsWith("access"))||"取得失敗"}))+'</section>';
  html+='<section class="panel overview-panel"><h2>更新・画像処理の状態</h2>'+rows([{title:d.imageJob?.status||"未実行",body:d.imageJob?.result_json||"処理結果はまだありません。",meta:"開始: "+formatDate(d.imageJob?.started_at)+" / 完了: "+formatDate(d.imageJob?.finished_at)}])+'</section></div>';
  if(errors.length)html+='<p class="notice">一部のAPIに接続できませんでした。各欄の再読み込みを試してください。<br>'+esc(errors.join(" / "))+'</p>';
@@ -215,7 +222,7 @@ async function loadAccess(page,seq){
  const total=serverPaged?number(d.adminTotal):allAdmins.length;
  const admins=serverPaged?allAdmins:allAdmins.slice(offset,offset+PAGE_SIZE);
  const hasMore=serverPaged?Boolean(d.hasMore):offset+PAGE_SIZE<total;
- $("pageContent").innerHTML='<section class="panel"><h2>公開ページの日別アクセス（直近90日）</h2>'+(daily.length?'<table><thead><tr><th>日付（日本時間）</th><th>API</th><th>アクセス数</th></tr></thead><tbody>'+daily.map(x=>'<tr><td>'+esc(x.day)+'</td><td>'+esc(x.route)+'</td><td>'+esc(x.count)+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">アクセス記録はまだありません。</div>')+'</section><section class="panel"><h2>管理者アクセス記録</h2>'+rows(admins.map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)+" / IP識別ハッシュ: "+x.ip_hash+" / "+x.user_agent})))+pager("access",page,total,hasMore)+'</section><p class="notice">公開アクセスは日別集計のみです。管理者アクセスではIPアドレスそのものではなくハッシュ値を保存します。</p>';
+ $("pageContent").innerHTML='<section class="panel"><h2>公開ページの日別アクセス（直近90日）</h2>'+accessChart(daily)+(daily.length?'<table><thead><tr><th>日付（日本時間）</th><th>ページ/API</th><th>アクセス数</th></tr></thead><tbody>'+daily.map(x=>'<tr><td>'+esc(x.day)+'</td><td>'+esc(x.route)+'</td><td>'+esc(x.count)+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">アクセス記録はまだありません。</div>')+'</section><section class="panel"><h2>管理者アクセス記録</h2>'+rows(admins.map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)+" / IP識別ハッシュ: "+x.ip_hash+" / "+x.user_agent})))+pager("access",page,total,hasMore)+'</section><p class="notice">公開アクセスは日別・ページ別に集計しています。管理者アクセスではIPアドレスそのものではなくハッシュ値を保存します。</p>';
  status("管理者ログ "+total+"件中 "+(total?offset+1:0)+"〜"+(offset+admins.length)+"件を表示","good");
 }
 async function renderPage(){
