@@ -544,6 +544,7 @@ export default {
         }
         let github = { available:false, sizeBytes:null, error:"GitHub情報を取得できませんでした。" };
         let expansion = { available:false, status:"unknown", conclusion:null, url:"", createdAt:null };
+        let expansionProgress = { available:false, error:"進捗データはまだありません。" };
         try {
           const response = await fetch("https://api.github.com/repos/karaage-chikin/tool", {
             headers:{"Accept":"application/vnd.github+json","User-Agent":"KaraageChikinAdminDashboard/1.0",...(env.GITHUB_ACTIONS_TOKEN?{"Authorization":"Bearer "+env.GITHUB_ACTIONS_TOKEN}:{})},
@@ -572,12 +573,20 @@ export default {
         } catch (error) {
           expansion.error = String(error?.message || error).slice(0,180);
         }
+        try {
+          const progressResponse = await fetch("https://raw.githubusercontent.com/karaage-chikin/tool/main/resource-pack-progress.json", { headers:{"Accept":"application/json"}, cache:"no-store", signal:AbortSignal.timeout(8000) });
+          if (!progressResponse.ok) throw new Error("進捗ファイル HTTP " + progressResponse.status);
+          expansionProgress = { available:true, ...(await progressResponse.json()) };
+        } catch (error) {
+          expansionProgress = { available:false, error:String(error?.message || error).slice(0,180) };
+        }
         return reply({
           d1:{available:dbUsedBytes>0,usedBytes:dbUsedBytes,databaseLimitBytes:500*1024*1024,accountFreeLimitBytes:5*1024*1024*1024,tables:Number(dbProbe?.results?.[0]?.tables||0)},
           supabase,
           packUploadGuard:{usedBytes:Number(uploadUsage?.used_bytes||0),limitBytes:PACK_STORAGE_LIMIT,files:Number(packFiles?.count||0),trackedFileBytes:Number(packFiles?.used_bytes||0),updatedAt:Number(uploadUsage?.updated_at||0)},
           github,
           expansion,
+          expansionProgress,
           checkedAt:Date.now()
         },200,origin);
       }
