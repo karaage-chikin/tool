@@ -313,16 +313,6 @@ $("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=
 $("loadMorePacks").addEventListener("click",()=>{currentPage++;render();});if($("prevPacks"))$("prevPacks").addEventListener("click",()=>{currentPage=Math.max(1,currentPage-1);render();});
 $("favoritesOnly").addEventListener("click",()=>{favoritesOnly=!favoritesOnly;currentPage=1;$("favoritesOnly").classList.toggle("primary",favoritesOnly);render();});
 $("adminToggle").addEventListener("click",()=>{const panel=$("adminPanel"),opening=panel.classList.contains("hidden");panel.classList.toggle("hidden");$("adminToggle").setAttribute("aria-expanded",String(opening));});
-$("loginBtn").addEventListener("click",async()=>{
- const password=$("adminPassword").value;if(!password){setStatus("パスワードを入力してください。","error");return;}
- try{
-  const data=await api("/api/admin/login",{method:"POST",body:JSON.stringify({password})});
-  if(typeof data.token!=="string"||!/^[A-Za-z0-9_.-]{20,2048}$/.test(data.token))throw new Error("認証応答が不正です。");
-  token=data.token;sessionStorage.setItem("resourcePackAdminToken",token);
-  if(data.expiresIn)sessionStorage.setItem("resourcePackAdminTokenExpiresAt",String(Date.now()+Number(data.expiresIn)));
-  $("adminPassword").value="";showEditor(true);render();await loadCandidates();await loadTrash();setStatus("ログインしました。","ok");
- }catch(e){if(e.message.includes("設定されていません"))$("adminSetupHint").classList.remove("hidden");setStatus(e.message,"error");}
-});
 $("logoutBtn").addEventListener("click",()=>{token="";sessionStorage.removeItem("resourcePackAdminToken");sessionStorage.removeItem("resourcePackAdminTokenExpiresAt");showEditor(false);render();setStatus("ログアウトしました。");});
 
 $("uploadPackFile").addEventListener("click",async()=>{
