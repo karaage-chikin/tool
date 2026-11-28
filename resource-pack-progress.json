@@ -1,41 +1,16 @@
 {
   "schema": 2,
-  "updatedAt": "2026-11-28T15:26:56.020Z",
-  "status": "completed",
-  "runStartedAt": "2026-11-28T15:02:37.585Z",
-  "runFinishedAt": "2026-11-28T15:26:56.020Z",
-  "baselineCount": 4677,
+  "updatedAt": "2026-11-28T15:28:01.402Z",
+  "status": "running",
+  "runStartedAt": "2026-11-28T15:28:01.402Z",
+  "runFinishedAt": null,
+  "baselineCount": 4631,
   "currentCount": 4631,
-  "stage": "今回の巡回サイクル終了",
+  "stage": "収集ジョブを開始",
   "stageHistory": [
     {
-      "at": "2026-11-28T15:02:37.585Z",
+      "at": "2026-11-28T15:28:01.402Z",
       "stage": "収集ジョブを開始",
-      "count": 4677
-    },
-    {
-      "at": "2026-11-28T15:07:03.432Z",
-      "stage": "MCPEDL収集完了・追加サイト収集中",
-      "count": 4677
-    },
-    {
-      "at": "2026-11-28T15:26:28.051Z",
-      "stage": "追加サイト収集完了・説明情報取得中",
-      "count": 4677
-    },
-    {
-      "at": "2026-11-28T15:26:50.389Z",
-      "stage": "説明・メタデータ取得完了・画像情報取得中",
-      "count": 4631
-    },
-    {
-      "at": "2026-11-28T15:26:53.740Z",
-      "stage": "画像情報取得完了・図鑑更新中",
-      "count": 4631
-    },
-    {
-      "at": "2026-11-28T15:26:56.020Z",
-      "stage": "今回の巡回サイクル終了",
       "count": 4631
     }
   ],
@@ -230,141 +205,5 @@
         }
       ]
     }
-  ],
-  "sourceStats": {
-    "MCPEDL category listing": {
-      "scanned": 0,
-      "added": 0,
-      "updated": 4,
-      "removed": 0
-    },
-    "MCPEDL REST API": {
-      "scanned": 0,
-      "added": 0,
-      "duplicates": 0,
-      "tooOld": 0,
-      "noDate": 0,
-      "notBedrock": 0,
-      "errors": 1
-    },
-    "ModBay": {
-      "scanned": 4082,
-      "added": 0,
-      "duplicates": 407,
-      "tooOld": 260,
-      "noDate": 0,
-      "notBedrock": 0,
-      "errors": 3720
-    },
-    "Planet Minecraft": {
-      "scanned": 0,
-      "added": 0,
-      "duplicates": 0,
-      "tooOld": 0,
-      "noDate": 0,
-      "notBedrock": 0,
-      "errors": 1
-    },
-    "CurseForge": {
-      "scanned": 2405,
-      "added": 0,
-      "duplicates": 652,
-      "tooOld": 0,
-      "noDate": 2348,
-      "notBedrock": 0,
-      "errors": 0
-    }
-  },
-  "lastRun": {
-    "startedAt": "2026-11-28T15:02:37.585Z",
-    "finishedAt": "2026-11-28T15:26:56.020Z",
-    "durationMs": 1458484,
-    "baselineCount": 4677,
-    "finalCount": 4631,
-    "added": 0,
-    "failed": false,
-    "addedBySource": {
-      "MCPEDL category listing": 0,
-      "MCPEDL REST API": 0,
-      "CurseForge": 0,
-      "ModBay": 0,
-      "Planet Minecraft": 0
-    },
-    "sourceStats": {
-      "MCPEDL category listing": {
-        "scanned": 0,
-        "added": 0,
-        "updated": 4,
-        "removed": 0
-      },
-      "MCPEDL REST API": {
-        "scanned": 0,
-        "added": 0,
-        "duplicates": 0,
-        "tooOld": 0,
-        "noDate": 0,
-        "notBedrock": 0,
-        "errors": 1
-      },
-      "ModBay": {
-        "scanned": 4082,
-        "added": 0,
-        "duplicates": 407,
-        "tooOld": 260,
-        "noDate": 0,
-        "notBedrock": 0,
-        "errors": 3720
-      },
-      "Planet Minecraft": {
-        "scanned": 0,
-        "added": 0,
-        "duplicates": 0,
-        "tooOld": 0,
-        "noDate": 0,
-        "notBedrock": 0,
-        "errors": 1
-      },
-      "CurseForge": {
-        "scanned": 2405,
-        "added": 0,
-        "duplicates": 652,
-        "tooOld": 0,
-        "noDate": 2348,
-        "notBedrock": 0,
-        "errors": 0
-      }
-    },
-    "stageHistory": [
-      {
-        "at": "2026-11-28T15:02:37.585Z",
-        "stage": "収集ジョブを開始",
-        "count": 4677
-      },
-      {
-        "at": "2026-11-28T15:07:03.432Z",
-        "stage": "MCPEDL収集完了・追加サイト収集中",
-        "count": 4677
-      },
-      {
-        "at": "2026-11-28T15:26:28.051Z",
-        "stage": "追加サイト収集完了・説明情報取得中",
-        "count": 4677
-      },
-      {
-        "at": "2026-11-28T15:26:50.389Z",
-        "stage": "説明・メタデータ取得完了・画像情報取得中",
-        "count": 4631
-      },
-      {
-        "at": "2026-11-28T15:26:53.740Z",
-        "stage": "画像情報取得完了・図鑑更新中",
-        "count": 4631
-      },
-      {
-        "at": "2026-11-28T15:26:56.020Z",
-        "stage": "今回の巡回サイクル終了",
-        "count": 4631
-      }
-    ]
-  }
+  ]
 }
