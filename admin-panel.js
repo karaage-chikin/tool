@@ -79,7 +79,8 @@ async function refreshLiveScan(){
   while(host.children.length>100)host.lastElementChild.remove();
  }catch{}
 }
-\nfunction formatElapsed(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return h>0?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
+
+function formatElapsed(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return h>0?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
 function updateElapsedClocks(){document.querySelectorAll("[data-elapsed-start]").forEach(el=>{const start=Number(el.dataset.elapsedStart);if(Number.isFinite(start)&&start>0)el.textContent=formatElapsed(Date.now()-start);});}
 function status(message,kind=""){
  const el=$("pageStatus");if(!el)return;
@@ -162,7 +163,8 @@ async function loadOverview(seq){
  results.forEach((r,i)=>{if(r.status==="fulfilled")data[specs[i][0]]=r.value;else errors.push(specs[i][0]+": "+r.reason.message);});
  const d=data.overview||{},p=d.packs||{},c=d.candidates||{},ac=d.access||{};
  let html=cards([{label:"リソースパック（D1登録分）",value:number(p.count)},{label:"未承認候補",value:number(c.count)},{label:"累計アクセス",value:number(ac.count)},{label:"監査ログ",value:number(d.logs?.count)},{label:"パック情報の概算容量",value:formatBytes(p.approx_bytes)}]);
- html+=await expansionPanel();\n html+=await liveScanPanel();
+ html+=await expansionPanel();
+ html+=await liveScanPanel();
  html+='<div class="overview-grid">';
  html+='<section class="panel overview-panel"><h2>更新履歴</h2>'+(data.updates?rows((data.updates.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("updates"))||"取得失敗"}))+'</section>';
  html+='<section class="panel overview-panel"><h2>Debug・エラー</h2>'+(data.debug?rows((data.debug.logs||[]).map(x=>({title:x.action,body:x.detail,meta:formatDate(x.created_at)}))):failurePanel({message:errors.find(x=>x.startsWith("debug"))||"取得失敗"}))+'</section>';
@@ -256,7 +258,8 @@ async function init(){
  });
  window.addEventListener("hashchange",()=>{currentPage=pageFromHash();renderPage();});
  currentPage=pageFromHash();renderPage();
- setInterval(updateElapsedClocks,1000);\n setInterval(()=>{if(currentPage==="overview"||currentPage==="storage")refreshLiveScan();},3000);
+ setInterval(updateElapsedClocks,1000);
+ setInterval(()=>{if(currentPage==="overview"||currentPage==="storage")refreshLiveScan();},3000);
  setInterval(()=>{if(currentPage==="overview"&&document.visibilityState==="visible")renderPage();},60000);
 }
 init();
