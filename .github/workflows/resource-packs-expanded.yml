@@ -46,19 +46,46 @@ jobs:
           node --check scripts/resource-pack-detail-enrichment.mjs
           node --check scripts/resource-pack-utils.mjs
           node --test scripts/resource-pack-utils.test.mjs
+      - name: Start progress measurement
+        run: |
+          node scripts/resource-pack-progress.mjs start
+          git add resource-pack-progress.json
+          git commit -m "Record resource pack expansion start"
+          git push
       - name: Collect recent Bedrock packs
-        run: node scripts/resource-pack-sync.mjs
+        run: |
+          node scripts/resource-pack-sync.mjs
+          node scripts/resource-pack-progress.mjs stage "MCPEDL収集完了・追加サイト収集中"
+          git add resource-pack-progress.json
+          git commit -m "Update resource pack expansion progress"
+          git push
       - name: Collect from additional sources
-        run: node scripts/resource-pack-additional-source.mjs
+        run: |
+          node scripts/resource-pack-additional-source.mjs
+          node scripts/resource-pack-progress.mjs stage "追加サイト収集完了・説明情報取得中"
+          git add resource-pack-progress.json
+          git commit -m "Update resource pack expansion progress"
+          git push
       - name: Fetch descriptions and metadata
-        run: node scripts/resource-pack-detail-enrichment.mjs
+        run: |
+          node scripts/resource-pack-detail-enrichment.mjs
+          node scripts/resource-pack-progress.mjs stage "説明・メタデータ取得完了・画像情報取得中"
+          git add resource-pack-progress.json
+          git commit -m "Update resource pack expansion progress"
+          git push
       - name: Fetch pack gallery images
-        run: node scripts/resource-pack-image-enrichment.mjs
+        run: |
+          node scripts/resource-pack-image-enrichment.mjs
+          node scripts/resource-pack-progress.mjs stage "画像情報取得完了・図鑑更新中"
+          git add resource-pack-progress.json
+          git commit -m "Update resource pack expansion progress"
+          git push
       - name: Commit catalogue updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add resource-packs.json
+          node scripts/resource-pack-progress.mjs finish
+          git add resource-pack-progress.json resource-packs.json
           if git diff --cached --quiet; then
             echo "No catalogue changes."
           else
