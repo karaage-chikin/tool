@@ -1,1 +1,60 @@
-{}
+{
+  "addedFromAdditionalSource": 0,
+  "totalNewAdded": 0,
+  "addedBySource": {
+    "MCPEDL category listing": 0,
+    "MCPEDL REST API": 0,
+    "CurseForge": 0,
+    "ModBay": 0,
+    "Planet Minecraft": 0
+  },
+  "sourceStats": {
+    "MCPEDL category listing": {
+      "scanned": 0,
+      "added": 0,
+      "updated": 4,
+      "removed": 0
+    },
+    "MCPEDL REST API": {
+      "scanned": 0,
+      "added": 0,
+      "duplicates": 0,
+      "tooOld": 0,
+      "noDate": 0,
+      "notBedrock": 0,
+      "errors": 1
+    },
+    "ModBay": {
+      "scanned": 4082,
+      "added": 0,
+      "duplicates": 407,
+      "tooOld": 260,
+      "noDate": 0,
+      "notBedrock": 0,
+      "errors": 3720
+    },
+    "Planet Minecraft": {
+      "scanned": 0,
+      "added": 0,
+      "duplicates": 0,
+      "tooOld": 0,
+      "noDate": 0,
+      "notBedrock": 0,
+      "errors": 1
+    },
+    "CurseForge": {
+      "scanned": 2405,
+      "added": 0,
+      "duplicates": 652,
+      "tooOld": 0,
+      "noDate": 2348,
+      "notBedrock": 0,
+      "errors": 0
+    }
+  },
+  "total": 4677,
+  "cutoff": "2025-11-28",
+  "maxPages": 1000,
+  "maxNew": 3000,
+  "staleLimit": 60
+}
